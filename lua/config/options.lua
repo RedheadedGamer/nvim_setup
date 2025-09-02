@@ -37,9 +37,9 @@ opt.shiftwidth = 4                -- width for autoindents
 -- File handling
 opt.wildmode = { "longest", "list" } -- get bash-like tab completions
 opt.encoding = "utf-8"            -- always use utf-8
-opt.noswapfile = true             -- disable creating swap file
-opt.nobackup = true               -- avoid backup files
-opt.nowritebackup = true          -- avoid backup files
+opt.swapfile = false              -- disable creating swap file
+opt.backup = false                -- avoid backup files
+opt.writebackup = false           -- avoid backup files
 opt.backupdir = vim.fn.expand("~/.cache/vim") -- directory to store backup files
 
 -- Performance and UX
