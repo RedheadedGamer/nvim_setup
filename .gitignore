@@ -1,0 +1,14 @@
+# Neovim data directories (created during usage)
+lazy-lock.json
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Test files
+test.*
+*.tmp
+
+# Backup files
+*.bak
+*.backup
