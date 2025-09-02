@@ -33,6 +33,11 @@ sudo apt update
 sudo apt install neovim git nodejs npm python3 python3-pip ripgrep
 ```
 
+#### Arch Installation:
+```bash
+sudo pacman -Syu neovim git nodejs npm python3 python3-pip ripgrep
+```
+
 #### macOS Installation:
 ```bash
 brew install neovim git node python ripgrep
