@@ -188,49 +188,6 @@ return {
     lazy = false,
   },
 
-  -- Telescope (fuzzy finder)
-  {
-    "nvim-telescope/telescope.nvim",
-    tag = "0.1.8",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    config = function()
-      local telescope = require("telescope")
-      local actions = require("telescope.actions")
-      
-      telescope.setup({
-        defaults = {
-          prompt_prefix = " ",
-          selection_caret = " ",
-          path_display = { "truncate" },
-          mappings = {
-            i = {
-              ["<C-n>"] = actions.cycle_history_next,
-              ["<C-p>"] = actions.cycle_history_prev,
-              ["<C-j>"] = actions.move_selection_next,
-              ["<C-k>"] = actions.move_selection_previous,
-              ["<C-c>"] = actions.close,
-              ["<Down>"] = actions.move_selection_next,
-              ["<Up>"] = actions.move_selection_previous,
-              ["<CR>"] = actions.select_default,
-              ["<C-x>"] = actions.select_horizontal,
-              ["<C-v>"] = actions.select_vertical,
-              ["<C-t>"] = actions.select_tab,
-              ["<C-u>"] = actions.preview_scrolling_up,
-              ["<C-d>"] = actions.preview_scrolling_down,
-            },
-          },
-        },
-      })
-      
-      -- Telescope keymaps
-      local keymap = vim.keymap
-      keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "Find Files" })
-      keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { desc = "Live Grep" })
-      keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Find Buffers" })
-      keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", { desc = "Help Tags" })
-    end,
-  },
-
   -- Treesitter (syntax highlighting)
   {
     "nvim-treesitter/nvim-treesitter",
@@ -367,7 +324,226 @@ return {
     config = function()
       require("mini.statusline").setup({
         use_icons = true,
+        set_vim_settings = false, -- Don't override vim settings
       })
+    end,
+  },
+
+  -- Which-key for key binding popup (highly recommended QoL)
+  {
+    "folke/which-key.nvim",
+    event = "VimEnter",
+    config = function()
+      require("which-key").setup({
+        icons = {
+          breadcrumb = "»",
+          separator = "➜",
+          group = "+",
+        },
+        popup_mappings = {
+          scroll_down = "<c-d>",
+          scroll_up = "<c-u>",
+        },
+        window = {
+          border = "rounded",
+          position = "bottom",
+          margin = { 1, 0, 1, 0 },
+          padding = { 2, 2, 2, 2 },
+          winblend = 0,
+        },
+        layout = {
+          height = { min = 4, max = 25 },
+          width = { min = 20, max = 50 },
+          spacing = 3,
+          align = "left",
+        },
+      })
+
+      -- Register key groups for better organization
+      require("which-key").register({
+        ["<leader>f"] = { name = "+find" },
+        ["<leader>x"] = { name = "+trouble" },
+        ["<leader>t"] = { name = "+theme" },
+        ["<leader>g"] = { name = "+git" },
+        ["<leader>c"] = { name = "+code" },
+        ["<leader>w"] = { name = "+window" },
+      })
+    end,
+  },
+
+  -- Better UI for vim.ui interfaces
+  {
+    "stevearc/dressing.nvim",
+    config = function()
+      require("dressing").setup({
+        input = {
+          enabled = true,
+          default_prompt = "Input:",
+          prompt_align = "left",
+          insert_only = true,
+          start_in_insert = true,
+          border = "rounded",
+          relative = "cursor",
+          prefer_width = 40,
+          width = nil,
+          max_width = { 140, 0.9 },
+          min_width = { 20, 0.2 },
+          win_options = {
+            winblend = 10,
+            winhighlight = "",
+          },
+        },
+        select = {
+          enabled = true,
+          backend = { "telescope", "fzf_lua", "fzf", "builtin", "nui" },
+          trim_prompt = true,
+          telescope = require("telescope.themes").get_dropdown({
+            winblend = 10,
+          }),
+        },
+      })
+    end,
+  },
+
+  -- Fancy notification manager
+  {
+    "rcarriga/nvim-notify",
+    config = function()
+      require("notify").setup({
+        background_colour = "#000000",
+        fps = 30,
+        icons = {
+          DEBUG = "",
+          ERROR = "",
+          INFO = "",
+          TRACE = "✎",
+          WARN = ""
+        },
+        level = 2,
+        minimum_width = 50,
+        render = "default",
+        stages = "fade_in_slide_out",
+        timeout = 3000,
+        top_down = true
+      })
+      
+      -- Set nvim-notify as the default notification handler
+      vim.notify = require("notify")
+    end,
+  },
+
+  -- Telescope (fuzzy finder) with theme switcher
+  {
+    "nvim-telescope/telescope.nvim",
+    tag = "0.1.8",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      local telescope = require("telescope")
+      local actions = require("telescope.actions")
+      
+      telescope.setup({
+        defaults = {
+          prompt_prefix = " ",
+          selection_caret = " ",
+          path_display = { "truncate" },
+          mappings = {
+            i = {
+              ["<C-n>"] = actions.cycle_history_next,
+              ["<C-p>"] = actions.cycle_history_prev,
+              ["<C-j>"] = actions.move_selection_next,
+              ["<C-k>"] = actions.move_selection_previous,
+              ["<C-c>"] = actions.close,
+              ["<Down>"] = actions.move_selection_next,
+              ["<Up>"] = actions.move_selection_previous,
+              ["<CR>"] = actions.select_default,
+              ["<C-x>"] = actions.select_horizontal,
+              ["<C-v>"] = actions.select_vertical,
+              ["<C-t>"] = actions.select_tab,
+              ["<C-u>"] = actions.preview_scrolling_up,
+              ["<C-d>"] = actions.preview_scrolling_down,
+            },
+          },
+        },
+      })
+      
+      -- Telescope keymaps
+      local keymap = vim.keymap
+      keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "Find Files" })
+      keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { desc = "Live Grep" })
+      keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Find Buffers" })
+      keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", { desc = "Help Tags" })
+      
+      -- Theme switcher function and keymap
+      local function theme_switcher()
+        local themes = {
+          "onedark_dark",
+          "tokyonight",
+          "tokyonight-night",
+          "tokyonight-storm", 
+          "tokyonight-day",
+          "gruvbox",
+          "dracula",
+          "nord",
+          "everforest",
+          "catppuccin",
+          "catppuccin-latte",
+          "catppuccin-frappe", 
+          "catppuccin-macchiato",
+          "catppuccin-mocha",
+          "nightfox",
+          "nordfox",
+          "dawnfox",
+          "duskfox",
+          "terafox",
+          "carbonfox",
+          "rose-pine",
+          "rose-pine-main",
+          "rose-pine-moon",
+          "rose-pine-dawn",
+          "kanagawa",
+          "kanagawa-wave",
+          "kanagawa-dragon",
+          "kanagawa-lotus",
+          "material",
+          "material-darker",
+          "material-lighter",
+          "material-oceanic",
+          "material-palenight",
+          "material-deep-ocean",
+          "monokai",
+          "monokai_pro",
+          "monokai_soda",
+          "monokai_ristretto",
+          "onedark",
+          "github_dark",
+          "github_dark_dimmed",
+          "github_light",
+          "sonokai",
+          "edge"
+        }
+        
+        vim.ui.select(themes, {
+          prompt = "Select a theme:",
+          format_item = function(item)
+            return "🎨 " .. item
+          end,
+        }, function(choice)
+          if choice then
+            -- Try to set the colorscheme
+            local ok, _ = pcall(vim.cmd, "colorscheme " .. choice)
+            if ok then
+              vim.notify("Theme changed to: " .. choice, vim.log.levels.INFO)
+              -- Save the theme choice for persistence (optional)
+              vim.g.current_theme = choice
+            else
+              vim.notify("Failed to load theme: " .. choice, vim.log.levels.ERROR)
+            end
+          end
+        end)
+      end
+      
+      keymap.set("n", "<leader>th", theme_switcher, { desc = "Theme switcher" })
+      keymap.set("n", "<leader>tt", theme_switcher, { desc = "Theme switcher" })
     end,
   },
 
@@ -559,18 +735,32 @@ return {
     "folke/trouble.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
-      require("trouble").setup()
+      require("trouble").setup({
+        -- Use new trouble.nvim configuration
+        position = "bottom",
+        height = 10,
+        width = 50,
+        icons = true,
+        mode = "workspace_diagnostics",
+        auto_open = false,
+        auto_close = false,
+        auto_preview = true,
+        auto_fold = false,
+        use_diagnostic_signs = false,
+      })
       
       local keymap = vim.keymap
-      keymap.set("n", "<leader>xx", "<cmd>TroubleToggle<cr>", { desc = "Toggle Trouble" })
-      keymap.set("n", "<leader>xw", "<cmd>TroubleToggle workspace_diagnostics<cr>", { desc = "Workspace Diagnostics" })
-      keymap.set("n", "<leader>xd", "<cmd>TroubleToggle document_diagnostics<cr>", { desc = "Document Diagnostics" })
-      keymap.set("n", "<leader>xl", "<cmd>TroubleToggle loclist<cr>", { desc = "Location List" })
-      keymap.set("n", "<leader>xq", "<cmd>TroubleToggle quickfix<cr>", { desc = "Quickfix List" })
+      -- Updated keybinds for new trouble.nvim API
+      keymap.set("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Toggle Trouble" })
+      keymap.set("n", "<leader>xw", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", { desc = "Buffer Diagnostics" })
+      keymap.set("n", "<leader>xl", "<cmd>Trouble loclist toggle<cr>", { desc = "Location List" })
+      keymap.set("n", "<leader>xq", "<cmd>Trouble qflist toggle<cr>", { desc = "Quickfix List" })
+      keymap.set("n", "<leader>xs", "<cmd>Trouble symbols toggle focus=false<cr>", { desc = "Symbols" })
+      keymap.set("n", "<leader>xr", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", { desc = "LSP References" })
     end,
   },
 
-  -- Formatting
+  -- Formatting (disabled auto-format on save for custom standards)
   {
     "stevearc/conform.nvim",
     config = function()
@@ -585,11 +775,17 @@ return {
           json = { "prettier" },
           yaml = { "prettier" },
         },
-        format_on_save = {
-          timeout_ms = 500,
-          lsp_fallback = true,
-        },
+        -- format_on_save disabled for custom varsity standards
+        -- format_on_save = {
+        --   timeout_ms = 500,
+        --   lsp_fallback = true,
+        -- },
       })
+      
+      -- Manual format keymap (optional)
+      vim.keymap.set("n", "<leader>fm", function()
+        require("conform").format({ lsp_fallback = true })
+      end, { desc = "Format buffer manually" })
     end,
   },
 }

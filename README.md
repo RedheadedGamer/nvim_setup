@@ -286,11 +286,29 @@ Edit `lua/plugins/init.lua` and add your plugin specification:
 
 ### Changing Theme
 
-Modify the colorscheme in `lua/plugins/init.lua`:
+**Easy Theme Switcher** (New Feature!)
+
+Use the built-in theme switcher for easy theme changing:
+- Press `<leader>th` or `<leader>tt` to open the theme selector
+- Choose from 70+ available themes including dracula, gruvbox, tokyonight, etc.
+- Themes are applied instantly with notification feedback
+
+**Manual Theme Change**
+
+Alternatively, modify the colorscheme in `init.lua`:
 
 ```lua
 vim.cmd("colorscheme your_preferred_theme")
 ```
+
+Available themes include:
+- `dracula` - Dracula theme
+- `gruvbox` - Gruvbox theme  
+- `tokyonight`, `tokyonight-night`, `tokyonight-storm`
+- `catppuccin`, `catppuccin-mocha`, `catppuccin-latte`
+- `nord` - Nord theme
+- `rose-pine`, `rose-pine-moon`, `rose-pine-dawn`
+- And many more!
 
 ### Custom Key Mappings
 
@@ -299,6 +317,43 @@ Add your keymaps to `lua/config/keymaps.lua`:
 ```lua
 keymap.set("n", "<leader>custom", "<cmd>YourCommand<cr>", { desc = "Custom action" })
 ```
+
+## ✨ New Features & Quality of Life Improvements
+
+### 🔧 Autoformatting Control
+Autoformatting on save has been **disabled by default** to accommodate custom coding standards:
+- **Manual formatting**: Use `<leader>fm` to format the current buffer manually
+- **Re-enable auto-format**: Uncomment the `format_on_save` section in `lua/plugins/init.lua`
+
+### 🎨 Enhanced Theme Switcher
+- **Quick access**: `<leader>th` or `<leader>tt` opens theme selector
+- **70+ themes available**: Including dracula, gruvbox, tokyonight, catppuccin, and more
+- **Instant preview**: Themes apply immediately with notification feedback
+
+### 🔍 Which-Key Integration
+- **Key binding hints**: Press any leader key and wait to see available commands
+- **Organized groups**: Commands are grouped by function (find, trouble, theme, etc.)
+- **Visual clarity**: Clean popup interface showing all available shortcuts
+
+### 📢 Better Notifications
+- **nvim-notify**: Enhanced notification system with animations
+- **Visual feedback**: Theme changes, errors, and info messages display beautifully
+- **Non-intrusive**: Notifications fade out automatically
+
+### 🎯 Improved Trouble.nvim
+- **Updated keybinds**: Fixed deprecated commands that were causing errors
+- **New shortcuts**: 
+  - `<leader>xx` - Toggle diagnostics
+  - `<leader>xw` - Buffer diagnostics  
+  - `<leader>xl` - Location list
+  - `<leader>xq` - Quickfix list
+  - `<leader>xs` - LSP symbols
+  - `<leader>xr` - LSP references
+
+### 🎨 Enhanced UI
+- **dressing.nvim**: Better UI for vim.ui select and input
+- **Improved statusline**: More consistent colors and better configuration
+- **Better borders**: Rounded borders throughout the UI
 
 ## 🔧 Troubleshooting
 
