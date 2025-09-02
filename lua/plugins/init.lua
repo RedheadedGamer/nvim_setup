@@ -17,17 +17,161 @@ return {
     end,
   },
   
+  -- Popular dark themes
+  {
+    "folke/tokyonight.nvim",
+    lazy = true,
+    config = function()
+      require("tokyonight").setup({
+        style = "night",
+        transparent = true,
+      })
+    end,
+  },
+  
+  {
+    "ellisonleao/gruvbox.nvim",
+    lazy = true,
+    config = function()
+      require("gruvbox").setup({
+        transparent_mode = true,
+      })
+    end,
+  },
+  
+  {
+    "Mofiqul/dracula.nvim",
+    lazy = true,
+  },
+  
+  {
+    "shaunsingh/nord.nvim",
+    lazy = true,
+    config = function()
+      vim.g.nord_contrast = true
+      vim.g.nord_borders = false
+      vim.g.nord_disable_background = true
+    end,
+  },
+  
   {
     "sainnhe/everforest",
     lazy = true,
+    config = function()
+      vim.g.everforest_background = 'hard'
+      vim.g.everforest_transparent_background = 1
+    end,
   },
   
   {
     "catppuccin/nvim",
     name = "catppuccin",
     lazy = true,
+    config = function()
+      require("catppuccin").setup({
+        flavour = "mocha",
+        transparent_background = true,
+      })
+    end,
   },
   
+  {
+    "EdenEast/nightfox.nvim",
+    lazy = true,
+    config = function()
+      require("nightfox").setup({
+        options = {
+          transparent = true,
+        }
+      })
+    end,
+  },
+  
+  {
+    "rose-pine/neovim",
+    name = "rose-pine",
+    lazy = true,
+    config = function()
+      require("rose-pine").setup({
+        disable_background = true,
+      })
+    end,
+  },
+  
+  {
+    "rebelot/kanagawa.nvim",
+    lazy = true,
+    config = function()
+      require("kanagawa").setup({
+        transparent = true,
+      })
+    end,
+  },
+  
+  {
+    "marko-cerovac/material.nvim",
+    lazy = true,
+    config = function()
+      require("material").setup({
+        disable = {
+          background = true,
+        },
+      })
+    end,
+  },
+  
+  {
+    "tanvirtin/monokai.nvim",
+    lazy = true,
+    config = function()
+      require("monokai").setup({
+        palette = require("monokai").pro
+      })
+    end,
+  },
+  
+  {
+    "navarasu/onedark.nvim",
+    lazy = true,
+    config = function()
+      require("onedark").setup({
+        style = 'dark',
+        transparent = true,
+      })
+    end,
+  },
+  
+  {
+    "projekt0n/github-nvim-theme",
+    lazy = true,
+    config = function()
+      require("github-theme").setup({
+        options = {
+          transparent = true,
+        }
+      })
+    end,
+  },
+  
+  {
+    "sainnhe/sonokai",
+    lazy = true,
+    config = function()
+      vim.g.sonokai_style = 'default'
+      vim.g.sonokai_transparent_background = 1
+    end,
+  },
+  
+  {
+    "sainnhe/edge",
+    lazy = true,
+    config = function()
+      vim.g.edge_style = 'default'
+      vim.g.edge_transparent_background = 1
+    end,
+  },
+  
+  -- Legacy themes
   {
     "rktjmp/lush.nvim",
     lazy = true,
