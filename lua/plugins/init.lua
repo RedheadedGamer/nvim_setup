@@ -2,7 +2,7 @@
 -- Plugin manager setup with lazy.nvim
 
 return {
-  -- Colorschemes
+  -- Primary colorscheme (default)
   {
     "olimorris/onedarkpro.nvim",
     lazy = false,
@@ -10,14 +10,14 @@ return {
     config = function()
       require("onedarkpro").setup({
         options = {
-          transparency = true, -- Enable transparent background
+          transparency = true,
         }
       })
       vim.cmd("colorscheme onedark_dark")
     end,
   },
   
-  -- Popular dark themes
+  -- Popular theme collection (optimized for transparency)
   {
     "folke/tokyonight.nvim",
     lazy = true,
@@ -51,15 +51,6 @@ return {
       vim.g.nord_contrast = true
       vim.g.nord_borders = false
       vim.g.nord_disable_background = true
-    end,
-  },
-  
-  {
-    "sainnhe/everforest",
-    lazy = true,
-    config = function()
-      vim.g.everforest_background = 'hard'
-      vim.g.everforest_transparent_background = 1
     end,
   },
   
@@ -107,80 +98,6 @@ return {
       })
     end,
   },
-  
-  {
-    "marko-cerovac/material.nvim",
-    lazy = true,
-    config = function()
-      require("material").setup({
-        disable = {
-          background = true,
-        },
-      })
-    end,
-  },
-  
-  {
-    "tanvirtin/monokai.nvim",
-    lazy = true,
-    config = function()
-      require("monokai").setup({
-        palette = require("monokai").pro
-      })
-    end,
-  },
-  
-  {
-    "navarasu/onedark.nvim",
-    lazy = true,
-    config = function()
-      require("onedark").setup({
-        style = 'dark',
-        transparent = true,
-      })
-    end,
-  },
-  
-  {
-    "projekt0n/github-nvim-theme",
-    lazy = true,
-    config = function()
-      require("github-theme").setup({
-        options = {
-          transparent = true,
-        }
-      })
-    end,
-  },
-  
-  {
-    "sainnhe/sonokai",
-    lazy = true,
-    config = function()
-      vim.g.sonokai_style = 'default'
-      vim.g.sonokai_transparent_background = 1
-    end,
-  },
-  
-  {
-    "sainnhe/edge",
-    lazy = true,
-    config = function()
-      vim.g.edge_style = 'default'
-      vim.g.edge_transparent_background = 1
-    end,
-  },
-  
-  -- Legacy themes
-  {
-    "rktjmp/lush.nvim",
-    lazy = true,
-  },
-  
-  {
-    "Scysta/pink-panic.nvim",
-    lazy = true,
-  },
 
   -- Essential dependencies
   {
@@ -219,7 +136,11 @@ return {
     end,
   },
 
-  -- Mini.nvim plugins for quality of life improvements
+  -- ============================================================================
+  -- MINI.NVIM ECOSYSTEM (28 comprehensive plugins for enhanced development)
+  -- ============================================================================
+
+  -- Text manipulation and editing
   {
     "echasnovski/mini.pairs",
     version = "*",
@@ -257,6 +178,7 @@ return {
     end,
   },
 
+  -- Mini.move: Move lines and selections with Alt+hjkl
   {
     "echasnovski/mini.move",
     version = "*",
@@ -296,6 +218,7 @@ return {
     end,
   },
 
+  -- File management and navigation
   {
     "echasnovski/mini.files",
     version = "*",
@@ -318,6 +241,7 @@ return {
     end,
   },
 
+  -- UI and visual enhancements
   {
     "echasnovski/mini.statusline",
     version = "*",
@@ -532,7 +456,11 @@ return {
     end,
   },
 
-  -- Which-key for key binding popup (highly recommended QoL)
+  -- ============================================================================
+  -- QUALITY OF LIFE ENHANCEMENTS
+  -- ============================================================================
+
+  -- Which-key for key binding popup (essential for discoverability)
   {
     "folke/which-key.nvim",
     event = "VimEnter",
@@ -562,19 +490,50 @@ return {
         },
       })
 
-      -- Register key groups for better organization
+      -- Register key groups for better organization (comprehensive mini.nvim coverage)
       require("which-key").register({
-        ["<leader>f"] = { name = "+find" },
-        ["<leader>x"] = { name = "+trouble" },
+        ["<leader>f"] = { name = "+find/telescope" },
+        ["<leader>p"] = { name = "+pick/mini.pick" },
+        ["<leader>x"] = { name = "+trouble/diagnostics" },
         ["<leader>t"] = { name = "+theme/trim" },
-        ["<leader>g"] = { name = "+git" },
-        ["<leader>c"] = { name = "+code" },
+        ["<leader>g"] = { name = "+git/diff" },
+        ["<leader>c"] = { name = "+code/lsp" },
         ["<leader>w"] = { name = "+window" },
         ["<leader>b"] = { name = "+buffer" },
-        ["<leader>v"] = { name = "+visits" },
-        ["<leader>s"] = { name = "+session" },
-        ["<leader>m"] = { name = "+map" },
-        ["<leader>p"] = { name = "+pick" },
+        ["<leader>v"] = { name = "+visits/mini.visits" },
+        ["<leader>s"] = { name = "+session/mini.sessions" },
+        ["<leader>m"] = { name = "+map/minimap" },
+        ["<leader>r"] = { name = "+refactor/rename" },
+        ["<leader>d"] = { name = "+diagnostics" },
+        ["g"] = { 
+          name = "+goto/operators", 
+          a = "Mini align",
+          A = "Mini align with preview",
+          S = "Mini splitjoin toggle",
+          s = "Mini sort operator",
+          r = "Mini replace operator",
+          m = "Mini multiply operator",
+          x = "Mini exchange operator",
+          ["="] = "Mini evaluate operator",
+          h = "Apply diff hunk",
+          H = "Reset diff hunk"
+        },
+        ["s"] = { 
+          name = "+surround/mini.surround",
+          a = "Add surround",
+          d = "Delete surround", 
+          r = "Replace surround",
+          f = "Find surround (right)",
+          F = "Find surround (left)",
+          h = "Highlight surround",
+          n = "Update n_lines"
+        },
+        ["<M-h>"] = "Move left (mini.move)",
+        ["<M-j>"] = "Move down (mini.move)", 
+        ["<M-k>"] = "Move up (mini.move)",
+        ["<M-l>"] = "Move right (mini.move)",
+        ["["] = { name = "+previous (mini.bracketed)" },
+        ["]"] = { name = "+next (mini.bracketed)" },
       })
     end,
   },
@@ -640,7 +599,11 @@ return {
     end,
   },
 
-  -- Telescope (fuzzy finder) with theme switcher
+  -- ============================================================================
+  -- CORE DEVELOPMENT TOOLS
+  -- ============================================================================
+
+  -- Telescope (fuzzy finder) with optimized theme switcher
   {
     "nvim-telescope/telescope.nvim",
     tag = "0.1.8",
@@ -681,9 +644,10 @@ return {
       keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Find Buffers" })
       keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", { desc = "Help Tags" })
       
-      -- Theme switcher function and keymap
+      -- Optimized theme switcher with curated high-quality themes
       local function theme_switcher()
         local themes = {
+          -- Primary themes
           "onedark_dark",
           "tokyonight",
           "tokyonight-night",
@@ -692,42 +656,29 @@ return {
           "gruvbox",
           "dracula",
           "nord",
-          "everforest",
+          -- Catppuccin variants
           "catppuccin",
           "catppuccin-latte",
           "catppuccin-frappe", 
           "catppuccin-macchiato",
           "catppuccin-mocha",
+          -- Nightfox family
           "nightfox",
           "nordfox",
           "dawnfox",
           "duskfox",
           "terafox",
           "carbonfox",
+          -- Rose Pine variants
           "rose-pine",
           "rose-pine-main",
           "rose-pine-moon",
           "rose-pine-dawn",
+          -- Kanagawa variants
           "kanagawa",
           "kanagawa-wave",
           "kanagawa-dragon",
           "kanagawa-lotus",
-          "material",
-          "material-darker",
-          "material-lighter",
-          "material-oceanic",
-          "material-palenight",
-          "material-deep-ocean",
-          "monokai",
-          "monokai_pro",
-          "monokai_soda",
-          "monokai_ristretto",
-          "onedark",
-          "github_dark",
-          "github_dark_dimmed",
-          "github_light",
-          "sonokai",
-          "edge"
         }
         
         vim.ui.select(themes, {
@@ -814,46 +765,28 @@ return {
         keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts)
       end
 
-      -- Configure LSP servers
-      lspconfig.lua_ls.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-        settings = {
-          Lua = {
-            diagnostics = {
-              globals = { "vim" },
-            },
-            workspace = {
-              library = vim.api.nvim_get_runtime_file("", true),
+      -- Configure LSP servers with shared setup
+      local servers = {
+        lua_ls = {
+          settings = {
+            Lua = {
+              diagnostics = { globals = { "vim" } },
+              workspace = { library = vim.api.nvim_get_runtime_file("", true) },
             },
           },
         },
-      })
+        pyright = {},
+        ts_ls = {},
+        html = {},
+        cssls = {},
+        jsonls = {},
+      }
 
-      lspconfig.pyright.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
-
-      lspconfig.ts_ls.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
-
-      lspconfig.html.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
-
-      lspconfig.cssls.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
-
-      lspconfig.jsonls.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
+      for server, config in pairs(servers) do
+        config.capabilities = capabilities
+        config.on_attach = on_attach
+        lspconfig[server].setup(config)
+      end
 
       -- Diagnostic configuration
       vim.diagnostic.config({
@@ -928,6 +861,10 @@ return {
     end,
   },
 
+  -- ============================================================================
+  -- SPECIALIZED TOOLS
+  -- ============================================================================
+
   -- LaTeX support
   {
     "lervag/vimtex",
@@ -938,23 +875,17 @@ return {
     end,
   },
 
-  -- Better diagnostics display
+  -- Trouble.nvim: Better diagnostics display (updated for new API)
   {
     "folke/trouble.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       require("trouble").setup({
-        -- Use new trouble.nvim configuration
-        position = "bottom",
-        height = 10,
-        width = 50,
-        icons = true,
-        mode = "workspace_diagnostics",
-        auto_open = false,
         auto_close = false,
+        auto_open = false,
         auto_preview = true,
-        auto_fold = false,
-        use_diagnostic_signs = false,
+        auto_refresh = true,
+        use_diagnostic_signs = true,
       })
       
       local keymap = vim.keymap
@@ -968,7 +899,7 @@ return {
     end,
   },
 
-  -- Additional comprehensive mini.nvim plugins for complete coverage
+  -- Additional mini.nvim ecosystem plugins (extending coverage to 28 total)
   {
     "echasnovski/mini.align",
     version = "*",

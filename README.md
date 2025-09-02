@@ -1,6 +1,6 @@
 # Neovim Configuration
 
-A modern, feature-rich Neovim configuration written in Lua with LSP support, auto-completion, and a curated set of plugins for an enhanced development experience.
+A modern, feature-rich Neovim configuration written in Lua with **complete mini.nvim ecosystem integration** (28 plugins), LSP support, auto-completion, and optimized performance for enhanced development experience.
 
 ## ✨ Features
 
@@ -8,7 +8,11 @@ A modern, feature-rich Neovim configuration written in Lua with LSP support, aut
 - **Native LSP Support**: Built-in Language Server Protocol with intelligent code completion, diagnostics, and navigation
 - **Plugin Manager**: Uses [lazy.nvim](https://github.com/folke/lazy.nvim) for fast, lazy-loaded plugin management
 - **Auto-completion**: Powerful completion engine with [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) replacing CoC
-- **Quality of Life Plugins**: Mini.nvim collection for enhanced editing experience (auto-pairs, surround, move, etc.)
+- **Complete Mini.nvim Ecosystem**: All 28 mini.nvim plugins for comprehensive development tools
+- **Optimized Performance**: Streamlined configuration with curated high-quality themes
+- **Smart Movement**: Mini.move integration for moving lines and selections with Alt+hjkl
+- **Advanced Text Objects**: Enhanced editing with mini.ai, mini.surround, and mini.operators
+- **Visual Enhancements**: Smooth animations, minimap, indent guides, and status indicators
 - **Tab-based Indentation**: Configured to use actual tabs (noexpandtab) for consistent formatting
 - **Fuzzy Finding**: Telescope integration for file finding, searching, and more
 - **Syntax Highlighting**: Enhanced syntax highlighting with Treesitter
