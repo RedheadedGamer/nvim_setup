@@ -157,6 +157,23 @@ mv init.vim.legacy init.vim
 | `<leader>ss` | Normal | Select session |
 | `<leader>sw` | Normal | Write session |
 | `<leader>sd` | Normal | Delete session |
+| `ga` | Normal/Visual | Start text alignment |
+| `gA` | Normal/Visual | Start alignment with preview |
+| `gh` | Normal | Apply diff hunk |
+| `gH` | Normal | Reset diff hunk |
+| `[h` / `]h` | Normal | Previous/Next diff hunk |
+| `[H` / `]H` | Normal | First/Last diff hunk |
+| `<leader>gc` | Normal | Git: Show at cursor |
+| `<leader>gd` | Normal | Git: Show diff source |
+| `<CR>` | Normal | Start 2D jumping |
+| `<leader>mm` | Normal | Toggle minimap |
+| `<leader>mr` | Normal | Refresh minimap |
+| `<leader>mf` | Normal | Focus minimap |
+| `<leader>z` | Normal | Zoom current window |
+| `<leader>pf` | Normal | Pick files |
+| `<leader>pg` | Normal | Pick grep live |
+| `<leader>pb` | Normal | Pick buffers |
+| `<leader>ph` | Normal | Pick help |
 
 ## 🔌 Included Plugins
 
@@ -183,6 +200,18 @@ mv init.vim.legacy init.vim
 - **[mini.operators](https://github.com/echasnovski/mini.operators)** - Additional operators (evaluate, exchange, multiply, replace, sort)
 - **[mini.visits](https://github.com/echasnovski/mini.visits)** - Track and navigate recently visited files
 - **[mini.sessions](https://github.com/echasnovski/mini.sessions)** - Session management for workspace persistence
+- **[mini.align](https://github.com/echasnovski/mini.align)** - Text alignment with `ga` and `gA`
+- **[mini.bracketed](https://github.com/echasnovski/mini.bracketed)** - Go to next/previous targets (buffers, files, diagnostics, etc.)
+- **[mini.diff](https://github.com/echasnovski/mini.diff)** - Work with diff hunks and git changes
+- **[mini.extra](https://github.com/echasnovski/mini.extra)** - Extra textobjects and pickers
+- **[mini.fuzzy](https://github.com/echasnovski/mini.fuzzy)** - Fuzzy matching algorithms
+- **[mini.git](https://github.com/echasnovski/mini.git)** - Git integration and commands
+- **[mini.icons](https://github.com/echasnovski/mini.icons)** - Icon provider for various contexts
+- **[mini.jump2d](https://github.com/echasnovski/mini.jump2d)** - Jump to any position with Enter
+- **[mini.map](https://github.com/echasnovski/mini.map)** - Window with buffer text overview (minimap)
+- **[mini.misc](https://github.com/echasnovski/mini.misc)** - Miscellaneous functions (zoom, put, setup, etc.)
+- **[mini.pick](https://github.com/echasnovski/mini.pick)** - Pick anything (alternative to telescope)
+- **[mini.tabline](https://github.com/echasnovski/mini.tabline)** - Tabline with customizable appearance
 
 ### LSP & Completion
 - **[nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)** - LSP configurations
@@ -218,7 +247,7 @@ mv init.vim.legacy init.vim
 - **[sonokai](https://github.com/sainnhe/sonokai)** - Sonokai theme
 - **[edge](https://github.com/sainnhe/edge)** - Edge theme
 
-## 🎨 Recommended Additional Plugins
+## 🎨 Additional Plugin Recommendations
 
 ### Navigation & File Management
 - **[nvim-tree.lua](https://github.com/nvim-tree/nvim-tree.lua)** - File explorer with git integration
@@ -381,14 +410,15 @@ Autoformatting on save has been **disabled by default** to accommodate custom co
 - **Improved statusline**: More consistent colors and better configuration
 - **Better borders**: Rounded borders throughout the UI
 
-### 🚀 Comprehensive Mini.nvim Suite
-A collection of the best mini plugins for enhanced productivity:
+### 🚀 Complete Mini.nvim Suite (28 plugins)
+A comprehensive collection of all the best mini plugins for maximum productivity:
 
 #### 📁 File & Buffer Management
 - **mini.bufremove**: Delete buffers without losing window layout (`<leader>bd`, `<leader>bD`)
 - **mini.files**: Fast file explorer with preview (`<leader>e`)
 - **mini.visits**: Track and navigate recently visited files (`<leader>vv`, `<leader>vl`)
 - **mini.sessions**: Session management for workspace persistence (`<leader>ss`, `<leader>sw`, `<leader>sd`)
+- **mini.pick**: Alternative picker to telescope (`<leader>pf`, `<leader>pg`, `<leader>pb`, `<leader>ph`)
 
 #### ✨ Visual Enhancements
 - **mini.starter**: Beautiful start screen with recent files and quick actions
@@ -397,11 +427,16 @@ A collection of the best mini plugins for enhanced productivity:
 - **mini.hipatterns**: Highlights TODO, FIXME, HACK, NOTE comments and hex colors
 - **mini.indentscope**: Visual indent guides with scope indicators
 - **mini.trailspace**: Shows trailing whitespace and provides cleanup commands (`<leader>tw`, `<leader>tl`)
+- **mini.map**: Window with buffer text overview (minimap) (`<leader>mm`, `<leader>mr`, `<leader>mf`)
+- **mini.icons**: Icon provider for various contexts throughout Neovim
+- **mini.statusline**: Minimal and fast statusline
+- **mini.tabline**: Tabline with customizable appearance
 
-#### 🛠️ Text Manipulation
+#### 🛠️ Text Manipulation & Navigation
 - **mini.surround**: Add, delete, replace surroundings like brackets, quotes (`sa`, `sd`, `sr`)
 - **mini.move**: Move lines and selections with Alt+hjkl (`<M-h/j/k/l>`)
 - **mini.splitjoin**: Toggle between split/joined function arguments with `gS`
+- **mini.align**: Text alignment with `ga` and `gA`
 - **mini.operators**: Additional text operators:
   - `g=`: Evaluate and replace text
   - `gx`: Exchange text regions
@@ -410,7 +445,16 @@ A collection of the best mini plugins for enhanced productivity:
   - `gs`: Sort text selections
 - **mini.ai**: Enhanced text objects for better around/inside operations
 - **mini.jump**: Quick jump to any single character
+- **mini.jump2d**: Jump to any position with Enter
 - **mini.pairs**: Auto-close brackets, quotes, and parentheses
+- **mini.bracketed**: Go to next/previous targets (buffers, files, diagnostics, etc.)
+
+#### 🔧 Development Tools
+- **mini.diff**: Work with diff hunks and git changes (`gh`, `gH`, `[h`, `]h`)
+- **mini.git**: Git integration and commands (`<leader>gc`, `<leader>gd`)
+- **mini.extra**: Extra textobjects and pickers for enhanced functionality
+- **mini.fuzzy**: Fuzzy matching algorithms for better search
+- **mini.misc**: Miscellaneous functions including zoom (`<leader>z`)
 
 ## 🔧 Troubleshooting
 

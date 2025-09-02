@@ -573,6 +573,8 @@ return {
         ["<leader>b"] = { name = "+buffer" },
         ["<leader>v"] = { name = "+visits" },
         ["<leader>s"] = { name = "+session" },
+        ["<leader>m"] = { name = "+map" },
+        ["<leader>p"] = { name = "+pick" },
       })
     end,
   },
@@ -963,6 +965,248 @@ return {
       keymap.set("n", "<leader>xq", "<cmd>Trouble qflist toggle<cr>", { desc = "Quickfix List" })
       keymap.set("n", "<leader>xs", "<cmd>Trouble symbols toggle focus=false<cr>", { desc = "Symbols" })
       keymap.set("n", "<leader>xr", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", { desc = "LSP References" })
+    end,
+  },
+
+  -- Additional comprehensive mini.nvim plugins for complete coverage
+  {
+    "echasnovski/mini.align",
+    version = "*",
+    config = function()
+      require("mini.align").setup({
+        mappings = {
+          start = "ga",
+          start_with_preview = "gA",
+        },
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.bracketed",
+    version = "*",
+    config = function()
+      require("mini.bracketed").setup({
+        -- First letter of every pair defines the target
+        buffer     = { suffix = "b", options = {} },
+        comment    = { suffix = "c", options = {} },
+        conflict   = { suffix = "x", options = {} },
+        diagnostic = { suffix = "d", options = {} },
+        file       = { suffix = "f", options = {} },
+        indent     = { suffix = "i", options = {} },
+        jump       = { suffix = "j", options = {} },
+        location   = { suffix = "l", options = {} },
+        oldfile    = { suffix = "o", options = {} },
+        quickfix   = { suffix = "q", options = {} },
+        treesitter = { suffix = "t", options = {} },
+        undo       = { suffix = "u", options = {} },
+        window     = { suffix = "w", options = {} },
+        yank       = { suffix = "y", options = {} },
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.diff",
+    version = "*",
+    config = function()
+      require("mini.diff").setup({
+        view = {
+          style = "sign",
+          signs = { add = "+", change = "~", delete = "-" },
+        },
+        mappings = {
+          apply = "gh",
+          reset = "gH",
+          textobject = "gh",
+          goto_first = "[H",
+          goto_prev = "[h",
+          goto_next = "]h",
+          goto_last = "]H",
+        },
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.extra",
+    version = "*",
+    config = function()
+      require("mini.extra").setup()
+    end,
+  },
+
+  {
+    "echasnovski/mini.fuzzy",
+    version = "*",
+    config = function()
+      require("mini.fuzzy").setup()
+    end,
+  },
+
+  {
+    "echasnovski/mini.git",
+    version = "*",
+    config = function()
+      require("mini.git").setup()
+      
+      -- Git keymaps
+      vim.keymap.set("n", "<leader>gc", function()
+        require("mini.git").show_at_cursor()
+      end, { desc = "Git: Show at cursor" })
+      
+      vim.keymap.set("n", "<leader>gd", function()
+        require("mini.git").show_diff_source()
+      end, { desc = "Git: Show diff source" })
+    end,
+  },
+
+  {
+    "echasnovski/mini.icons",
+    version = "*",
+    config = function()
+      require("mini.icons").setup({
+        file = {},
+        directory = {},
+        extension = {},
+        filetype = {},
+        lsp = {},
+        os = {},
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.jump2d",
+    version = "*",
+    config = function()
+      require("mini.jump2d").setup({
+        mappings = {
+          start_jumping = "<CR>",
+        },
+        view = {
+          dim = true,
+          n_steps_ahead = 0,
+        },
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.map",
+    version = "*",
+    config = function()
+      require("mini.map").setup({
+        integrations = {
+          require("mini.map").gen_integration.builtin_search(),
+          require("mini.map").gen_integration.diff(),
+          require("mini.map").gen_integration.diagnostic(),
+        },
+        symbols = {
+          encode = require("mini.map").gen_encode_symbols.dot("4x2"),
+        },
+        window = {
+          side = "right",
+          width = 15,
+          winblend = 25,
+        },
+      })
+      
+      -- Map keymaps
+      vim.keymap.set("n", "<leader>mm", function()
+        require("mini.map").toggle()
+      end, { desc = "Toggle minimap" })
+      
+      vim.keymap.set("n", "<leader>mr", function()
+        require("mini.map").refresh()
+      end, { desc = "Refresh minimap" })
+      
+      vim.keymap.set("n", "<leader>mf", function()
+        require("mini.map").toggle_focus()
+      end, { desc = "Focus minimap" })
+    end,
+  },
+
+  {
+    "echasnovski/mini.misc",
+    version = "*",
+    config = function()
+      require("mini.misc").setup()
+      
+      -- Set up some useful mini.misc functions
+      vim.keymap.set("n", "<leader>z", function()
+        require("mini.misc").zoom()
+      end, { desc = "Zoom current window" })
+    end,
+  },
+
+  {
+    "echasnovski/mini.pick",
+    version = "*",
+    config = function()
+      require("mini.pick").setup({
+        mappings = {
+          caret_left  = "<Left>",
+          caret_right = "<Right>",
+          choose      = "<CR>",
+          choose_in_split    = "<C-s>",
+          choose_in_tabpage  = "<C-t>",
+          choose_in_vsplit   = "<C-v>",
+          choose_marked      = "<M-CR>",
+          delete_char        = "<BS>",
+          delete_char_right  = "<Del>",
+          delete_left        = "<C-u>",
+          delete_word        = "<C-w>",
+          mark     = "<C-x>",
+          mark_all = "<C-a>",
+          move_down  = "<C-n>",
+          move_start = "<C-g>",
+          move_up    = "<C-p>",
+          paste      = "<C-r>",
+          refine     = "<C-Space>",
+          scroll_down = "<C-f>",
+          scroll_left = "<C-h>",
+          scroll_right = "<C-l>",
+          scroll_up   = "<C-b>",
+          stop = "<Esc>",
+          toggle_info    = "<S-Tab>",
+          toggle_preview = "<Tab>",
+        },
+        window = {
+          config = {
+            border = "rounded",
+          },
+        },
+      })
+      
+      -- Pick keymaps as alternatives to telescope
+      vim.keymap.set("n", "<leader>pf", function()
+        require("mini.pick").builtin.files()
+      end, { desc = "Pick files" })
+      
+      vim.keymap.set("n", "<leader>pg", function()
+        require("mini.pick").builtin.grep_live()
+      end, { desc = "Pick grep live" })
+      
+      vim.keymap.set("n", "<leader>pb", function()
+        require("mini.pick").builtin.buffers()
+      end, { desc = "Pick buffers" })
+      
+      vim.keymap.set("n", "<leader>ph", function()
+        require("mini.pick").builtin.help()
+      end, { desc = "Pick help" })
+    end,
+  },
+
+  {
+    "echasnovski/mini.tabline",
+    version = "*",
+    config = function()
+      require("mini.tabline").setup({
+        show_icons = true,
+        set_vim_settings = false,
+        tabpage_section = "left",
+      })
     end,
   },
 
