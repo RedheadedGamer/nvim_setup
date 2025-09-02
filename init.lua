@@ -28,7 +28,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -- Load plugins
-require("plugins")
+require("lazy").setup(require("plugins"))
 
 -- Set colorscheme (fallback if theme plugin fails)
 pcall(function()
