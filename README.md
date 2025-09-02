@@ -1,6 +1,6 @@
 # Neovim Configuration
 
-A modern, feature-rich Neovim configuration written in Lua with LSP support, auto-completion, and a curated set of plugins for an enhanced development experience.
+A modern, feature-rich Neovim configuration written in Lua with **complete mini.nvim ecosystem integration** (28 plugins), LSP support, auto-completion, and optimized performance for enhanced development experience.
 
 ## ✨ Features
 
@@ -8,7 +8,11 @@ A modern, feature-rich Neovim configuration written in Lua with LSP support, aut
 - **Native LSP Support**: Built-in Language Server Protocol with intelligent code completion, diagnostics, and navigation
 - **Plugin Manager**: Uses [lazy.nvim](https://github.com/folke/lazy.nvim) for fast, lazy-loaded plugin management
 - **Auto-completion**: Powerful completion engine with [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) replacing CoC
-- **Quality of Life Plugins**: Mini.nvim collection for enhanced editing experience (auto-pairs, surround, move, etc.)
+- **Complete Mini.nvim Ecosystem**: All 28 mini.nvim plugins for comprehensive development tools
+- **Optimized Performance**: Streamlined configuration with curated high-quality themes
+- **Smart Movement**: Mini.move integration for moving lines and selections with Alt+hjkl
+- **Advanced Text Objects**: Enhanced editing with mini.ai, mini.surround, and mini.operators
+- **Visual Enhancements**: Smooth animations, minimap, indent guides, and status indicators
 - **Tab-based Indentation**: Configured to use actual tabs (noexpandtab) for consistent formatting
 - **Fuzzy Finding**: Telescope integration for file finding, searching, and more
 - **Syntax Highlighting**: Enhanced syntax highlighting with Treesitter
@@ -141,6 +145,39 @@ mv init.vim.legacy init.vim
 | `sh` | Normal | Highlight surrounding |
 | `<M-h/j/k/l>` | Normal/Visual | Move lines/selection |
 | `<leader>e` | Normal | Open file explorer |
+| `<leader>bd` | Normal | Delete buffer (keep layout) |
+| `<leader>bD` | Normal | Force delete buffer |
+| `gS` | Normal | Toggle split/join function arguments |
+| `g=` | Normal | Evaluate text and replace with result |
+| `gx` | Normal | Exchange text regions |
+| `gm` | Normal | Multiply (duplicate) text |
+| `gr` | Normal | Replace text with register |
+| `gs` | Normal | Sort text |
+| `<leader>tw` | Normal | Trim trailing whitespace |
+| `<leader>tl` | Normal | Trim trailing empty lines |
+| `<leader>vv` | Normal | Add visit label |
+| `<leader>vV` | Normal | Remove visit label |
+| `<leader>vl` | Normal | List visits |
+| `<leader>ss` | Normal | Select session |
+| `<leader>sw` | Normal | Write session |
+| `<leader>sd` | Normal | Delete session |
+| `ga` | Normal/Visual | Start text alignment |
+| `gA` | Normal/Visual | Start alignment with preview |
+| `gh` | Normal | Apply diff hunk |
+| `gH` | Normal | Reset diff hunk |
+| `[h` / `]h` | Normal | Previous/Next diff hunk |
+| `[H` / `]H` | Normal | First/Last diff hunk |
+| `<leader>gc` | Normal | Git: Show at cursor |
+| `<leader>gd` | Normal | Git: Show diff source |
+| `<CR>` | Normal | Start 2D jumping |
+| `<leader>mm` | Normal | Toggle minimap |
+| `<leader>mr` | Normal | Refresh minimap |
+| `<leader>mf` | Normal | Focus minimap |
+| `<leader>z` | Normal | Zoom current window |
+| `<leader>pf` | Normal | Pick files |
+| `<leader>pg` | Normal | Pick grep live |
+| `<leader>pb` | Normal | Pick buffers |
+| `<leader>ph` | Normal | Pick help |
 
 ## 🔌 Included Plugins
 
@@ -157,6 +194,28 @@ mv init.vim.legacy init.vim
 - **[mini.jump](https://github.com/echasnovski/mini.jump)** - Jump to next/previous single character
 - **[mini.files](https://github.com/echasnovski/mini.files)** - Navigate and manipulate file system
 - **[mini.statusline](https://github.com/echasnovski/mini.statusline)** - Minimal and fast statusline
+- **[mini.bufremove](https://github.com/echasnovski/mini.bufremove)** - Better buffer deletion without losing layout
+- **[mini.starter](https://github.com/echasnovski/mini.starter)** - Beautiful start screen with recent files
+- **[mini.animate](https://github.com/echasnovski/mini.animate)** - Smooth animations for cursor, scroll, resize, and windows
+- **[mini.cursorword](https://github.com/echasnovski/mini.cursorword)** - Highlight word under cursor
+- **[mini.hipatterns](https://github.com/echasnovski/mini.hipatterns)** - Highlight patterns like TODO, FIXME, hex colors
+- **[mini.splitjoin](https://github.com/echasnovski/mini.splitjoin)** - Split/join function arguments and arrays
+- **[mini.trailspace](https://github.com/echasnovski/mini.trailspace)** - Show and remove trailing whitespace
+- **[mini.operators](https://github.com/echasnovski/mini.operators)** - Additional operators (evaluate, exchange, multiply, replace, sort)
+- **[mini.visits](https://github.com/echasnovski/mini.visits)** - Track and navigate recently visited files
+- **[mini.sessions](https://github.com/echasnovski/mini.sessions)** - Session management for workspace persistence
+- **[mini.align](https://github.com/echasnovski/mini.align)** - Text alignment with `ga` and `gA`
+- **[mini.bracketed](https://github.com/echasnovski/mini.bracketed)** - Go to next/previous targets (buffers, files, diagnostics, etc.)
+- **[mini.diff](https://github.com/echasnovski/mini.diff)** - Work with diff hunks and git changes
+- **[mini.extra](https://github.com/echasnovski/mini.extra)** - Extra textobjects and pickers
+- **[mini.fuzzy](https://github.com/echasnovski/mini.fuzzy)** - Fuzzy matching algorithms
+- **[mini.git](https://github.com/echasnovski/mini.git)** - Git integration and commands
+- **[mini.icons](https://github.com/echasnovski/mini.icons)** - Icon provider for various contexts
+- **[mini.jump2d](https://github.com/echasnovski/mini.jump2d)** - Jump to any position with Enter
+- **[mini.map](https://github.com/echasnovski/mini.map)** - Window with buffer text overview (minimap)
+- **[mini.misc](https://github.com/echasnovski/mini.misc)** - Miscellaneous functions (zoom, put, setup, etc.)
+- **[mini.pick](https://github.com/echasnovski/mini.pick)** - Pick anything (alternative to telescope)
+- **[mini.tabline](https://github.com/echasnovski/mini.tabline)** - Tabline with customizable appearance
 
 ### LSP & Completion
 - **[nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)** - LSP configurations
@@ -192,7 +251,7 @@ mv init.vim.legacy init.vim
 - **[sonokai](https://github.com/sainnhe/sonokai)** - Sonokai theme
 - **[edge](https://github.com/sainnhe/edge)** - Edge theme
 
-## 🎨 Recommended Additional Plugins
+## 🎨 Additional Plugin Recommendations
 
 ### Navigation & File Management
 - **[nvim-tree.lua](https://github.com/nvim-tree/nvim-tree.lua)** - File explorer with git integration
@@ -286,11 +345,29 @@ Edit `lua/plugins/init.lua` and add your plugin specification:
 
 ### Changing Theme
 
-Modify the colorscheme in `lua/plugins/init.lua`:
+**Easy Theme Switcher** (New Feature!)
+
+Use the built-in theme switcher for easy theme changing:
+- Press `<leader>th` or `<leader>tt` to open the theme selector
+- Choose from 70+ available themes including dracula, gruvbox, tokyonight, etc.
+- Themes are applied instantly with notification feedback
+
+**Manual Theme Change**
+
+Alternatively, modify the colorscheme in `init.lua`:
 
 ```lua
 vim.cmd("colorscheme your_preferred_theme")
 ```
+
+Available themes include:
+- `dracula` - Dracula theme
+- `gruvbox` - Gruvbox theme  
+- `tokyonight`, `tokyonight-night`, `tokyonight-storm`
+- `catppuccin`, `catppuccin-mocha`, `catppuccin-latte`
+- `nord` - Nord theme
+- `rose-pine`, `rose-pine-moon`, `rose-pine-dawn`
+- And many more!
 
 ### Custom Key Mappings
 
@@ -299,6 +376,89 @@ Add your keymaps to `lua/config/keymaps.lua`:
 ```lua
 keymap.set("n", "<leader>custom", "<cmd>YourCommand<cr>", { desc = "Custom action" })
 ```
+
+## ✨ New Features & Quality of Life Improvements
+
+### 🔧 Autoformatting Control
+Autoformatting on save has been **disabled by default** to accommodate custom coding standards:
+- **Manual formatting**: Use `<leader>fm` to format the current buffer manually
+- **Re-enable auto-format**: Uncomment the `format_on_save` section in `lua/plugins/init.lua`
+
+### 🎨 Enhanced Theme Switcher
+- **Quick access**: `<leader>th` or `<leader>tt` opens theme selector
+- **70+ themes available**: Including dracula, gruvbox, tokyonight, catppuccin, and more
+- **Instant preview**: Themes apply immediately with notification feedback
+
+### 🔍 Which-Key Integration
+- **Key binding hints**: Press any leader key and wait to see available commands
+- **Organized groups**: Commands are grouped by function (find, trouble, theme, etc.)
+- **Visual clarity**: Clean popup interface showing all available shortcuts
+
+### 📢 Better Notifications
+- **nvim-notify**: Enhanced notification system with animations
+- **Visual feedback**: Theme changes, errors, and info messages display beautifully
+- **Non-intrusive**: Notifications fade out automatically
+
+### 🎯 Improved Trouble.nvim
+- **Updated keybinds**: Fixed deprecated commands that were causing errors
+- **New shortcuts**: 
+  - `<leader>xx` - Toggle diagnostics
+  - `<leader>xw` - Buffer diagnostics  
+  - `<leader>xl` - Location list
+  - `<leader>xq` - Quickfix list
+  - `<leader>xs` - LSP symbols
+  - `<leader>xr` - LSP references
+
+### 🎨 Enhanced UI
+- **dressing.nvim**: Better UI for vim.ui select and input
+- **Improved statusline**: More consistent colors and better configuration
+- **Better borders**: Rounded borders throughout the UI
+
+### 🚀 Complete Mini.nvim Suite (28 plugins)
+A comprehensive collection of all the best mini plugins for maximum productivity:
+
+#### 📁 File & Buffer Management
+- **mini.bufremove**: Delete buffers without losing window layout (`<leader>bd`, `<leader>bD`)
+- **mini.files**: Fast file explorer with preview (`<leader>e`)
+- **mini.visits**: Track and navigate recently visited files (`<leader>vv`, `<leader>vl`)
+- **mini.sessions**: Session management for workspace persistence (`<leader>ss`, `<leader>sw`, `<leader>sd`)
+- **mini.pick**: Alternative picker to telescope (`<leader>pf`, `<leader>pg`, `<leader>pb`, `<leader>ph`)
+
+#### ✨ Visual Enhancements
+- **mini.starter**: Beautiful start screen with recent files and quick actions
+- **mini.animate**: Smooth animations for cursor movement, scrolling, and window operations
+- **mini.cursorword**: Automatically highlights the word under cursor
+- **mini.hipatterns**: Highlights TODO, FIXME, HACK, NOTE comments and hex colors
+- **mini.indentscope**: Visual indent guides with scope indicators
+- **mini.trailspace**: Shows trailing whitespace and provides cleanup commands (`<leader>tw`, `<leader>tl`)
+- **mini.map**: Window with buffer text overview (minimap) (`<leader>mm`, `<leader>mr`, `<leader>mf`)
+- **mini.icons**: Icon provider for various contexts throughout Neovim
+- **mini.statusline**: Minimal and fast statusline
+- **mini.tabline**: Tabline with customizable appearance
+
+#### 🛠️ Text Manipulation & Navigation
+- **mini.surround**: Add, delete, replace surroundings like brackets, quotes (`sa`, `sd`, `sr`)
+- **mini.move**: Move lines and selections with Alt+hjkl (`<M-h/j/k/l>`)
+- **mini.splitjoin**: Toggle between split/joined function arguments with `gS`
+- **mini.align**: Text alignment with `ga` and `gA`
+- **mini.operators**: Additional text operators:
+  - `g=`: Evaluate and replace text
+  - `gx`: Exchange text regions
+  - `gm`: Multiply (duplicate) text
+  - `gr`: Replace text with register content
+  - `gs`: Sort text selections
+- **mini.ai**: Enhanced text objects for better around/inside operations
+- **mini.jump**: Quick jump to any single character
+- **mini.jump2d**: Jump to any position with Enter
+- **mini.pairs**: Auto-close brackets, quotes, and parentheses
+- **mini.bracketed**: Go to next/previous targets (buffers, files, diagnostics, etc.)
+
+#### 🔧 Development Tools
+- **mini.diff**: Work with diff hunks and git changes (`gh`, `gH`, `[h`, `]h`)
+- **mini.git**: Git integration and commands (`<leader>gc`, `<leader>gd`)
+- **mini.extra**: Extra textobjects and pickers for enhanced functionality
+- **mini.fuzzy**: Fuzzy matching algorithms for better search
+- **mini.misc**: Miscellaneous functions including zoom (`<leader>z`)
 
 ## 🔧 Troubleshooting
 

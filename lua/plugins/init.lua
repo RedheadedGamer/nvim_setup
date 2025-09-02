@@ -2,7 +2,7 @@
 -- Plugin manager setup with lazy.nvim
 
 return {
-  -- Colorschemes
+  -- Primary colorscheme (default)
   {
     "olimorris/onedarkpro.nvim",
     lazy = false,
@@ -10,14 +10,14 @@ return {
     config = function()
       require("onedarkpro").setup({
         options = {
-          transparency = true, -- Enable transparent background
+          transparency = true,
         }
       })
       vim.cmd("colorscheme onedark_dark")
     end,
   },
   
-  -- Popular dark themes
+  -- Popular theme collection (optimized for transparency)
   {
     "folke/tokyonight.nvim",
     lazy = true,
@@ -51,15 +51,6 @@ return {
       vim.g.nord_contrast = true
       vim.g.nord_borders = false
       vim.g.nord_disable_background = true
-    end,
-  },
-  
-  {
-    "sainnhe/everforest",
-    lazy = true,
-    config = function()
-      vim.g.everforest_background = 'hard'
-      vim.g.everforest_transparent_background = 1
     end,
   },
   
@@ -107,128 +98,11 @@ return {
       })
     end,
   },
-  
-  {
-    "marko-cerovac/material.nvim",
-    lazy = true,
-    config = function()
-      require("material").setup({
-        disable = {
-          background = true,
-        },
-      })
-    end,
-  },
-  
-  {
-    "tanvirtin/monokai.nvim",
-    lazy = true,
-    config = function()
-      require("monokai").setup({
-        palette = require("monokai").pro
-      })
-    end,
-  },
-  
-  {
-    "navarasu/onedark.nvim",
-    lazy = true,
-    config = function()
-      require("onedark").setup({
-        style = 'dark',
-        transparent = true,
-      })
-    end,
-  },
-  
-  {
-    "projekt0n/github-nvim-theme",
-    lazy = true,
-    config = function()
-      require("github-theme").setup({
-        options = {
-          transparent = true,
-        }
-      })
-    end,
-  },
-  
-  {
-    "sainnhe/sonokai",
-    lazy = true,
-    config = function()
-      vim.g.sonokai_style = 'default'
-      vim.g.sonokai_transparent_background = 1
-    end,
-  },
-  
-  {
-    "sainnhe/edge",
-    lazy = true,
-    config = function()
-      vim.g.edge_style = 'default'
-      vim.g.edge_transparent_background = 1
-    end,
-  },
-  
-  -- Legacy themes
-  {
-    "rktjmp/lush.nvim",
-    lazy = true,
-  },
-  
-  {
-    "Scysta/pink-panic.nvim",
-    lazy = true,
-  },
 
   -- Essential dependencies
   {
     "nvim-lua/plenary.nvim",
     lazy = false,
-  },
-
-  -- Telescope (fuzzy finder)
-  {
-    "nvim-telescope/telescope.nvim",
-    tag = "0.1.8",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    config = function()
-      local telescope = require("telescope")
-      local actions = require("telescope.actions")
-      
-      telescope.setup({
-        defaults = {
-          prompt_prefix = " ",
-          selection_caret = " ",
-          path_display = { "truncate" },
-          mappings = {
-            i = {
-              ["<C-n>"] = actions.cycle_history_next,
-              ["<C-p>"] = actions.cycle_history_prev,
-              ["<C-j>"] = actions.move_selection_next,
-              ["<C-k>"] = actions.move_selection_previous,
-              ["<C-c>"] = actions.close,
-              ["<Down>"] = actions.move_selection_next,
-              ["<Up>"] = actions.move_selection_previous,
-              ["<CR>"] = actions.select_default,
-              ["<C-x>"] = actions.select_horizontal,
-              ["<C-v>"] = actions.select_vertical,
-              ["<C-t>"] = actions.select_tab,
-              ["<C-u>"] = actions.preview_scrolling_up,
-              ["<C-d>"] = actions.preview_scrolling_down,
-            },
-          },
-        },
-      })
-      
-      -- Telescope keymaps
-      local keymap = vim.keymap
-      keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "Find Files" })
-      keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { desc = "Live Grep" })
-      keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Find Buffers" })
-      keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", { desc = "Help Tags" })
-    end,
   },
 
   -- Treesitter (syntax highlighting)
@@ -262,7 +136,11 @@ return {
     end,
   },
 
-  -- Mini.nvim plugins for quality of life improvements
+  -- ============================================================================
+  -- MINI.NVIM ECOSYSTEM (28 comprehensive plugins for enhanced development)
+  -- ============================================================================
+
+  -- Text manipulation and editing
   {
     "echasnovski/mini.pairs",
     version = "*",
@@ -300,6 +178,7 @@ return {
     end,
   },
 
+  -- Mini.move: Move lines and selections with Alt+hjkl
   {
     "echasnovski/mini.move",
     version = "*",
@@ -339,6 +218,7 @@ return {
     end,
   },
 
+  -- File management and navigation
   {
     "echasnovski/mini.files",
     version = "*",
@@ -361,13 +241,468 @@ return {
     end,
   },
 
+  -- UI and visual enhancements
   {
     "echasnovski/mini.statusline",
     version = "*",
     config = function()
       require("mini.statusline").setup({
         use_icons = true,
+        set_vim_settings = false, -- Don't override vim settings
       })
+    end,
+  },
+
+  -- Additional high-quality mini plugins for enhanced experience
+  {
+    "echasnovski/mini.bufremove",
+    version = "*",
+    config = function()
+      require("mini.bufremove").setup()
+      
+      -- Keymap for better buffer deletion
+      vim.keymap.set("n", "<leader>bd", function()
+        require("mini.bufremove").delete()
+      end, { desc = "Delete buffer (keep layout)" })
+      
+      vim.keymap.set("n", "<leader>bD", function()
+        require("mini.bufremove").delete(0, true)
+      end, { desc = "Force delete buffer" })
+    end,
+  },
+
+  {
+    "echasnovski/mini.starter",
+    version = "*",
+    config = function()
+      require("mini.starter").setup({
+        evaluate_single = true,
+        items = {
+          require("mini.starter").sections.builtin_actions(),
+          require("mini.starter").sections.recent_files(10, false),
+          require("mini.starter").sections.recent_files(10, true),
+          -- Custom section for common tasks
+          {
+            { action = "Telescope find_files", name = "F: Find files", section = "Telescope" },
+            { action = "Telescope live_grep", name = "G: Live grep", section = "Telescope" },
+            { action = "Telescope buffers", name = "B: Buffers", section = "Telescope" },
+          },
+        },
+        header = function()
+          local hour = tonumber(vim.fn.strftime('%H'))
+          local part_id = math.floor((hour + 4) / 8) + 1
+          local day_part = ({ 'evening', 'morning', 'afternoon', 'evening' })[part_id]
+          local username = vim.loop.os_getenv('USER') or 'user'
+          return ('Good %s, %s!'):format(day_part, username)
+        end,
+        footer = '',
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.animate",
+    version = "*",
+    config = function()
+      require("mini.animate").setup({
+        cursor = {
+          enable = true,
+          timing = require("mini.animate").gen_timing.linear({ duration = 100, unit = "total" }),
+        },
+        scroll = {
+          enable = true,
+          timing = require("mini.animate").gen_timing.linear({ duration = 150, unit = "total" }),
+        },
+        resize = {
+          enable = true,
+          timing = require("mini.animate").gen_timing.linear({ duration = 100, unit = "total" }),
+        },
+        open = {
+          enable = true,
+          timing = require("mini.animate").gen_timing.linear({ duration = 150, unit = "total" }),
+        },
+        close = {
+          enable = true,
+          timing = require("mini.animate").gen_timing.linear({ duration = 150, unit = "total" }),
+        },
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.cursorword",
+    version = "*",
+    config = function()
+      require("mini.cursorword").setup({
+        delay = 100, -- Delay before highlighting (in ms)
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.hipatterns",
+    version = "*",
+    config = function()
+      local hipatterns = require("mini.hipatterns")
+      require("mini.hipatterns").setup({
+        highlighters = {
+          -- Highlight standalone 'FIXME', 'HACK', 'TODO', 'NOTE'
+          fixme = { pattern = '%f[%w]()FIXME()%f[%W]', group = 'MiniHipatternsFixme' },
+          hack  = { pattern = '%f[%w]()HACK()%f[%W]',  group = 'MiniHipatternsHack'  },
+          todo  = { pattern = '%f[%w]()TODO()%f[%W]',  group = 'MiniHipatternsTodo'  },
+          note  = { pattern = '%f[%w]()NOTE()%f[%W]',  group = 'MiniHipatternsNote'  },
+
+          -- Highlight hex color strings (`#rrggbb`) with that color
+          hex_color = hipatterns.gen_highlighter.hex_color(),
+        },
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.splitjoin",
+    version = "*",
+    config = function()
+      require("mini.splitjoin").setup({
+        mappings = {
+          toggle = "gS", -- Toggle split/join
+        },
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.trailspace",
+    version = "*",
+    config = function()
+      require("mini.trailspace").setup()
+      
+      -- Keymap to remove trailing whitespace
+      vim.keymap.set("n", "<leader>tw", function()
+        require("mini.trailspace").trim()
+        vim.notify("Trailing whitespace removed", vim.log.levels.INFO)
+      end, { desc = "Trim trailing whitespace" })
+      
+      -- Keymap to remove all empty lines at end of file
+      vim.keymap.set("n", "<leader>tl", function()
+        require("mini.trailspace").trim_last_lines()
+        vim.notify("Trailing empty lines removed", vim.log.levels.INFO)
+      end, { desc = "Trim trailing empty lines" })
+    end,
+  },
+
+  {
+    "echasnovski/mini.operators",
+    version = "*",
+    config = function()
+      require("mini.operators").setup({
+        -- Each entry configures one operator.
+        evaluate    = { prefix = "g=", func = nil },  -- Evaluate text and replace with result
+        exchange    = { prefix = "gx", func = nil },  -- Exchange text regions
+        multiply    = { prefix = "gm", func = nil },  -- Multiply (duplicate) text
+        replace     = { prefix = "gr", func = nil },  -- Replace text with register
+        sort        = { prefix = "gs", func = nil },  -- Sort text
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.visits",
+    version = "*",
+    config = function()
+      require("mini.visits").setup()
+      
+      -- Keymaps for visits
+      vim.keymap.set("n", "<leader>vv", function()
+        require("mini.visits").add_label()
+      end, { desc = "Add visit label" })
+      
+      vim.keymap.set("n", "<leader>vV", function()
+        require("mini.visits").remove_label()
+      end, { desc = "Remove visit label" })
+      
+      vim.keymap.set("n", "<leader>vl", function()
+        require("mini.visits").list()
+      end, { desc = "List visits" })
+    end,
+  },
+
+  {
+    "echasnovski/mini.sessions",
+    version = "*",
+    config = function()
+      require("mini.sessions").setup({
+        autoread = false, -- Don't auto-read session on startup
+        autowrite = true, -- Auto-write session on exit
+        directory = vim.fn.stdpath("data") .. "/sessions", -- Session directory
+      })
+      
+      -- Session keymaps
+      vim.keymap.set("n", "<leader>ss", function()
+        require("mini.sessions").select()
+      end, { desc = "Select session" })
+      
+      vim.keymap.set("n", "<leader>sw", function()
+        local session_name = vim.fn.input("Session name: ")
+        if session_name ~= "" then
+          require("mini.sessions").write(session_name)
+          vim.notify("Session saved: " .. session_name, vim.log.levels.INFO)
+        end
+      end, { desc = "Write session" })
+      
+      vim.keymap.set("n", "<leader>sd", function()
+        require("mini.sessions").select("delete")
+      end, { desc = "Delete session" })
+    end,
+  },
+
+  -- ============================================================================
+  -- QUALITY OF LIFE ENHANCEMENTS
+  -- ============================================================================
+
+  -- Which-key for key binding popup (essential for discoverability)
+  {
+    "folke/which-key.nvim",
+    event = "VimEnter",
+    config = function()
+      require("which-key").setup({
+        icons = {
+          breadcrumb = "»",
+          separator = "➜",
+          group = "+",
+        },
+        popup_mappings = {
+          scroll_down = "<c-d>",
+          scroll_up = "<c-u>",
+        },
+        window = {
+          border = "rounded",
+          position = "bottom",
+          margin = { 1, 0, 1, 0 },
+          padding = { 2, 2, 2, 2 },
+          winblend = 0,
+        },
+        layout = {
+          height = { min = 4, max = 25 },
+          width = { min = 20, max = 50 },
+          spacing = 3,
+          align = "left",
+        },
+      })
+
+      -- Register key groups for better organization (comprehensive mini.nvim coverage)
+      require("which-key").register({
+        ["<leader>f"] = { name = "+find/telescope" },
+        ["<leader>p"] = { name = "+pick/mini.pick" },
+        ["<leader>x"] = { name = "+trouble/diagnostics" },
+        ["<leader>t"] = { name = "+theme/trim" },
+        ["<leader>g"] = { name = "+git/diff" },
+        ["<leader>c"] = { name = "+code/lsp" },
+        ["<leader>w"] = { name = "+window" },
+        ["<leader>b"] = { name = "+buffer" },
+        ["<leader>v"] = { name = "+visits/mini.visits" },
+        ["<leader>s"] = { name = "+session/mini.sessions" },
+        ["<leader>m"] = { name = "+map/minimap" },
+        ["<leader>r"] = { name = "+refactor/rename" },
+        ["<leader>d"] = { name = "+diagnostics" },
+        ["g"] = { 
+          name = "+goto/operators", 
+          a = "Mini align",
+          A = "Mini align with preview",
+          S = "Mini splitjoin toggle",
+          s = "Mini sort operator",
+          r = "Mini replace operator",
+          m = "Mini multiply operator",
+          x = "Mini exchange operator",
+          ["="] = "Mini evaluate operator",
+          h = "Apply diff hunk",
+          H = "Reset diff hunk"
+        },
+        ["s"] = { 
+          name = "+surround/mini.surround",
+          a = "Add surround",
+          d = "Delete surround", 
+          r = "Replace surround",
+          f = "Find surround (right)",
+          F = "Find surround (left)",
+          h = "Highlight surround",
+          n = "Update n_lines"
+        },
+        ["<M-h>"] = "Move left (mini.move)",
+        ["<M-j>"] = "Move down (mini.move)", 
+        ["<M-k>"] = "Move up (mini.move)",
+        ["<M-l>"] = "Move right (mini.move)",
+        ["["] = { name = "+previous (mini.bracketed)" },
+        ["]"] = { name = "+next (mini.bracketed)" },
+      })
+    end,
+  },
+
+  -- Better UI for vim.ui interfaces
+  {
+    "stevearc/dressing.nvim",
+    config = function()
+      require("dressing").setup({
+        input = {
+          enabled = true,
+          default_prompt = "Input:",
+          prompt_align = "left",
+          insert_only = true,
+          start_in_insert = true,
+          border = "rounded",
+          relative = "cursor",
+          prefer_width = 40,
+          width = nil,
+          max_width = { 140, 0.9 },
+          min_width = { 20, 0.2 },
+          win_options = {
+            winblend = 10,
+            winhighlight = "",
+          },
+        },
+        select = {
+          enabled = true,
+          backend = { "telescope", "fzf_lua", "fzf", "builtin", "nui" },
+          trim_prompt = true,
+          telescope = require("telescope.themes").get_dropdown({
+            winblend = 10,
+          }),
+        },
+      })
+    end,
+  },
+
+  -- Fancy notification manager
+  {
+    "rcarriga/nvim-notify",
+    config = function()
+      require("notify").setup({
+        background_colour = "#000000",
+        fps = 30,
+        icons = {
+          DEBUG = "",
+          ERROR = "",
+          INFO = "",
+          TRACE = "✎",
+          WARN = ""
+        },
+        level = 2,
+        minimum_width = 50,
+        render = "default",
+        stages = "fade_in_slide_out",
+        timeout = 3000,
+        top_down = true
+      })
+      
+      -- Set nvim-notify as the default notification handler
+      vim.notify = require("notify")
+    end,
+  },
+
+  -- ============================================================================
+  -- CORE DEVELOPMENT TOOLS
+  -- ============================================================================
+
+  -- Telescope (fuzzy finder) with optimized theme switcher
+  {
+    "nvim-telescope/telescope.nvim",
+    tag = "0.1.8",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      local telescope = require("telescope")
+      local actions = require("telescope.actions")
+      
+      telescope.setup({
+        defaults = {
+          prompt_prefix = " ",
+          selection_caret = " ",
+          path_display = { "truncate" },
+          mappings = {
+            i = {
+              ["<C-n>"] = actions.cycle_history_next,
+              ["<C-p>"] = actions.cycle_history_prev,
+              ["<C-j>"] = actions.move_selection_next,
+              ["<C-k>"] = actions.move_selection_previous,
+              ["<C-c>"] = actions.close,
+              ["<Down>"] = actions.move_selection_next,
+              ["<Up>"] = actions.move_selection_previous,
+              ["<CR>"] = actions.select_default,
+              ["<C-x>"] = actions.select_horizontal,
+              ["<C-v>"] = actions.select_vertical,
+              ["<C-t>"] = actions.select_tab,
+              ["<C-u>"] = actions.preview_scrolling_up,
+              ["<C-d>"] = actions.preview_scrolling_down,
+            },
+          },
+        },
+      })
+      
+      -- Telescope keymaps
+      local keymap = vim.keymap
+      keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "Find Files" })
+      keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { desc = "Live Grep" })
+      keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Find Buffers" })
+      keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", { desc = "Help Tags" })
+      
+      -- Optimized theme switcher with curated high-quality themes
+      local function theme_switcher()
+        local themes = {
+          -- Primary themes
+          "onedark_dark",
+          "tokyonight",
+          "tokyonight-night",
+          "tokyonight-storm", 
+          "tokyonight-day",
+          "gruvbox",
+          "dracula",
+          "nord",
+          -- Catppuccin variants
+          "catppuccin",
+          "catppuccin-latte",
+          "catppuccin-frappe", 
+          "catppuccin-macchiato",
+          "catppuccin-mocha",
+          -- Nightfox family
+          "nightfox",
+          "nordfox",
+          "dawnfox",
+          "duskfox",
+          "terafox",
+          "carbonfox",
+          -- Rose Pine variants
+          "rose-pine",
+          "rose-pine-main",
+          "rose-pine-moon",
+          "rose-pine-dawn",
+          -- Kanagawa variants
+          "kanagawa",
+          "kanagawa-wave",
+          "kanagawa-dragon",
+          "kanagawa-lotus",
+        }
+        
+        vim.ui.select(themes, {
+          prompt = "Select a theme:",
+          format_item = function(item)
+            return "🎨 " .. item
+          end,
+        }, function(choice)
+          if choice then
+            -- Try to set the colorscheme
+            local ok, _ = pcall(vim.cmd, "colorscheme " .. choice)
+            if ok then
+              vim.notify("Theme changed to: " .. choice, vim.log.levels.INFO)
+              -- Save the theme choice for persistence (optional)
+              vim.g.current_theme = choice
+            else
+              vim.notify("Failed to load theme: " .. choice, vim.log.levels.ERROR)
+            end
+          end
+        end)
+      end
+      
+      keymap.set("n", "<leader>th", theme_switcher, { desc = "Theme switcher" })
+      keymap.set("n", "<leader>tt", theme_switcher, { desc = "Theme switcher" })
     end,
   },
 
@@ -430,46 +765,28 @@ return {
         keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts)
       end
 
-      -- Configure LSP servers
-      lspconfig.lua_ls.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-        settings = {
-          Lua = {
-            diagnostics = {
-              globals = { "vim" },
-            },
-            workspace = {
-              library = vim.api.nvim_get_runtime_file("", true),
+      -- Configure LSP servers with shared setup
+      local servers = {
+        lua_ls = {
+          settings = {
+            Lua = {
+              diagnostics = { globals = { "vim" } },
+              workspace = { library = vim.api.nvim_get_runtime_file("", true) },
             },
           },
         },
-      })
+        pyright = {},
+        ts_ls = {},
+        html = {},
+        cssls = {},
+        jsonls = {},
+      }
 
-      lspconfig.pyright.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
-
-      lspconfig.ts_ls.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
-
-      lspconfig.html.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
-
-      lspconfig.cssls.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
-
-      lspconfig.jsonls.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-      })
+      for server, config in pairs(servers) do
+        config.capabilities = capabilities
+        config.on_attach = on_attach
+        lspconfig[server].setup(config)
+      end
 
       -- Diagnostic configuration
       vim.diagnostic.config({
@@ -544,6 +861,10 @@ return {
     end,
   },
 
+  -- ============================================================================
+  -- SPECIALIZED TOOLS
+  -- ============================================================================
+
   -- LaTeX support
   {
     "lervag/vimtex",
@@ -554,23 +875,273 @@ return {
     end,
   },
 
-  -- Better diagnostics display
+  -- Trouble.nvim: Better diagnostics display (updated for new API)
   {
     "folke/trouble.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
-      require("trouble").setup()
+      require("trouble").setup({
+        auto_close = false,
+        auto_open = false,
+        auto_preview = true,
+        auto_refresh = true,
+        use_diagnostic_signs = true,
+      })
       
       local keymap = vim.keymap
-      keymap.set("n", "<leader>xx", "<cmd>TroubleToggle<cr>", { desc = "Toggle Trouble" })
-      keymap.set("n", "<leader>xw", "<cmd>TroubleToggle workspace_diagnostics<cr>", { desc = "Workspace Diagnostics" })
-      keymap.set("n", "<leader>xd", "<cmd>TroubleToggle document_diagnostics<cr>", { desc = "Document Diagnostics" })
-      keymap.set("n", "<leader>xl", "<cmd>TroubleToggle loclist<cr>", { desc = "Location List" })
-      keymap.set("n", "<leader>xq", "<cmd>TroubleToggle quickfix<cr>", { desc = "Quickfix List" })
+      -- Updated keybinds for new trouble.nvim API
+      keymap.set("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Toggle Trouble" })
+      keymap.set("n", "<leader>xw", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", { desc = "Buffer Diagnostics" })
+      keymap.set("n", "<leader>xl", "<cmd>Trouble loclist toggle<cr>", { desc = "Location List" })
+      keymap.set("n", "<leader>xq", "<cmd>Trouble qflist toggle<cr>", { desc = "Quickfix List" })
+      keymap.set("n", "<leader>xs", "<cmd>Trouble symbols toggle focus=false<cr>", { desc = "Symbols" })
+      keymap.set("n", "<leader>xr", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", { desc = "LSP References" })
     end,
   },
 
-  -- Formatting
+  -- Additional mini.nvim ecosystem plugins (extending coverage to 28 total)
+  {
+    "echasnovski/mini.align",
+    version = "*",
+    config = function()
+      require("mini.align").setup({
+        mappings = {
+          start = "ga",
+          start_with_preview = "gA",
+        },
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.bracketed",
+    version = "*",
+    config = function()
+      require("mini.bracketed").setup({
+        -- First letter of every pair defines the target
+        buffer     = { suffix = "b", options = {} },
+        comment    = { suffix = "c", options = {} },
+        conflict   = { suffix = "x", options = {} },
+        diagnostic = { suffix = "d", options = {} },
+        file       = { suffix = "f", options = {} },
+        indent     = { suffix = "i", options = {} },
+        jump       = { suffix = "j", options = {} },
+        location   = { suffix = "l", options = {} },
+        oldfile    = { suffix = "o", options = {} },
+        quickfix   = { suffix = "q", options = {} },
+        treesitter = { suffix = "t", options = {} },
+        undo       = { suffix = "u", options = {} },
+        window     = { suffix = "w", options = {} },
+        yank       = { suffix = "y", options = {} },
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.diff",
+    version = "*",
+    config = function()
+      require("mini.diff").setup({
+        view = {
+          style = "sign",
+          signs = { add = "+", change = "~", delete = "-" },
+        },
+        mappings = {
+          apply = "gh",
+          reset = "gH",
+          textobject = "gh",
+          goto_first = "[H",
+          goto_prev = "[h",
+          goto_next = "]h",
+          goto_last = "]H",
+        },
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.extra",
+    version = "*",
+    config = function()
+      require("mini.extra").setup()
+    end,
+  },
+
+  {
+    "echasnovski/mini.fuzzy",
+    version = "*",
+    config = function()
+      require("mini.fuzzy").setup()
+    end,
+  },
+
+  {
+    "echasnovski/mini.git",
+    version = "*",
+    config = function()
+      require("mini.git").setup()
+      
+      -- Git keymaps
+      vim.keymap.set("n", "<leader>gc", function()
+        require("mini.git").show_at_cursor()
+      end, { desc = "Git: Show at cursor" })
+      
+      vim.keymap.set("n", "<leader>gd", function()
+        require("mini.git").show_diff_source()
+      end, { desc = "Git: Show diff source" })
+    end,
+  },
+
+  {
+    "echasnovski/mini.icons",
+    version = "*",
+    config = function()
+      require("mini.icons").setup({
+        file = {},
+        directory = {},
+        extension = {},
+        filetype = {},
+        lsp = {},
+        os = {},
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.jump2d",
+    version = "*",
+    config = function()
+      require("mini.jump2d").setup({
+        mappings = {
+          start_jumping = "<CR>",
+        },
+        view = {
+          dim = true,
+          n_steps_ahead = 0,
+        },
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.map",
+    version = "*",
+    config = function()
+      require("mini.map").setup({
+        integrations = {
+          require("mini.map").gen_integration.builtin_search(),
+          require("mini.map").gen_integration.diff(),
+          require("mini.map").gen_integration.diagnostic(),
+        },
+        symbols = {
+          encode = require("mini.map").gen_encode_symbols.dot("4x2"),
+        },
+        window = {
+          side = "right",
+          width = 15,
+          winblend = 25,
+        },
+      })
+      
+      -- Map keymaps
+      vim.keymap.set("n", "<leader>mm", function()
+        require("mini.map").toggle()
+      end, { desc = "Toggle minimap" })
+      
+      vim.keymap.set("n", "<leader>mr", function()
+        require("mini.map").refresh()
+      end, { desc = "Refresh minimap" })
+      
+      vim.keymap.set("n", "<leader>mf", function()
+        require("mini.map").toggle_focus()
+      end, { desc = "Focus minimap" })
+    end,
+  },
+
+  {
+    "echasnovski/mini.misc",
+    version = "*",
+    config = function()
+      require("mini.misc").setup()
+      
+      -- Set up some useful mini.misc functions
+      vim.keymap.set("n", "<leader>z", function()
+        require("mini.misc").zoom()
+      end, { desc = "Zoom current window" })
+    end,
+  },
+
+  {
+    "echasnovski/mini.pick",
+    version = "*",
+    config = function()
+      require("mini.pick").setup({
+        mappings = {
+          caret_left  = "<Left>",
+          caret_right = "<Right>",
+          choose      = "<CR>",
+          choose_in_split    = "<C-s>",
+          choose_in_tabpage  = "<C-t>",
+          choose_in_vsplit   = "<C-v>",
+          choose_marked      = "<M-CR>",
+          delete_char        = "<BS>",
+          delete_char_right  = "<Del>",
+          delete_left        = "<C-u>",
+          delete_word        = "<C-w>",
+          mark     = "<C-x>",
+          mark_all = "<C-a>",
+          move_down  = "<C-n>",
+          move_start = "<C-g>",
+          move_up    = "<C-p>",
+          paste      = "<C-r>",
+          refine     = "<C-Space>",
+          scroll_down = "<C-f>",
+          scroll_left = "<C-h>",
+          scroll_right = "<C-l>",
+          scroll_up   = "<C-b>",
+          stop = "<Esc>",
+          toggle_info    = "<S-Tab>",
+          toggle_preview = "<Tab>",
+        },
+        window = {
+          config = {
+            border = "rounded",
+          },
+        },
+      })
+      
+      -- Pick keymaps as alternatives to telescope
+      vim.keymap.set("n", "<leader>pf", function()
+        require("mini.pick").builtin.files()
+      end, { desc = "Pick files" })
+      
+      vim.keymap.set("n", "<leader>pg", function()
+        require("mini.pick").builtin.grep_live()
+      end, { desc = "Pick grep live" })
+      
+      vim.keymap.set("n", "<leader>pb", function()
+        require("mini.pick").builtin.buffers()
+      end, { desc = "Pick buffers" })
+      
+      vim.keymap.set("n", "<leader>ph", function()
+        require("mini.pick").builtin.help()
+      end, { desc = "Pick help" })
+    end,
+  },
+
+  {
+    "echasnovski/mini.tabline",
+    version = "*",
+    config = function()
+      require("mini.tabline").setup({
+        show_icons = true,
+        set_vim_settings = false,
+        tabpage_section = "left",
+      })
+    end,
+  },
+
+  -- Formatting (disabled auto-format on save for custom standards)
   {
     "stevearc/conform.nvim",
     config = function()
@@ -585,11 +1156,17 @@ return {
           json = { "prettier" },
           yaml = { "prettier" },
         },
-        format_on_save = {
-          timeout_ms = 500,
-          lsp_fallback = true,
-        },
+        -- format_on_save disabled for custom varsity standards
+        -- format_on_save = {
+        --   timeout_ms = 500,
+        --   lsp_fallback = true,
+        -- },
       })
+      
+      -- Manual format keymap (optional)
+      vim.keymap.set("n", "<leader>fm", function()
+        require("conform").format({ lsp_fallback = true })
+      end, { desc = "Format buffer manually" })
     end,
   },
 }
