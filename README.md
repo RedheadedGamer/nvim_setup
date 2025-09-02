@@ -8,6 +8,8 @@ A modern, feature-rich Neovim configuration written in Lua with LSP support, aut
 - **Native LSP Support**: Built-in Language Server Protocol with intelligent code completion, diagnostics, and navigation
 - **Plugin Manager**: Uses [lazy.nvim](https://github.com/folke/lazy.nvim) for fast, lazy-loaded plugin management
 - **Auto-completion**: Powerful completion engine with [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) replacing CoC
+- **Quality of Life Plugins**: Mini.nvim collection for enhanced editing experience (auto-pairs, surround, move, etc.)
+- **Tab-based Indentation**: Configured to use actual tabs (noexpandtab) for consistent formatting
 - **Fuzzy Finding**: Telescope integration for file finding, searching, and more
 - **Syntax Highlighting**: Enhanced syntax highlighting with Treesitter
 - **Multiple Themes**: Several beautiful colorschemes included
@@ -123,11 +125,33 @@ mv init.vim.legacy init.vim
 | `<leader>xw` | Normal | Workspace diagnostics |
 | `<leader>xd` | Normal | Document diagnostics |
 
+### Mini Plugins (Quality of Life)
+| Key | Mode | Action |
+|-----|------|--------|
+| `sa` | Normal/Visual | Add surrounding |
+| `sd` | Normal | Delete surrounding |
+| `sr` | Normal | Replace surrounding |
+| `sf` | Normal | Find surrounding (right) |
+| `sF` | Normal | Find surrounding (left) |
+| `sh` | Normal | Highlight surrounding |
+| `<M-h/j/k/l>` | Normal/Visual | Move lines/selection |
+| `<leader>e` | Normal | Open file explorer |
+
 ## 🔌 Included Plugins
 
 ### Core Functionality
 - **[lazy.nvim](https://github.com/folke/lazy.nvim)** - Modern plugin manager
 - **[plenary.nvim](https://github.com/nvim-lua/plenary.nvim)** - Lua utility functions
+
+### Quality of Life (Mini.nvim Collection)
+- **[mini.pairs](https://github.com/echasnovski/mini.pairs)** - Auto-close brackets, quotes, and parentheses
+- **[mini.surround](https://github.com/echasnovski/mini.surround)** - Surround text with brackets, quotes, tags, etc.
+- **[mini.indentscope](https://github.com/echasnovski/mini.indentscope)** - Visualize and operate on indent scope
+- **[mini.move](https://github.com/echasnovski/mini.move)** - Move any selection in any direction
+- **[mini.ai](https://github.com/echasnovski/mini.ai)** - Better text objects (around/inside)
+- **[mini.jump](https://github.com/echasnovski/mini.jump)** - Jump to next/previous single character
+- **[mini.files](https://github.com/echasnovski/mini.files)** - Navigate and manipulate file system
+- **[mini.statusline](https://github.com/echasnovski/mini.statusline)** - Minimal and fast statusline
 
 ### LSP & Completion
 - **[nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)** - LSP configurations

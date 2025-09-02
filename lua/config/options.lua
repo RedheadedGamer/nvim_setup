@@ -29,7 +29,7 @@ opt.clipboard = "unnamedplus"     -- use system clipboard
 -- Indentation settings
 opt.smartindent = true            -- smart auto-indenting
 opt.autoindent = true             -- indent a new line the same amount as the line just typed
-opt.expandtab = true              -- converts tabs to white space (note: init.vim had conflicting settings)
+opt.expandtab = false             -- use actual tabs instead of spaces (noexpandtab equivalent)
 opt.tabstop = 4                   -- number of columns occupied by a tab
 opt.softtabstop = 4               -- see multiple spaces as tabstops so <BS> does the right thing
 opt.shiftwidth = 4                -- width for autoindents

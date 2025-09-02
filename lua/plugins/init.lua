@@ -118,6 +118,115 @@ return {
     end,
   },
 
+  -- Mini.nvim plugins for quality of life improvements
+  {
+    "echasnovski/mini.pairs",
+    version = "*",
+    config = function()
+      require("mini.pairs").setup()
+    end,
+  },
+
+  {
+    "echasnovski/mini.surround",
+    version = "*",
+    config = function()
+      require("mini.surround").setup({
+        mappings = {
+          add = "sa", -- Add surrounding in Normal and Visual modes
+          delete = "sd", -- Delete surrounding
+          find = "sf", -- Find surrounding (to the right)
+          find_left = "sF", -- Find surrounding (to the left)
+          highlight = "sh", -- Highlight surrounding
+          replace = "sr", -- Replace surrounding
+          update_n_lines = "sn", -- Update `n_lines`
+        },
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.indentscope",
+    version = "*",
+    config = function()
+      require("mini.indentscope").setup({
+        symbol = "╎",
+        options = { try_as_border = true },
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.move",
+    version = "*",
+    config = function()
+      require("mini.move").setup({
+        mappings = {
+          -- Move visual selection in Visual mode
+          left = "<M-h>",
+          right = "<M-l>",
+          down = "<M-j>",
+          up = "<M-k>",
+          -- Move current line in Normal mode
+          line_left = "<M-h>",
+          line_right = "<M-l>",
+          line_down = "<M-j>",
+          line_up = "<M-k>",
+        },
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.ai",
+    version = "*",
+    config = function()
+      require("mini.ai").setup({
+        n_lines = 500,
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.jump",
+    version = "*",
+    config = function()
+      require("mini.jump").setup()
+    end,
+  },
+
+  {
+    "echasnovski/mini.files",
+    version = "*",
+    config = function()
+      require("mini.files").setup({
+        windows = {
+          preview = true,
+          width_focus = 30,
+          width_preview = 30,
+        },
+        options = {
+          permanent_delete = false,
+        },
+      })
+      
+      -- Keymap to open mini.files
+      vim.keymap.set("n", "<leader>e", function()
+        require("mini.files").open()
+      end, { desc = "Open File Explorer" })
+    end,
+  },
+
+  {
+    "echasnovski/mini.statusline",
+    version = "*",
+    config = function()
+      require("mini.statusline").setup({
+        use_icons = true,
+      })
+    end,
+  },
+
   -- LSP Configuration
   {
     "neovim/nvim-lspconfig",
