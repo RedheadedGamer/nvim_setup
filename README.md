@@ -169,6 +169,15 @@ mv init.vim.legacy init.vim
 | `[H` / `]H` | Normal | First/Last diff hunk |
 | `<leader>gc` | Normal | Git: Show at cursor |
 | `<leader>gd` | Normal | Git: Show diff source |
+| `]c` / `[c` | Normal | Next/Previous git hunk |
+| `<leader>hs` | Normal/Visual | Stage hunk |
+| `<leader>hr` | Normal/Visual | Reset hunk |
+| `<leader>hS` | Normal | Stage buffer |
+| `<leader>hR` | Normal | Reset buffer |
+| `<leader>hp` | Normal | Preview hunk |
+| `<leader>hb` | Normal | Blame line |
+| `<leader>tb` | Normal | Toggle blame |
+| `<leader>hd` | Normal | Diff this |
 | `<CR>` | Normal | Start 2D jumping |
 | `<leader>mm` | Normal | Toggle minimap |
 | `<leader>mr` | Normal | Refresh minimap |
@@ -178,6 +187,17 @@ mv init.vim.legacy init.vim
 | `<leader>pg` | Normal | Pick grep live |
 | `<leader>pb` | Normal | Pick buffers |
 | `<leader>ph` | Normal | Pick help |
+
+## 📚 Comprehensive Plugin Guide
+
+For detailed instructions on using all plugins, customizing features, and troubleshooting, see the **[Complete Plugin Usage Guide](PLUGIN_GUIDE.md)**.
+
+**Quick links to common tasks:**
+- [🔧 Enable/Disable Features](PLUGIN_GUIDE.md#-enablingdisabling-features)
+- [🎯 Git & SSH Setup](PLUGIN_GUIDE.md#-git-integration)
+- [🎨 Theme Customization](PLUGIN_GUIDE.md#-theme-management)
+- [🚨 Troubleshooting](PLUGIN_GUIDE.md#-troubleshooting)
+- [⚡ Performance Optimization](PLUGIN_GUIDE.md#-advanced-configuration)
 
 ## 🔌 Included Plugins
 
@@ -228,6 +248,11 @@ mv init.vim.legacy init.vim
 - **[trouble.nvim](https://github.com/folke/trouble.nvim)** - Diagnostics panel
 - **[nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)** - Syntax highlighting
 
+### Git Integration & Version Control
+- **[gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)** - Git decorations, hunks, and blame
+- **[mini.git](https://github.com/echasnovski/mini.git)** - Git integration and commands
+- **[mini.diff](https://github.com/echasnovski/mini.diff)** - Work with diff hunks and git changes
+
 ### Editing & Productivity
 - **[Comment.nvim](https://github.com/numToStr/Comment.nvim)** - Smart commenting
 - **[conform.nvim](https://github.com/stevearc/conform.nvim)** - Code formatting
@@ -263,8 +288,7 @@ mv init.vim.legacy init.vim
 - **[telescope-fzf-native.nvim](https://github.com/nvim-telescope/telescope-fzf-native.nvim)** - Native FZF sorter for Telescope
 - **[telescope-file-browser.nvim](https://github.com/nvim-telescope/telescope-file-browser.nvim)** - File browser for Telescope
 
-### Git Integration
-- **[gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)** - Git decorations and hunks
+### Additional Git Integration
 - **[lazygit.nvim](https://github.com/kdheepak/lazygit.nvim)** - LazyGit integration
 - **[diffview.nvim](https://github.com/sindrets/diffview.nvim)** - Git diff and merge tool
 - **[neogit](https://github.com/NeogitOrg/neogit)** - Magit clone for Neovim
