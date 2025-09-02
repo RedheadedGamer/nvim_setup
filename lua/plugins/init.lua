@@ -398,7 +398,7 @@ return {
         ensure_installed = {
           "lua_ls",
           "pyright", 
-          "tsserver",
+          "ts_ls",
           "html",
           "cssls",
           "jsonls",
@@ -451,7 +451,7 @@ return {
         on_attach = on_attach,
       })
 
-      lspconfig.tsserver.setup({
+      lspconfig.ts_ls.setup({
         capabilities = capabilities,
         on_attach = on_attach,
       })
