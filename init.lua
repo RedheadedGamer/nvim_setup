@@ -34,3 +34,11 @@ require("plugins")
 pcall(function()
   vim.cmd("colorscheme onedark_dark")
 end)
+
+-- Display startup message
+if vim.fn.argc() == 0 then
+  vim.defer_fn(function()
+    print("🚀 Neovim Lua configuration loaded successfully!")
+    print("💡 Use <leader>ff to find files, <leader>fg to grep, K for hover docs")
+  end, 100)
+end
