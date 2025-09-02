@@ -141,6 +141,22 @@ mv init.vim.legacy init.vim
 | `sh` | Normal | Highlight surrounding |
 | `<M-h/j/k/l>` | Normal/Visual | Move lines/selection |
 | `<leader>e` | Normal | Open file explorer |
+| `<leader>bd` | Normal | Delete buffer (keep layout) |
+| `<leader>bD` | Normal | Force delete buffer |
+| `gS` | Normal | Toggle split/join function arguments |
+| `g=` | Normal | Evaluate text and replace with result |
+| `gx` | Normal | Exchange text regions |
+| `gm` | Normal | Multiply (duplicate) text |
+| `gr` | Normal | Replace text with register |
+| `gs` | Normal | Sort text |
+| `<leader>tw` | Normal | Trim trailing whitespace |
+| `<leader>tl` | Normal | Trim trailing empty lines |
+| `<leader>vv` | Normal | Add visit label |
+| `<leader>vV` | Normal | Remove visit label |
+| `<leader>vl` | Normal | List visits |
+| `<leader>ss` | Normal | Select session |
+| `<leader>sw` | Normal | Write session |
+| `<leader>sd` | Normal | Delete session |
 
 ## 🔌 Included Plugins
 
@@ -157,6 +173,16 @@ mv init.vim.legacy init.vim
 - **[mini.jump](https://github.com/echasnovski/mini.jump)** - Jump to next/previous single character
 - **[mini.files](https://github.com/echasnovski/mini.files)** - Navigate and manipulate file system
 - **[mini.statusline](https://github.com/echasnovski/mini.statusline)** - Minimal and fast statusline
+- **[mini.bufremove](https://github.com/echasnovski/mini.bufremove)** - Better buffer deletion without losing layout
+- **[mini.starter](https://github.com/echasnovski/mini.starter)** - Beautiful start screen with recent files
+- **[mini.animate](https://github.com/echasnovski/mini.animate)** - Smooth animations for cursor, scroll, resize, and windows
+- **[mini.cursorword](https://github.com/echasnovski/mini.cursorword)** - Highlight word under cursor
+- **[mini.hipatterns](https://github.com/echasnovski/mini.hipatterns)** - Highlight patterns like TODO, FIXME, hex colors
+- **[mini.splitjoin](https://github.com/echasnovski/mini.splitjoin)** - Split/join function arguments and arrays
+- **[mini.trailspace](https://github.com/echasnovski/mini.trailspace)** - Show and remove trailing whitespace
+- **[mini.operators](https://github.com/echasnovski/mini.operators)** - Additional operators (evaluate, exchange, multiply, replace, sort)
+- **[mini.visits](https://github.com/echasnovski/mini.visits)** - Track and navigate recently visited files
+- **[mini.sessions](https://github.com/echasnovski/mini.sessions)** - Session management for workspace persistence
 
 ### LSP & Completion
 - **[nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)** - LSP configurations
@@ -354,6 +380,37 @@ Autoformatting on save has been **disabled by default** to accommodate custom co
 - **dressing.nvim**: Better UI for vim.ui select and input
 - **Improved statusline**: More consistent colors and better configuration
 - **Better borders**: Rounded borders throughout the UI
+
+### 🚀 Comprehensive Mini.nvim Suite
+A collection of the best mini plugins for enhanced productivity:
+
+#### 📁 File & Buffer Management
+- **mini.bufremove**: Delete buffers without losing window layout (`<leader>bd`, `<leader>bD`)
+- **mini.files**: Fast file explorer with preview (`<leader>e`)
+- **mini.visits**: Track and navigate recently visited files (`<leader>vv`, `<leader>vl`)
+- **mini.sessions**: Session management for workspace persistence (`<leader>ss`, `<leader>sw`, `<leader>sd`)
+
+#### ✨ Visual Enhancements
+- **mini.starter**: Beautiful start screen with recent files and quick actions
+- **mini.animate**: Smooth animations for cursor movement, scrolling, and window operations
+- **mini.cursorword**: Automatically highlights the word under cursor
+- **mini.hipatterns**: Highlights TODO, FIXME, HACK, NOTE comments and hex colors
+- **mini.indentscope**: Visual indent guides with scope indicators
+- **mini.trailspace**: Shows trailing whitespace and provides cleanup commands (`<leader>tw`, `<leader>tl`)
+
+#### 🛠️ Text Manipulation
+- **mini.surround**: Add, delete, replace surroundings like brackets, quotes (`sa`, `sd`, `sr`)
+- **mini.move**: Move lines and selections with Alt+hjkl (`<M-h/j/k/l>`)
+- **mini.splitjoin**: Toggle between split/joined function arguments with `gS`
+- **mini.operators**: Additional text operators:
+  - `g=`: Evaluate and replace text
+  - `gx`: Exchange text regions
+  - `gm`: Multiply (duplicate) text
+  - `gr`: Replace text with register content
+  - `gs`: Sort text selections
+- **mini.ai**: Enhanced text objects for better around/inside operations
+- **mini.jump**: Quick jump to any single character
+- **mini.pairs**: Auto-close brackets, quotes, and parentheses
 
 ## 🔧 Troubleshooting
 

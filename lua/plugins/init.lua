@@ -329,6 +329,209 @@ return {
     end,
   },
 
+  -- Additional high-quality mini plugins for enhanced experience
+  {
+    "echasnovski/mini.bufremove",
+    version = "*",
+    config = function()
+      require("mini.bufremove").setup()
+      
+      -- Keymap for better buffer deletion
+      vim.keymap.set("n", "<leader>bd", function()
+        require("mini.bufremove").delete()
+      end, { desc = "Delete buffer (keep layout)" })
+      
+      vim.keymap.set("n", "<leader>bD", function()
+        require("mini.bufremove").delete(0, true)
+      end, { desc = "Force delete buffer" })
+    end,
+  },
+
+  {
+    "echasnovski/mini.starter",
+    version = "*",
+    config = function()
+      require("mini.starter").setup({
+        evaluate_single = true,
+        items = {
+          require("mini.starter").sections.builtin_actions(),
+          require("mini.starter").sections.recent_files(10, false),
+          require("mini.starter").sections.recent_files(10, true),
+          -- Custom section for common tasks
+          {
+            { action = "Telescope find_files", name = "F: Find files", section = "Telescope" },
+            { action = "Telescope live_grep", name = "G: Live grep", section = "Telescope" },
+            { action = "Telescope buffers", name = "B: Buffers", section = "Telescope" },
+          },
+        },
+        header = function()
+          local hour = tonumber(vim.fn.strftime('%H'))
+          local part_id = math.floor((hour + 4) / 8) + 1
+          local day_part = ({ 'evening', 'morning', 'afternoon', 'evening' })[part_id]
+          local username = vim.loop.os_getenv('USER') or 'user'
+          return ('Good %s, %s!'):format(day_part, username)
+        end,
+        footer = '',
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.animate",
+    version = "*",
+    config = function()
+      require("mini.animate").setup({
+        cursor = {
+          enable = true,
+          timing = require("mini.animate").gen_timing.linear({ duration = 100, unit = "total" }),
+        },
+        scroll = {
+          enable = true,
+          timing = require("mini.animate").gen_timing.linear({ duration = 150, unit = "total" }),
+        },
+        resize = {
+          enable = true,
+          timing = require("mini.animate").gen_timing.linear({ duration = 100, unit = "total" }),
+        },
+        open = {
+          enable = true,
+          timing = require("mini.animate").gen_timing.linear({ duration = 150, unit = "total" }),
+        },
+        close = {
+          enable = true,
+          timing = require("mini.animate").gen_timing.linear({ duration = 150, unit = "total" }),
+        },
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.cursorword",
+    version = "*",
+    config = function()
+      require("mini.cursorword").setup({
+        delay = 100, -- Delay before highlighting (in ms)
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.hipatterns",
+    version = "*",
+    config = function()
+      local hipatterns = require("mini.hipatterns")
+      require("mini.hipatterns").setup({
+        highlighters = {
+          -- Highlight standalone 'FIXME', 'HACK', 'TODO', 'NOTE'
+          fixme = { pattern = '%f[%w]()FIXME()%f[%W]', group = 'MiniHipatternsFixme' },
+          hack  = { pattern = '%f[%w]()HACK()%f[%W]',  group = 'MiniHipatternsHack'  },
+          todo  = { pattern = '%f[%w]()TODO()%f[%W]',  group = 'MiniHipatternsTodo'  },
+          note  = { pattern = '%f[%w]()NOTE()%f[%W]',  group = 'MiniHipatternsNote'  },
+
+          -- Highlight hex color strings (`#rrggbb`) with that color
+          hex_color = hipatterns.gen_highlighter.hex_color(),
+        },
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.splitjoin",
+    version = "*",
+    config = function()
+      require("mini.splitjoin").setup({
+        mappings = {
+          toggle = "gS", -- Toggle split/join
+        },
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.trailspace",
+    version = "*",
+    config = function()
+      require("mini.trailspace").setup()
+      
+      -- Keymap to remove trailing whitespace
+      vim.keymap.set("n", "<leader>tw", function()
+        require("mini.trailspace").trim()
+        vim.notify("Trailing whitespace removed", vim.log.levels.INFO)
+      end, { desc = "Trim trailing whitespace" })
+      
+      -- Keymap to remove all empty lines at end of file
+      vim.keymap.set("n", "<leader>tl", function()
+        require("mini.trailspace").trim_last_lines()
+        vim.notify("Trailing empty lines removed", vim.log.levels.INFO)
+      end, { desc = "Trim trailing empty lines" })
+    end,
+  },
+
+  {
+    "echasnovski/mini.operators",
+    version = "*",
+    config = function()
+      require("mini.operators").setup({
+        -- Each entry configures one operator.
+        evaluate    = { prefix = "g=", func = nil },  -- Evaluate text and replace with result
+        exchange    = { prefix = "gx", func = nil },  -- Exchange text regions
+        multiply    = { prefix = "gm", func = nil },  -- Multiply (duplicate) text
+        replace     = { prefix = "gr", func = nil },  -- Replace text with register
+        sort        = { prefix = "gs", func = nil },  -- Sort text
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.visits",
+    version = "*",
+    config = function()
+      require("mini.visits").setup()
+      
+      -- Keymaps for visits
+      vim.keymap.set("n", "<leader>vv", function()
+        require("mini.visits").add_label()
+      end, { desc = "Add visit label" })
+      
+      vim.keymap.set("n", "<leader>vV", function()
+        require("mini.visits").remove_label()
+      end, { desc = "Remove visit label" })
+      
+      vim.keymap.set("n", "<leader>vl", function()
+        require("mini.visits").list()
+      end, { desc = "List visits" })
+    end,
+  },
+
+  {
+    "echasnovski/mini.sessions",
+    version = "*",
+    config = function()
+      require("mini.sessions").setup({
+        autoread = false, -- Don't auto-read session on startup
+        autowrite = true, -- Auto-write session on exit
+        directory = vim.fn.stdpath("data") .. "/sessions", -- Session directory
+      })
+      
+      -- Session keymaps
+      vim.keymap.set("n", "<leader>ss", function()
+        require("mini.sessions").select()
+      end, { desc = "Select session" })
+      
+      vim.keymap.set("n", "<leader>sw", function()
+        local session_name = vim.fn.input("Session name: ")
+        if session_name ~= "" then
+          require("mini.sessions").write(session_name)
+          vim.notify("Session saved: " .. session_name, vim.log.levels.INFO)
+        end
+      end, { desc = "Write session" })
+      
+      vim.keymap.set("n", "<leader>sd", function()
+        require("mini.sessions").select("delete")
+      end, { desc = "Delete session" })
+    end,
+  },
+
   -- Which-key for key binding popup (highly recommended QoL)
   {
     "folke/which-key.nvim",
@@ -363,10 +566,13 @@ return {
       require("which-key").register({
         ["<leader>f"] = { name = "+find" },
         ["<leader>x"] = { name = "+trouble" },
-        ["<leader>t"] = { name = "+theme" },
+        ["<leader>t"] = { name = "+theme/trim" },
         ["<leader>g"] = { name = "+git" },
         ["<leader>c"] = { name = "+code" },
         ["<leader>w"] = { name = "+window" },
+        ["<leader>b"] = { name = "+buffer" },
+        ["<leader>v"] = { name = "+visits" },
+        ["<leader>s"] = { name = "+session" },
       })
     end,
   },
