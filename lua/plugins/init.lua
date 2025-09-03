@@ -13,7 +13,21 @@ return {
           transparency = true,
         }
       })
-      vim.cmd("colorscheme onedark_dark")
+      
+      -- Apply transparency to additional UI elements
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        pattern = "onedark*",
+        callback = function()
+          -- Make sure transparency applies to all UI elements
+          vim.api.nvim_set_hl(0, "Normal", { bg = "NONE" })
+          vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
+          vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "NONE" })
+          vim.api.nvim_set_hl(0, "LazyNormal", { bg = "NONE" })
+          vim.api.nvim_set_hl(0, "LazyReasonPlugin", { bg = "NONE" })
+          vim.api.nvim_set_hl(0, "LazyReasonRuntime", { bg = "NONE" })
+          vim.api.nvim_set_hl(0, "LazyReasonSource", { bg = "NONE" })
+        end,
+      })
     end,
   },
   
@@ -113,7 +127,7 @@ return {
       require("nvim-treesitter.configs").setup({
         ensure_installed = {
           "lua", "python", "javascript", "typescript", "html", "css", 
-          "json", "yaml", "markdown", "bash", "vim", "vimdoc"
+          "json", "yaml", "markdown", "bash", "vim", "vimdoc", "c", "java"
         },
         sync_install = false,
         auto_install = true,
@@ -471,11 +485,11 @@ return {
           separator = "➜",
           group = "+",
         },
-        popup_mappings = {
+        keys = {
           scroll_down = "<c-d>",
           scroll_up = "<c-u>",
         },
-        window = {
+        win = {
           border = "rounded",
           position = "bottom",
           margin = { 1, 0, 1, 0 },
@@ -490,50 +504,46 @@ return {
         },
       })
 
-      -- Register key groups for better organization (comprehensive mini.nvim coverage)
-      require("which-key").register({
-        ["<leader>f"] = { name = "+find/telescope" },
-        ["<leader>p"] = { name = "+pick/mini.pick" },
-        ["<leader>x"] = { name = "+trouble/diagnostics" },
-        ["<leader>t"] = { name = "+theme/trim" },
-        ["<leader>g"] = { name = "+git/diff" },
-        ["<leader>c"] = { name = "+code/lsp" },
-        ["<leader>w"] = { name = "+window" },
-        ["<leader>b"] = { name = "+buffer" },
-        ["<leader>v"] = { name = "+visits/mini.visits" },
-        ["<leader>s"] = { name = "+session/mini.sessions" },
-        ["<leader>m"] = { name = "+map/minimap" },
-        ["<leader>r"] = { name = "+refactor/rename" },
-        ["<leader>d"] = { name = "+diagnostics" },
-        ["g"] = { 
-          name = "+goto/operators", 
-          a = "Mini align",
-          A = "Mini align with preview",
-          S = "Mini splitjoin toggle",
-          s = "Mini sort operator",
-          r = "Mini replace operator",
-          m = "Mini multiply operator",
-          x = "Mini exchange operator",
-          ["="] = "Mini evaluate operator",
-          h = "Apply diff hunk",
-          H = "Reset diff hunk"
-        },
-        ["s"] = { 
-          name = "+surround/mini.surround",
-          a = "Add surround",
-          d = "Delete surround", 
-          r = "Replace surround",
-          f = "Find surround (right)",
-          F = "Find surround (left)",
-          h = "Highlight surround",
-          n = "Update n_lines"
-        },
-        ["<M-h>"] = "Move left (mini.move)",
-        ["<M-j>"] = "Move down (mini.move)", 
-        ["<M-k>"] = "Move up (mini.move)",
-        ["<M-l>"] = "Move right (mini.move)",
-        ["["] = { name = "+previous (mini.bracketed)" },
-        ["]"] = { name = "+next (mini.bracketed)" },
+      -- Register key groups using new spec format
+      require("which-key").add({
+        { "<leader>f", group = "find/telescope" },
+        { "<leader>p", group = "pick/mini.pick" },
+        { "<leader>x", group = "trouble/diagnostics" },
+        { "<leader>t", group = "theme/trim" },
+        { "<leader>g", group = "git/diff" },
+        { "<leader>c", group = "code/lsp" },
+        { "<leader>w", group = "window" },
+        { "<leader>b", group = "buffer" },
+        { "<leader>v", group = "visits/mini.visits" },
+        { "<leader>s", group = "session/mini.sessions" },
+        { "<leader>m", group = "map/minimap" },
+        { "<leader>r", group = "refactor/rename" },
+        { "<leader>d", group = "diagnostics" },
+        { "g", group = "goto/operators" },
+        { "ga", desc = "Mini align" },
+        { "gA", desc = "Mini align with preview" },
+        { "gS", desc = "Mini splitjoin toggle" },
+        { "gs", desc = "Mini sort operator" },
+        { "gr", desc = "Mini replace operator" },
+        { "gm", desc = "Mini multiply operator" },
+        { "gx", desc = "Mini exchange operator" },
+        { "g=", desc = "Mini evaluate operator" },
+        { "gh", desc = "Apply diff hunk" },
+        { "gH", desc = "Reset diff hunk" },
+        { "s", group = "surround/mini.surround" },
+        { "sa", desc = "Add surround" },
+        { "sd", desc = "Delete surround" },
+        { "sr", desc = "Replace surround" },
+        { "sf", desc = "Find surround (right)" },
+        { "sF", desc = "Find surround (left)" },
+        { "sh", desc = "Highlight surround" },
+        { "sn", desc = "Update n_lines" },
+        { "<M-h>", desc = "Move left (mini.move)" },
+        { "<M-j>", desc = "Move down (mini.move)" },
+        { "<M-k>", desc = "Move up (mini.move)" },
+        { "<M-l>", desc = "Move right (mini.move)" },
+        { "[", group = "previous (mini.bracketed)" },
+        { "]", group = "next (mini.bracketed)" },
       })
     end,
   },
@@ -688,14 +698,11 @@ return {
           end,
         }, function(choice)
           if choice then
-            -- Try to set the colorscheme
-            local ok, _ = pcall(vim.cmd, "colorscheme " .. choice)
-            if ok then
-              vim.notify("Theme changed to: " .. choice, vim.log.levels.INFO)
-              -- Save the theme choice for persistence (optional)
-              vim.g.current_theme = choice
-            else
-              vim.notify("Failed to load theme: " .. choice, vim.log.levels.ERROR)
+            local theme_manager = require("config.theme")
+            -- Try to apply the colorscheme
+            if theme_manager.apply_theme(choice) then
+              -- If successful, save it for persistence
+              theme_manager.save_theme(choice)
             end
           end
         end)
@@ -737,6 +744,8 @@ return {
           "html",
           "cssls",
           "jsonls",
+          "clangd",     -- C/C++ LSP
+          "jdtls",      -- Java LSP
         },
         automatic_installation = true,
       })
@@ -780,6 +789,18 @@ return {
         html = {},
         cssls = {},
         jsonls = {},
+        clangd = {
+          cmd = { "clangd", "--background-index" },
+          filetypes = { "c", "cpp", "objc", "objcpp" },
+        },
+        jdtls = {
+          settings = {
+            java = {
+              signatureHelp = { enabled = true },
+              contentProvider = { preferred = "fernflower" },
+            },
+          },
+        },
       }
 
       for server, config in pairs(servers) do
@@ -979,7 +1000,18 @@ return {
     "echasnovski/mini.git",
     version = "*",
     config = function()
-      require("mini.git").setup()
+      require("mini.git").setup({
+        -- The job of computing git status can take some time. This defines when
+        -- this job should be executed (could be time consuming).
+        job = {
+          git_executable = "git", -- Path to git executable
+          timeout = 30000,        -- Timeout in milliseconds for git operations
+        },
+        -- Hook for customizing Git status updates in real time
+        status = {
+          lnum = true, -- Enable line number git signs 
+        },
+      })
       
       -- Git keymaps
       vim.keymap.set("n", "<leader>gc", function()
@@ -989,6 +1021,16 @@ return {
       vim.keymap.set("n", "<leader>gd", function()
         require("mini.git").show_diff_source()
       end, { desc = "Git: Show diff source" })
+      
+      vim.keymap.set("n", "<leader>gs", function()
+        -- Show git status using vim's terminal
+        vim.cmd("vertical terminal git status")
+      end, { desc = "Git: Status" })
+      
+      vim.keymap.set("n", "<leader>gl", function()
+        -- Show git log using vim's terminal
+        vim.cmd("vertical terminal git log --oneline -10")
+      end, { desc = "Git: Log" })
     end,
   },
 
@@ -1214,18 +1256,47 @@ return {
   {
     "stevearc/conform.nvim",
     config = function()
+      -- Helper function to check if a formatter is available
+      local function is_formatter_available(formatter)
+        return vim.fn.executable(formatter) == 1
+      end
+
+      -- Build formatters table based on what's available
+      local formatters_by_ft = {}
+      
+      -- Only add formatters that are available
+      if is_formatter_available("stylua") then
+        formatters_by_ft.lua = { "stylua" }
+      end
+      
+      if is_formatter_available("black") then
+        formatters_by_ft.python = { "black" }
+      end
+      
+      if is_formatter_available("prettier") then
+        formatters_by_ft.javascript = { "prettier" }
+        formatters_by_ft.typescript = { "prettier" }
+        formatters_by_ft.html = { "prettier" }
+        formatters_by_ft.css = { "prettier" }
+        formatters_by_ft.json = { "prettier" }
+        formatters_by_ft.yaml = { "prettier" }
+      end
+      
+      -- C formatter
+      if is_formatter_available("clang-format") then
+        formatters_by_ft.c = { "clang-format" }
+        formatters_by_ft.cpp = { "clang-format" }
+      end
+      
+      -- Java formatter
+      if is_formatter_available("google-java-format") then
+        formatters_by_ft.java = { "google-java-format" }
+      end
+
       require("conform").setup({
-        formatters_by_ft = {
-          lua = { "stylua" },
-          python = { "black" },
-          javascript = { "prettier" },
-          typescript = { "prettier" },
-          html = { "prettier" },
-          css = { "prettier" },
-          json = { "prettier" },
-          yaml = { "prettier" },
-        },
-        -- format_on_save disabled for custom varsity standards
+        formatters_by_ft = formatters_by_ft,
+        -- Automatic formatting disabled by user request
+        -- Manual formatting available via <leader>fm
         -- format_on_save = {
         --   timeout_ms = 500,
         --   lsp_fallback = true,

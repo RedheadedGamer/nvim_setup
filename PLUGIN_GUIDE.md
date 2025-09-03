@@ -10,6 +10,37 @@ This guide provides detailed instructions on how to use all the plugins in this 
 - `:checkhealth` - Diagnose configuration issues
 - `:help <plugin-name>` - Get help for any plugin
 
+## ⌨️ Key Binding Discovery (which-key.nvim)
+
+### Features
+- Popup showing available key bindings after pressing leader key
+- Modern configuration using new API (v3.0+ compatible)
+- Organized key groups for better discovery
+
+### Key Groups
+| Prefix | Description |
+|--------|-------------|
+| `<leader>f` | Find/Telescope operations |
+| `<leader>p` | Pick/Mini.pick operations |
+| `<leader>x` | Trouble/diagnostics |
+| `<leader>t` | Theme/trim operations |
+| `<leader>g` | Git/diff operations |
+| `<leader>c` | Code/LSP operations |
+| `<leader>w` | Window operations |
+| `<leader>b` | Buffer operations |
+| `<leader>s` | Session/surround operations |
+| `<leader>m` | Map/minimap operations |
+| `<leader>r` | Refactor/rename operations |
+| `<leader>d` | Diagnostics |
+| `g` | Goto/operators |
+| `s` | Surround operations |
+
+### Usage
+1. Press `<leader>` (space key) and wait
+2. A popup will show available key combinations
+3. Use arrow keys or continue typing to filter options
+4. Press the desired key to execute the command
+
 ## 🎨 Theme Management
 
 ### Using the Theme Switcher
@@ -110,6 +141,43 @@ require("cmp").setup({
     return vim.bo.buftype ~= "prompt"
   end,
 })
+```
+
+### Code Formatting (conform.nvim)
+
+#### Features
+- Automatic formatter detection and configuration
+- Only configures formatters that are actually installed
+- Manual formatting with `<leader>fm`
+- Graceful handling of missing formatters
+
+#### Supported Formatters
+| Language | Formatter | Installation |
+|----------|-----------|--------------|
+| Lua | stylua | `cargo install stylua` |
+| Python | black | `pip install black` |
+| JavaScript/TypeScript | prettier | `npm install -g prettier` |
+| HTML/CSS/JSON/YAML | prettier | `npm install -g prettier` |
+
+#### Manual Formatting
+- `<leader>fm` - Format current buffer
+
+#### Installing Formatters
+```bash
+# Install formatters as needed
+cargo install stylua          # Lua formatting
+pip install black             # Python formatting  
+npm install -g prettier       # JS/TS/HTML/CSS/JSON/YAML formatting
+```
+
+#### Formatter Health Check
+The configuration automatically checks if formatters are available and only enables them if installed. This prevents the health check warnings about missing formatters.
+
+```lua
+-- Example: Check if prettier is available
+if vim.fn.executable("prettier") == 1 then
+  -- prettier is available, configure it
+end
 ```
 
 ## 🔍 Navigation & Search
@@ -635,6 +703,67 @@ require("nvim-treesitter.configs").setup({
   },
 })
 ```
+
+## 🏥 Health Check and Troubleshooting
+
+### Running Health Checks
+Use `:checkhealth` to diagnose configuration issues:
+```vim
+:checkhealth           " Check all components
+:checkhealth conform   " Check specific plugin
+:checkhealth which-key " Check which-key configuration
+```
+
+### Common Health Check Issues and Solutions
+
+#### Conform.nvim Formatter Warnings
+**Issue**: `WARNING black unavailable: Command 'black' not found`
+
+**Solution**: The configuration now automatically detects available formatters and only configures them if installed:
+```bash
+# Install missing formatters as needed
+pip install black             # Python
+npm install -g prettier       # JavaScript/TypeScript/HTML/CSS
+cargo install stylua          # Lua
+```
+
+#### Which-key Deprecation Warnings
+**Issue**: `opts.popup_mappings` and `opts.window` are deprecated
+
+**Solution**: ✅ **Fixed** - Configuration updated to use new which-key v3 API:
+- `popup_mappings` → `keys`
+- `window` → `win` 
+- `register()` → `add()` with new spec format
+
+#### Missing System Tools
+**Issue**: Various warnings about missing tools (cargo, ruby, java, etc.)
+
+**Solution**: These are optional dependencies. Install only what you need:
+```bash
+# For Rust development
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# For Node.js/npm dependencies
+npm install -g neovim
+
+# For Python integration
+pip install neovim
+```
+
+#### LSP and Mason Issues
+**Issue**: Language servers not working
+
+**Solution**:
+1. Open `:Mason`
+2. Install required language servers
+3. Restart Neovim
+4. Run `:checkhealth lspconfig`
+
+### Performance Issues
+If Neovim feels slow, try:
+1. `:checkhealth` to identify problematic plugins
+2. Use `:Lazy profile` to see plugin load times
+3. Consider disabling unused features (see performance optimization section below)
 
 ## 🎛️ Advanced Configuration
 
