@@ -10,12 +10,31 @@ This guide provides detailed instructions on how to use all the plugins in this 
 - `:checkhealth` - Diagnose configuration issues
 - `:help <plugin-name>` - Get help for any plugin
 
-## ⌨️ Key Binding Discovery (which-key.nvim)
+## ⌨️ Enhanced Keymap Discovery System
 
 ### Features
-- Popup showing available key bindings after pressing leader key
-- Modern configuration using new API (v3.0+ compatible)
-- Organized key groups for better discovery
+- **Comprehensive keymap browser** showing ALL keymaps across all modes
+- **Mode-specific viewers** for focused discovery
+- **Which-key integration** with modern API (v3.0+ compatible)
+- **Global keymap access** beyond just leader keys
+- **Organized key groups** for better discovery
+
+### Keymap Discovery Commands
+| Command | Description | Coverage |
+|---------|-------------|----------|
+| `<leader>fK` | **All Keymaps Browser** | Every keymap in all modes |
+| `<leader>fk` | Standard keymaps | Basic telescope keymaps |
+| `<leader>fkn` | Normal mode keymaps | Normal mode only |
+| `<leader>fkv` | Visual mode keymaps | Visual/select modes |
+| `<leader>fki` | Insert mode keymaps | Insert mode only |
+| `<leader>?` | Buffer local keymaps | Current buffer |
+| `<leader><leader>?` | **Global keymaps** | All global mappings |
+
+### Enhanced Features
+- **Vertical layout** with preview for better readability
+- **Mode filtering** for focused discovery  
+- **Enhanced UI** with better titles and organization
+- **Direct access** from start screen discovery section
 
 ### Key Groups
 | Prefix | Description |
@@ -35,10 +54,16 @@ This guide provides detailed instructions on how to use all the plugins in this 
 | `<leader>r` | Refactor/rename operations |
 | `<leader>d` | Diagnostics (deprecated, use `<leader>l`) |
 | `<leader>h` | Git hunks operations |
-| `<leader>n` | Notification operations |
+| `<leader>n` | Notification operations/new tab |
 | `g` | Goto/operators |
 | `s` | Surround operations |
 | `<M-hjkl>` | Move operations (Alt+direction) |
+
+### Recent Key Conflict Resolutions
+To avoid conflicts and improve organization:
+- **Terminal**: `<leader>te` (was `<leader>t;`) - Avoids conflicts with toggles
+- **New Tab**: `<leader>nt` (was `<leader>tn`) - Logical grouping under "new"
+- **Toggles**: Preserved `<leader>tn`, `<leader>tr` for line numbers/relative numbers
 
 ### Enhanced Theme System
 The which-key theme has been upgraded to the **"helix"** preset for a more modern appearance with:
@@ -94,11 +119,13 @@ The start screen has been completely redesigned with:
 - **Quick access** to common tasks and recent files
 
 ### Sections Available
-1. **🔍 Telescope** - Find files, live grep, buffers, themes
-2. **🔧 Management** - Plugin manager, LSP manager, health check  
-3. **💾 Sessions** - Load and save workspace sessions
-4. **Recent Files** - Recently opened files (local and global)
-5. **Builtin Actions** - Edit config, new file, quit
+1. **📝 Quick Actions** - New file, find files, live grep, recent files
+2. **🔍 Discovery** - Browse keymaps, commands, help, global keymaps  
+3. **🎨 Customize** - Theme switcher, buffers, edit config, edit keymaps
+4. **🔧 Management** - Plugin manager, LSP manager, health check, sync plugins
+5. **💾 Sessions** - Load and save workspace sessions
+6. **Recent Files** - Recently opened files (local and global)
+7. **Builtin Actions** - Edit config, new file, quit
 
 ### Customization
 The start screen automatically:

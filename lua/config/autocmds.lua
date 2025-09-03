@@ -163,6 +163,40 @@ local function apply_transparency()
     "NvimTreeNormalNC",
     "BufferLineBackground",
     "BufferLineFill",
+    
+    -- Mini.statusline transparency
+    "MiniStatuslineDevinfo",
+    "MiniStatuslineFileinfo", 
+    "MiniStatuslineFilename",
+    "MiniStatuslineInactive",
+    "MiniStatuslineModeCommand",
+    "MiniStatuslineModeInsert",
+    "MiniStatuslineModeNormal",
+    "MiniStatuslineModeOther",
+    "MiniStatuslineModeReplace",
+    "MiniStatuslineModeVisual",
+    
+    -- Telescope enhancement for theme switcher
+    "TelescopeMatching",
+    "TelescopeTitle",
+    
+    -- Dressing.nvim (theme switcher UI)
+    "DressingBorder",
+    "DressingTitle",
+    
+    -- Additional Which-key elements
+    "WhichKeyNormal",
+    
+    -- Mini.starter transparency
+    "MiniStarterCurrent",
+    "MiniStarterFooter", 
+    "MiniStarterHeader",
+    "MiniStarterInactive",
+    "MiniStarterItem",
+    "MiniStarterItemBullet",
+    "MiniStarterItemPrefix",
+    "MiniStarterSection",
+    "MiniStarterQuery",
   }
   
   for _, group in ipairs(transparent_groups) do

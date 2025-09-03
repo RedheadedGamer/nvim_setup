@@ -61,7 +61,7 @@ keymap.set("n", "<leader>bl", "<cmd>blast<cr>", { desc = "Last buffer" })
 keymap.set("n", "<leader>bf", "<cmd>bfirst<cr>", { desc = "First buffer" })
 
 -- Tab management  
-keymap.set("n", "<leader>tn", "<cmd>tabnew<cr>", { desc = "New tab" })
+keymap.set("n", "<leader>nt", "<cmd>tabnew<cr>", { desc = "New tab" })
 keymap.set("n", "<leader>tc", "<cmd>tabclose<cr>", { desc = "Close tab" })
 keymap.set("n", "<leader>to", "<cmd>tabonly<cr>", { desc = "Close other tabs" })
 
@@ -83,7 +83,7 @@ keymap.set("n", "<leader>cp", "<cmd>e ~/.config/nvim/lua/plugins/init.lua<cr>", 
 keymap.set("n", "<leader>ck", "<cmd>e ~/.config/nvim/lua/config/keymaps.lua<cr>", { desc = "Edit keymaps" })
 
 -- Terminal shortcuts
-keymap.set("n", "<leader>t;", "<cmd>terminal<cr>", { desc = "Open terminal" })
+keymap.set("n", "<leader>te", "<cmd>terminal<cr>", { desc = "Open terminal" })
 keymap.set("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
 -- Clipboard operations  
