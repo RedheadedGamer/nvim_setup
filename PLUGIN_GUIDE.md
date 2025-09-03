@@ -23,17 +23,30 @@ This guide provides detailed instructions on how to use all the plugins in this 
 | `<leader>f` | Find/Telescope operations |
 | `<leader>p` | Pick/Mini.pick operations |
 | `<leader>x` | Trouble/diagnostics |
-| `<leader>t` | Theme/trim operations |
+| `<leader>t` | Theme/trim/toggle operations |
 | `<leader>g` | Git/diff operations |
 | `<leader>c` | Code/LSP operations |
+| `<leader>l` | LSP specific operations |
 | `<leader>w` | Window operations |
 | `<leader>b` | Buffer operations |
-| `<leader>s` | Session/surround operations |
+| `<leader>v` | Visits/mini.visits operations |
+| `<leader>s` | Session/mini.sessions operations |
 | `<leader>m` | Map/minimap operations |
 | `<leader>r` | Refactor/rename operations |
-| `<leader>d` | Diagnostics |
+| `<leader>d` | Diagnostics (deprecated, use `<leader>l`) |
+| `<leader>h` | Git hunks operations |
+| `<leader>n` | Notification operations |
 | `g` | Goto/operators |
 | `s` | Surround operations |
+| `<M-hjkl>` | Move operations (Alt+direction) |
+
+### Enhanced Theme System
+The which-key theme has been upgraded to the **"helix"** preset for a more modern appearance with:
+- Double borders for better visual distinction
+- Increased padding and spacing for better readability  
+- Enhanced transparency (winblend = 15)
+- Center-aligned layout with maximum width limits
+- Improved icon and key rendering
 
 ### Usage
 1. Press `<leader>` (space key) and wait
@@ -67,6 +80,37 @@ require("tokyonight").setup({
   transparent = false,  -- Change to false
 })
 ```
+
+### Quick Theme Switch
+Use `<leader>tt` to open the enhanced theme switcher with instant preview and curated themes.
+
+## 🚀 Enhanced Start Screen (Mini.starter)
+
+### Features
+The start screen has been completely redesigned with:
+- **Beautiful ASCII art header** with personalized greeting
+- **Organized sections** for different types of actions
+- **Plugin statistics** showing load time and plugin count
+- **Quick access** to common tasks and recent files
+
+### Sections Available
+1. **🔍 Telescope** - Find files, live grep, buffers, themes
+2. **🔧 Management** - Plugin manager, LSP manager, health check  
+3. **💾 Sessions** - Load and save workspace sessions
+4. **Recent Files** - Recently opened files (local and global)
+5. **Builtin Actions** - Edit config, new file, quit
+
+### Customization
+The start screen automatically:
+- Detects time of day for personalized greeting
+- Shows plugin load statistics
+- Provides bullet-pointed navigation
+- Centers content for better appearance
+
+### Navigation
+- Use letter/number keys to quickly jump to items
+- Press Enter to select highlighted item
+- Use `q` to quit the start screen
 
 ## 🔧 Core Development Tools
 
@@ -705,6 +749,36 @@ require("nvim-treesitter.configs").setup({
 ```
 
 ## 🏥 Health Check and Troubleshooting
+
+### Enhanced Transparency System
+This configuration includes **comprehensive transparency support** with 80+ UI elements configured:
+
+#### Covered UI Elements
+- **Core Neovim**: Normal, Float, Popup, Status, Tab, Line numbers
+- **Telescope**: All telescope windows and borders
+- **Which-key**: Popup, borders, and content areas  
+- **Mini.nvim**: All mini plugins (starter, files, pick, map, notify, etc.)
+- **LSP**: Floating windows, borders, and diagnostic displays
+- **Plugin Managers**: Lazy.nvim, Mason.nvim with all components
+- **Git Integration**: GitSigns and diff displays
+- **Completion**: nvim-cmp windows and documentation
+- **Notifications**: nvim-notify and all notification types
+
+#### Persistence Across Themes
+Transparency is automatically applied:
+- On Neovim startup (VimEnter autocmd)
+- After colorscheme changes (ColorScheme autocmd)  
+- For all supported themes in the configuration
+
+#### Disabling Transparency
+To disable transparency for specific themes:
+```lua
+-- In lua/plugins/init.lua, modify theme setup
+require("tokyonight").setup({
+  style = "night",
+  transparent = false,  -- Disable transparency
+})
+```
 
 ### Running Health Checks
 Use `:checkhealth` to diagnose configuration issues:
