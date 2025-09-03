@@ -280,27 +280,42 @@ return {
       starter.setup({
         evaluate_single = true,
         items = {
-          starter.sections.builtin_actions(),
-          starter.sections.recent_files(10, false),
-          starter.sections.recent_files(10, true),
-          -- Enhanced custom section for common tasks
+          -- Essential actions section
           {
-            { action = "Telescope find_files", name = "F: Find files", section = "🔍 Telescope" },
-            { action = "Telescope live_grep", name = "G: Live grep", section = "🔍 Telescope" },
-            { action = "Telescope buffers", name = "B: Buffers", section = "🔍 Telescope" },
-            { action = "Telescope themes", name = "T: Theme switcher", section = "🔍 Telescope" },
+            { action = "enew", name = "N: New file", section = "📝 Quick Actions" },
+            { action = "Telescope find_files", name = "F: Find files", section = "📝 Quick Actions" },
+            { action = "Telescope live_grep", name = "G: Live grep", section = "📝 Quick Actions" },
+            { action = "Telescope oldfiles", name = "R: Recent files", section = "📝 Quick Actions" },
           },
-          -- Plugin management section
+          -- Discovery and help section  
+          {
+            { action = "Telescope keymaps", name = "K: Browse keymaps", section = "🔍 Discovery" },
+            { action = "Telescope commands", name = "C: Browse commands", section = "🔍 Discovery" },
+            { action = "Telescope help_tags", name = "H: Browse help", section = "🔍 Discovery" },
+            { action = "lua require('which-key').show({ global = true })", name = "?: Global keymaps", section = "🔍 Discovery" },
+          },
+          -- Theme and customization
+          {
+            { action = "lua require('telescope.builtin').colorscheme({enable_preview = true})", name = "T: Theme switcher", section = "🎨 Customize" },
+            { action = "Telescope buffers", name = "B: Buffers", section = "🎨 Customize" },
+            { action = "e ~/.config/nvim/init.lua", name = "I: Edit config", section = "🎨 Customize" },
+            { action = "e ~/.config/nvim/lua/config/keymaps.lua", name = "M: Edit keymaps", section = "🎨 Customize" },
+          },
+          -- Management section
           {
             { action = "Lazy", name = "L: Plugin manager", section = "🔧 Management" },
-            { action = "Mason", name = "M: LSP manager", section = "🔧 Management" },
-            { action = "checkhealth", name = "H: Health check", section = "🔧 Management" },
+            { action = "Mason", name = "S: LSP manager", section = "🔧 Management" },
+            { action = "checkhealth", name = "D: Health check", section = "🔧 Management" },
+            { action = "Lazy sync", name = "Y: Sync plugins", section = "🔧 Management" },
           },
-          -- Session management
+          -- Session management (if sessions plugin is available)
           {
-            { action = "lua require('mini.sessions').select()", name = "S: Load session", section = "💾 Sessions" },
+            { action = "lua require('mini.sessions').select()", name = "O: Load session", section = "💾 Sessions" },
             { action = "lua require('mini.sessions').write(vim.fn.input('Session name: '))", name = "W: Save session", section = "💾 Sessions" },
           },
+          -- Built-in actions last
+          starter.sections.recent_files(8, false),
+          starter.sections.recent_files(5, true),
         },
         header = function()
           local hour = tonumber(vim.fn.strftime('%H'))
@@ -540,7 +555,7 @@ return {
         { "<leader>d", group = "diagnostics", icon = "🩺" },
         { "<leader>h", group = "git hunks", icon = "📊" },
         { "<leader>l", group = "lsp", icon = "🔧" },
-        { "<leader>n", group = "notifications", icon = "🔔" },
+        { "<leader>n", group = "notifications/new", icon = "🔔" },
         { "<leader>c", group = "config/code", icon = "⚙️" },
 
         -- Git hunk actions (gitsigns)
@@ -562,6 +577,13 @@ return {
         { "<leader>tt", desc = "Theme switcher", icon = "🎨" },
         { "<leader>tn", desc = "Toggle line numbers", icon = "🔢" },
         { "<leader>tr", desc = "Toggle relative numbers", icon = "🔢" },
+        { "<leader>te", desc = "Open terminal", icon = "💻" },
+        
+        -- Enhanced keymap discovery
+        { "<leader>fK", desc = "All keymaps browser", icon = "🗝️" },
+        { "<leader>fkn", desc = "Normal mode keymaps", icon = "📝" },
+        { "<leader>fkv", desc = "Visual mode keymaps", icon = "👁️" },
+        { "<leader>fki", desc = "Insert mode keymaps", icon = "✏️" },
 
         -- Goto operations
         { "g", group = "goto/operators", icon = "🎯" },
@@ -626,7 +648,8 @@ return {
         title_pos = "center",
         zindex = 1000,
         wo = {
-          winblend = 15, -- Slightly increased transparency
+          winblend = 0, -- Full transparency for better background blending
+          winhighlight = "Normal:WhichKeyFloat,FloatBorder:WhichKeyBorder",
         },
       },
       layout = {
@@ -666,6 +689,13 @@ return {
           require("which-key").show({ global = false })
         end,
         desc = "Buffer Local Keymaps (which-key)",
+      },
+      {
+        "<leader><leader>?",
+        function()
+          require("which-key").show({ global = true })
+        end,
+        desc = "Global Keymaps (which-key)",
       },
     },
   },
@@ -790,6 +820,46 @@ return {
       keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", { desc = "Help Tags" })
       keymap.set("n", "<leader>fc", "<cmd>Telescope commands<cr>", { desc = "Commands" })
       keymap.set("n", "<leader>fk", "<cmd>Telescope keymaps<cr>", { desc = "Keymaps" })
+      
+      -- Enhanced keymap discovery - comprehensive keymap browser
+      keymap.set("n", "<leader>fK", function()
+        require("telescope.builtin").keymaps({
+          prompt_title = "🗝️  All Keymaps Browser",
+          show_plug = true,
+          only_buf = false,
+          modes = {"n", "i", "v", "x", "c", "t", "o"}, -- All modes
+          layout_strategy = "vertical",
+          layout_config = {
+            vertical = {
+              width = 0.9,
+              height = 0.9,
+              preview_height = 0.6,
+            },
+          },
+        })
+      end, { desc = "All Keymaps Browser" })
+      
+      -- Quick keymap help for specific modes
+      keymap.set("n", "<leader>fkn", function()
+        require("telescope.builtin").keymaps({
+          prompt_title = "Normal Mode Keymaps",
+          modes = {"n"},
+        })
+      end, { desc = "Normal Mode Keymaps" })
+      
+      keymap.set("n", "<leader>fkv", function()
+        require("telescope.builtin").keymaps({
+          prompt_title = "Visual Mode Keymaps", 
+          modes = {"v", "x"},
+        })
+      end, { desc = "Visual Mode Keymaps" })
+      
+      keymap.set("n", "<leader>fki", function()
+        require("telescope.builtin").keymaps({
+          prompt_title = "Insert Mode Keymaps",
+          modes = {"i"},
+        })
+      end, { desc = "Insert Mode Keymaps" })
       keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", { desc = "Recent Files" })
       keymap.set("n", "<leader>fs", "<cmd>Telescope grep_string<cr>", { desc = "Grep String" })
       keymap.set("n", "<leader>fw", "<cmd>Telescope live_grep<cr>", { desc = "Grep Word" })
