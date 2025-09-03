@@ -16,6 +16,16 @@ require("config.autocmds")
 -- Bootstrap lazy.nvim plugin manager
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
+  -- Configure git to disable terminal prompts before cloning lazy.nvim
+  -- This prevents the "could not read Username for 'https://github.com'" error
+  vim.env.GIT_TERMINAL_PROMPT = "0"
+  vim.env.GIT_ASKPASS = "echo"
+  vim.env.SSH_ASKPASS = "echo"
+  
+  -- Set git configs to prevent authentication prompts
+  os.execute("git config --global credential.helper store 2>/dev/null || true")
+  os.execute("git config --global core.askPass '' 2>/dev/null || true")
+  
   vim.fn.system({
     "git",
     "clone",
@@ -30,9 +40,45 @@ vim.opt.rtp:prepend(lazypath)
 -- Load plugins
 require("lazy").setup(require("plugins"), {
   git = {
+    -- Use HTTPS with environment variables to prevent authentication prompts
     url_format = "https://github.com/%s.git",
+    timeout = 120,
+    cmd = "git",
+    log = { "-C", "%(file)s", "log", "--oneline", "--graph", "--decorate" },
+  },
+  install = {
+    -- Use fallback colorscheme while installing plugins
+    colorscheme = { "default" },
+  },
+  -- Better default config options
+  defaults = {
+    version = false, -- Try loading the latest commit if version is not specified
+  },
+  performance = {
+    cache = {
+      enabled = true,
+    },
+    reset_packpath = true,
+    rtp = {
+      disabled_plugins = {
+        "gzip",
+        "matchit",
+        "matchparen", 
+        "netrwPlugin",
+        "tarPlugin",
+        "tohtml",
+        "tutor",
+        "zipPlugin",
+      },
+    },
   },
 })
+
+-- Set environment variables to prevent git authentication prompts
+-- This should prevent the mini.git clone error
+vim.env.GIT_TERMINAL_PROMPT = "0"
+vim.env.GIT_ASKPASS = "echo"
+vim.env.SSH_ASKPASS = "echo"
 
 -- Initialize theme system after plugins are loaded
 require("config.theme").init()

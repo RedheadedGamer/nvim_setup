@@ -477,74 +477,151 @@ return {
   -- Which-key for key binding popup (essential for discoverability)
   {
     "folke/which-key.nvim",
-    event = "VimEnter",
-    config = function()
-      require("which-key").setup({
-        icons = {
-          breadcrumb = "»",
-          separator = "➜",
-          group = "+",
-        },
-        keys = {
-          scroll_down = "<c-d>",
-          scroll_up = "<c-u>",
-        },
-        win = {
-          border = "rounded",
-          margin = { 1, 0, 1, 0 },
-          padding = { 2, 2, 2, 2 },
-          winblend = 0,
-        },
-        layout = {
-          height = { min = 4, max = 25 },
-          width = { min = 20, max = 50 },
-          spacing = 3,
-          align = "left",
-        },
-      })
+    event = "VeryLazy",
+    opts = {
+      preset = "modern",
+      -- Delay before showing the popup
+      delay = function(ctx)
+        return ctx.plugin and 0 or 200
+      end,
+      spec = {
+        -- Leader key groups
+        { "<leader>f", group = "find/telescope", icon = "🔍" },
+        { "<leader>p", group = "pick/mini.pick", icon = "📋" },
+        { "<leader>x", group = "trouble/diagnostics", icon = "🔧" },
+        { "<leader>t", group = "theme/trim", icon = "🎨" },
+        { "<leader>g", group = "git/diff", icon = "📦" },
+        { "<leader>c", group = "code/lsp", icon = "💻" },
+        { "<leader>w", group = "window", icon = "🪟" },
+        { "<leader>b", group = "buffer", icon = "📄" },
+        { "<leader>v", group = "visits/mini.visits", icon = "📍" },
+        { "<leader>s", group = "session/mini.sessions", icon = "💾" },
+        { "<leader>m", group = "map/minimap", icon = "🗺️" },
+        { "<leader>r", group = "refactor/rename", icon = "♻️" },
+        { "<leader>d", group = "diagnostics", icon = "🩺" },
+        { "<leader>h", group = "git hunks", icon = "📊" },
 
-      -- Register key groups using new spec format
-      require("which-key").add({
-        { "<leader>f", group = "find/telescope" },
-        { "<leader>p", group = "pick/mini.pick" },
-        { "<leader>x", group = "trouble/diagnostics" },
-        { "<leader>t", group = "theme/trim" },
-        { "<leader>g", group = "git/diff" },
-        { "<leader>c", group = "code/lsp" },
-        { "<leader>w", group = "window" },
-        { "<leader>b", group = "buffer" },
-        { "<leader>v", group = "visits/mini.visits" },
-        { "<leader>s", group = "session/mini.sessions" },
-        { "<leader>m", group = "map/minimap" },
-        { "<leader>r", group = "refactor/rename" },
-        { "<leader>d", group = "diagnostics" },
-        { "g", group = "goto/operators" },
-        { "ga", desc = "Mini align" },
-        { "gA", desc = "Mini align with preview" },
-        { "gS", desc = "Mini splitjoin toggle" },
-        { "gs", desc = "Mini sort operator" },
-        { "gr", desc = "Mini replace operator" },
-        { "gm", desc = "Mini multiply operator" },
-        { "gx", desc = "Mini exchange operator" },
-        { "g=", desc = "Mini evaluate operator" },
-        { "gh", desc = "Apply diff hunk" },
-        { "gH", desc = "Reset diff hunk" },
-        { "s", group = "surround/mini.surround" },
-        { "sa", desc = "Add surround" },
-        { "sd", desc = "Delete surround" },
-        { "sr", desc = "Replace surround" },
-        { "sf", desc = "Find surround (right)" },
-        { "sF", desc = "Find surround (left)" },
-        { "sh", desc = "Highlight surround" },
-        { "sn", desc = "Update n_lines" },
-        { "<M-h>", desc = "Move left (mini.move)" },
-        { "<M-j>", desc = "Move down (mini.move)" },
-        { "<M-k>", desc = "Move up (mini.move)" },
-        { "<M-l>", desc = "Move right (mini.move)" },
-        { "[", group = "previous (mini.bracketed)" },
-        { "]", group = "next (mini.bracketed)" },
-      })
-    end,
+        -- Git hunk actions (gitsigns)
+        { "<leader>hs", desc = "Stage hunk", icon = "+" },
+        { "<leader>hr", desc = "Reset hunk", icon = "↩️" },
+        { "<leader>hS", desc = "Stage buffer", icon = "📁" },
+        { "<leader>hu", desc = "Undo stage hunk", icon = "⏪" },
+        { "<leader>hR", desc = "Reset buffer", icon = "🔄" },
+        { "<leader>hp", desc = "Preview hunk", icon = "👁️" },
+        { "<leader>hb", desc = "Blame line", icon = "👤" },
+        { "<leader>hd", desc = "Diff this", icon = "🔍" },
+        { "<leader>hD", desc = "Diff this ~", icon = "🔍" },
+
+        -- Toggle commands
+        { "<leader>tb", desc = "Toggle blame", icon = "👤" },
+        { "<leader>td", desc = "Toggle deleted", icon = "🗑️" },
+        { "<leader>tw", desc = "Trim trailing whitespace", icon = "✂️" },
+        { "<leader>tl", desc = "Trim trailing empty lines", icon = "📝" },
+
+        -- Goto operations
+        { "g", group = "goto/operators", icon = "🎯" },
+        { "ga", desc = "Mini align", icon = "📐" },
+        { "gA", desc = "Mini align with preview", icon = "👁️" },
+        { "gS", desc = "Mini splitjoin toggle", icon = "🔄" },
+        { "gs", desc = "Mini sort operator", icon = "🔤" },
+        { "gr", desc = "Mini replace operator", icon = "🔄" },
+        { "gm", desc = "Mini multiply operator", icon = "✖️" },
+        { "gx", desc = "Mini exchange operator", icon = "🔄" },
+        { "g=", desc = "Mini evaluate operator", icon = "🧮" },
+        { "gh", desc = "Apply diff hunk", icon = "✅" },
+        { "gH", desc = "Reset diff hunk", icon = "❌" },
+
+        -- Surround operations
+        { "s", group = "surround/mini.surround", icon = "🔄" },
+        { "sa", desc = "Add surround", icon = "➕" },
+        { "sd", desc = "Delete surround", icon = "➖" },
+        { "sr", desc = "Replace surround", icon = "🔄" },
+        { "sf", desc = "Find surround (right)", icon = "➡️" },
+        { "sF", desc = "Find surround (left)", icon = "⬅️" },
+        { "sh", desc = "Highlight surround", icon = "🔆" },
+        { "sn", desc = "Update n_lines", icon = "📏" },
+
+        -- Movement operations
+        { "<M-h>", desc = "Move left (mini.move)", icon = "⬅️" },
+        { "<M-j>", desc = "Move down (mini.move)", icon = "⬇️" },
+        { "<M-k>", desc = "Move up (mini.move)", icon = "⬆️" },
+        { "<M-l>", desc = "Move right (mini.move)", icon = "➡️" },
+
+        -- Navigation groups
+        { "[", group = "previous (mini.bracketed)", icon = "⬅️" },
+        { "]", group = "next (mini.bracketed)", icon = "➡️" },
+      },
+      icons = {
+        breadcrumb = "»",
+        separator = "➜",
+        group = "+",
+        ellipsis = "…",
+        mappings = true,
+        rules = {},
+        colors = true,
+        keys = {
+          Up = " ",
+          Down = " ",
+          Left = " ",
+          Right = " ",
+          C = "󰘴 ",
+          M = "󰘵 ",
+          D = "󰘳 ",
+          S = "󰘶 ",
+          CR = "󰌑 ",
+          Esc = "󱊷 ",
+          Space = "󱁐 ",
+          Tab = "󰌒 ",
+        },
+      },
+      win = {
+        border = "rounded",
+        padding = { 1, 2 },
+        title = true,
+        title_pos = "center",
+        zindex = 1000,
+        wo = {
+          winblend = 10,
+        },
+      },
+      layout = {
+        width = { min = 20 },
+        spacing = 3,
+      },
+      keys = {
+        scroll_down = "<c-d>",
+        scroll_up = "<c-u>",
+      },
+      -- Enable all built-in plugins
+      plugins = {
+        marks = true,
+        registers = true,
+        spelling = {
+          enabled = true,
+          suggestions = 20,
+        },
+        presets = {
+          operators = true,
+          motions = true,
+          text_objects = true,
+          windows = true,
+          nav = true,
+          z = true,
+          g = true,
+        },
+      },
+      show_help = true,
+      show_keys = true,
+    },
+    keys = {
+      {
+        "<leader>?",
+        function()
+          require("which-key").show({ global = false })
+        end,
+        desc = "Buffer Local Keymaps (which-key)",
+      },
+    },
   },
 
   -- Better UI for vim.ui interfaces
