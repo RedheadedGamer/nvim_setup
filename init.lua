@@ -8,6 +8,10 @@
 -- Converted from init.vim by Stephan Raabe (2023)
 -- -----------------------------------------------------
 
+-- Ensure proper runtime path for configuration modules
+local config_path = vim.fn.stdpath("config")
+vim.opt.rtp:prepend(config_path)
+
 -- Load configuration modules
 require("config.options")
 require("config.keymaps")
@@ -53,6 +57,17 @@ require("lazy").setup(require("plugins"), {
   -- Better default config options
   defaults = {
     version = false, -- Try loading the latest commit if version is not specified
+  },
+  ui = {
+    -- Disable automatic opening of lazy UI
+    backdrop = 100, -- Set high backdrop to make it less intrusive
+    size = { width = 0.8, height = 0.8 },
+    wrap = true,
+    border = "rounded",
+    title = "Lazy",
+    title_pos = "center",
+    -- Don't show UI automatically on startup
+    throttle = 20,
   },
   performance = {
     cache = {

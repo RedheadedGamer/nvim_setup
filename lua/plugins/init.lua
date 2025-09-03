@@ -13,21 +13,6 @@ return {
           transparency = true,
         }
       })
-      
-      -- Apply transparency to additional UI elements
-      vim.api.nvim_create_autocmd("ColorScheme", {
-        pattern = "onedark*",
-        callback = function()
-          -- Make sure transparency applies to all UI elements
-          vim.api.nvim_set_hl(0, "Normal", { bg = "NONE" })
-          vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
-          vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "NONE" })
-          vim.api.nvim_set_hl(0, "LazyNormal", { bg = "NONE" })
-          vim.api.nvim_set_hl(0, "LazyReasonPlugin", { bg = "NONE" })
-          vim.api.nvim_set_hl(0, "LazyReasonRuntime", { bg = "NONE" })
-          vim.api.nvim_set_hl(0, "LazyReasonSource", { bg = "NONE" })
-        end,
-      })
     end,
   },
   
@@ -288,13 +273,16 @@ return {
   {
     "echasnovski/mini.starter",
     version = "*",
+    lazy = false, -- Ensure it loads immediately
+    priority = 1001, -- Load after colorscheme but very early
     config = function()
-      require("mini.starter").setup({
+      local starter = require("mini.starter")
+      starter.setup({
         evaluate_single = true,
         items = {
-          require("mini.starter").sections.builtin_actions(),
-          require("mini.starter").sections.recent_files(10, false),
-          require("mini.starter").sections.recent_files(10, true),
+          starter.sections.builtin_actions(),
+          starter.sections.recent_files(10, false),
+          starter.sections.recent_files(10, true),
           -- Enhanced custom section for common tasks
           {
             { action = "Telescope find_files", name = "F: Find files", section = "🔍 Telescope" },
@@ -344,12 +332,23 @@ return {
           return "⚡ Loaded " .. stats.loaded .. "/" .. stats.count .. " plugins in " .. ms .. "ms"
         end,
         content_hooks = {
-          require("mini.starter").gen_hook.adding_bullet("│ ", false),
-          require("mini.starter").gen_hook.indexing('all', { 'Builtin actions' }),
-          require("mini.starter").gen_hook.padding(3, 2),
-          require("mini.starter").gen_hook.aligning('center', 'center'),
+          starter.gen_hook.adding_bullet("│ ", false),
+          starter.gen_hook.indexing('all', { 'Builtin actions' }),
+          starter.gen_hook.padding(3, 2),
+          starter.gen_hook.aligning('center', 'center'),
         },
         query_updaters = 'abcdefghijklmnopqrstuvwxyz0123456789_-.',
+      })
+
+      -- Ensure mini.starter is triggered properly on VimEnter
+      vim.api.nvim_create_autocmd("VimEnter", {
+        group = vim.api.nvim_create_augroup("MiniStarterAutostart", { clear = true }),
+        callback = function()
+          -- Only open if no arguments were passed (no files to open)
+          if vim.fn.argc() == 0 then
+            starter.open()
+          end
+        end,
       })
     end,
   },
@@ -1150,42 +1149,18 @@ return {
     end,
   },
 
+  -- Git integration with fugitive.vim (replacing problematic mini.git)
   {
-    "echasnovski/mini.git",
-    version = "*",
-    config = function()
-      require("mini.git").setup({
-        -- The job of computing git status can take some time. This defines when
-        -- this job should be executed (could be time consuming).
-        job = {
-          git_executable = "git", -- Path to git executable
-          timeout = 30000,        -- Timeout in milliseconds for git operations
-        },
-        -- Hook for customizing Git status updates in real time
-        status = {
-          lnum = true, -- Enable line number git signs 
-        },
-      })
-      
-      -- Git keymaps
-      vim.keymap.set("n", "<leader>gc", function()
-        require("mini.git").show_at_cursor()
-      end, { desc = "Git: Show at cursor" })
-      
-      vim.keymap.set("n", "<leader>gd", function()
-        require("mini.git").show_diff_source()
-      end, { desc = "Git: Show diff source" })
-      
-      vim.keymap.set("n", "<leader>gs", function()
-        -- Show git status using vim's terminal
-        vim.cmd("vertical terminal git status")
-      end, { desc = "Git: Status" })
-      
-      vim.keymap.set("n", "<leader>gl", function()
-        -- Show git log using vim's terminal
-        vim.cmd("vertical terminal git log --oneline -10")
-      end, { desc = "Git: Log" })
-    end,
+    "tpope/vim-fugitive",
+    cmd = { "Git", "G", "Gdiffsplit", "Gread", "Gwrite", "Ggrep", "GMove", "GDelete", "GBrowse", "GRemove" },
+    keys = {
+      { "<leader>gs", "<cmd>Git<cr>", desc = "Git status" },
+      { "<leader>gc", "<cmd>Git commit<cr>", desc = "Git commit" },
+      { "<leader>gp", "<cmd>Git push<cr>", desc = "Git push" },
+      { "<leader>gl", "<cmd>Git log --oneline<cr>", desc = "Git log" },
+      { "<leader>gd", "<cmd>Gdiffsplit<cr>", desc = "Git diff" },
+      { "<leader>gb", "<cmd>Git blame<cr>", desc = "Git blame" },
+    },
   },
 
   -- Gitsigns for enhanced git integration

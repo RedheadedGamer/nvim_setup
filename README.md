@@ -231,7 +231,6 @@ For detailed instructions on using all plugins, customizing features, and troubl
 - **[mini.diff](https://github.com/echasnovski/mini.diff)** - Work with diff hunks and git changes
 - **[mini.extra](https://github.com/echasnovski/mini.extra)** - Extra textobjects and pickers
 - **[mini.fuzzy](https://github.com/echasnovski/mini.fuzzy)** - Fuzzy matching algorithms
-- **[mini.git](https://github.com/echasnovski/mini.git)** - Git integration and commands
 - **[mini.icons](https://github.com/echasnovski/mini.icons)** - Icon provider for various contexts
 - **[mini.jump2d](https://github.com/echasnovski/mini.jump2d)** - Jump to any position with Enter
 - **[mini.map](https://github.com/echasnovski/mini.map)** - Window with buffer text overview (minimap)
@@ -252,7 +251,7 @@ For detailed instructions on using all plugins, customizing features, and troubl
 
 ### Git Integration & Version Control
 - **[gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)** - Git decorations, hunks, and blame
-- **[mini.git](https://github.com/echasnovski/mini.git)** - Git integration and commands
+- **[vim-fugitive](https://github.com/tpope/vim-fugitive)** - Comprehensive Git wrapper (replaced mini.git)
 - **[mini.diff](https://github.com/echasnovski/mini.diff)** - Work with diff hunks and git changes
 
 ### Editing & Productivity
@@ -637,7 +636,7 @@ A comprehensive collection of all the best mini plugins for maximum productivity
 
 #### 🔧 Development Tools
 - **mini.diff**: Work with diff hunks and git changes (`gh`, `gH`, `[h`, `]h`)
-- **mini.git**: Git integration and commands (`<leader>gc`, `<leader>gd`)
+- **fugitive.vim**: Git integration and commands (`<leader>gs`, `<leader>gc`, `<leader>gd`)
 - **mini.extra**: Extra textobjects and pickers for enhanced functionality
 - **mini.fuzzy**: Fuzzy matching algorithms for better search
 - **mini.misc**: Miscellaneous functions including zoom (`<leader>z`)
