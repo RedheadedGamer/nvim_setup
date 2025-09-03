@@ -13,7 +13,21 @@ return {
           transparency = true,
         }
       })
-      vim.cmd("colorscheme onedark_dark")
+      
+      -- Apply transparency to additional UI elements
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        pattern = "onedark*",
+        callback = function()
+          -- Make sure transparency applies to all UI elements
+          vim.api.nvim_set_hl(0, "Normal", { bg = "NONE" })
+          vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
+          vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "NONE" })
+          vim.api.nvim_set_hl(0, "LazyNormal", { bg = "NONE" })
+          vim.api.nvim_set_hl(0, "LazyReasonPlugin", { bg = "NONE" })
+          vim.api.nvim_set_hl(0, "LazyReasonRuntime", { bg = "NONE" })
+          vim.api.nvim_set_hl(0, "LazyReasonSource", { bg = "NONE" })
+        end,
+      })
     end,
   },
   
@@ -113,7 +127,7 @@ return {
       require("nvim-treesitter.configs").setup({
         ensure_installed = {
           "lua", "python", "javascript", "typescript", "html", "css", 
-          "json", "yaml", "markdown", "bash", "vim", "vimdoc"
+          "json", "yaml", "markdown", "bash", "vim", "vimdoc", "c", "java"
         },
         sync_install = false,
         auto_install = true,
@@ -684,14 +698,11 @@ return {
           end,
         }, function(choice)
           if choice then
-            -- Try to set the colorscheme
-            local ok, _ = pcall(vim.cmd, "colorscheme " .. choice)
-            if ok then
-              vim.notify("Theme changed to: " .. choice, vim.log.levels.INFO)
-              -- Save the theme choice for persistence (optional)
-              vim.g.current_theme = choice
-            else
-              vim.notify("Failed to load theme: " .. choice, vim.log.levels.ERROR)
+            local theme_manager = require("config.theme")
+            -- Try to apply the colorscheme
+            if theme_manager.apply_theme(choice) then
+              -- If successful, save it for persistence
+              theme_manager.save_theme(choice)
             end
           end
         end)
@@ -733,6 +744,8 @@ return {
           "html",
           "cssls",
           "jsonls",
+          "clangd",     -- C/C++ LSP
+          "jdtls",      -- Java LSP
         },
         automatic_installation = true,
       })
@@ -776,6 +789,18 @@ return {
         html = {},
         cssls = {},
         jsonls = {},
+        clangd = {
+          cmd = { "clangd", "--background-index" },
+          filetypes = { "c", "cpp", "objc", "objcpp" },
+        },
+        jdtls = {
+          settings = {
+            java = {
+              signatureHelp = { enabled = true },
+              contentProvider = { preferred = "fernflower" },
+            },
+          },
+        },
       }
 
       for server, config in pairs(servers) do
@@ -975,7 +1000,18 @@ return {
     "echasnovski/mini.git",
     version = "*",
     config = function()
-      require("mini.git").setup()
+      require("mini.git").setup({
+        -- The job of computing git status can take some time. This defines when
+        -- this job should be executed (could be time consuming).
+        job = {
+          git_executable = "git", -- Path to git executable
+          timeout = 30000,        -- Timeout in milliseconds for git operations
+        },
+        -- Hook for customizing Git status updates in real time
+        status = {
+          lnum = true, -- Enable line number git signs 
+        },
+      })
       
       -- Git keymaps
       vim.keymap.set("n", "<leader>gc", function()
@@ -985,6 +1021,16 @@ return {
       vim.keymap.set("n", "<leader>gd", function()
         require("mini.git").show_diff_source()
       end, { desc = "Git: Show diff source" })
+      
+      vim.keymap.set("n", "<leader>gs", function()
+        -- Show git status using vim's terminal
+        vim.cmd("vertical terminal git status")
+      end, { desc = "Git: Status" })
+      
+      vim.keymap.set("n", "<leader>gl", function()
+        -- Show git log using vim's terminal
+        vim.cmd("vertical terminal git log --oneline -10")
+      end, { desc = "Git: Log" })
     end,
   },
 
@@ -1235,10 +1281,22 @@ return {
         formatters_by_ft.json = { "prettier" }
         formatters_by_ft.yaml = { "prettier" }
       end
+      
+      -- C formatter
+      if is_formatter_available("clang-format") then
+        formatters_by_ft.c = { "clang-format" }
+        formatters_by_ft.cpp = { "clang-format" }
+      end
+      
+      -- Java formatter
+      if is_formatter_available("google-java-format") then
+        formatters_by_ft.java = { "google-java-format" }
+      end
 
       require("conform").setup({
         formatters_by_ft = formatters_by_ft,
-        -- format_on_save disabled for custom varsity standards
+        -- Automatic formatting disabled by user request
+        -- Manual formatting available via <leader>fm
         -- format_on_save = {
         --   timeout_ms = 500,
         --   lsp_fallback = true,

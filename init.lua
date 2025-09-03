@@ -13,6 +13,9 @@ require("config.options")
 require("config.keymaps")
 require("config.autocmds")
 
+-- Initialize theme system early
+require("config.theme").init()
+
 -- Bootstrap lazy.nvim plugin manager
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -29,11 +32,6 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Load plugins
 require("lazy").setup(require("plugins"))
-
--- Set colorscheme (fallback if theme plugin fails)
-pcall(function()
-  vim.cmd("colorscheme onedark_dark")
-end)
 
 -- Display startup message
 if vim.fn.argc() == 0 then
