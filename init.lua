@@ -8,6 +8,10 @@
 -- Converted from init.vim by Stephan Raabe (2023)
 -- -----------------------------------------------------
 
+-- Ensure proper runtime path for configuration modules
+local config_path = vim.fn.stdpath("config")
+vim.opt.rtp:prepend(config_path)
+
 -- Load configuration modules
 require("config.options")
 require("config.keymaps")
