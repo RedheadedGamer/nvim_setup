@@ -69,6 +69,29 @@ keymap.set("n", "<leader>to", "<cmd>tabonly<cr>", { desc = "Close other tabs" })
 keymap.set("n", "<leader>cd", "<cmd>cd %:p:h<cr>", { desc = "Change to file directory" })
 keymap.set("n", "<leader>pwd", "<cmd>pwd<cr>", { desc = "Print working directory" })
 
+-- Search and replace helpers
+keymap.set("n", "<leader>sr", ":%s//g<Left><Left>", { desc = "Search and replace" })
+keymap.set("v", "<leader>sr", ":s//g<Left><Left>", { desc = "Search and replace selection" })
+
+-- Quick save and source config
+keymap.set("n", "<leader><leader>", "<cmd>source %<cr>", { desc = "Source current file" })
+keymap.set("n", "<leader>so", "<cmd>source $MYVIMRC<cr>", { desc = "Source config" })
+
+-- Open config files quickly
+keymap.set("n", "<leader>cc", "<cmd>e ~/.config/nvim/init.lua<cr>", { desc = "Edit config" })
+keymap.set("n", "<leader>cp", "<cmd>e ~/.config/nvim/lua/plugins/init.lua<cr>", { desc = "Edit plugins" })
+keymap.set("n", "<leader>ck", "<cmd>e ~/.config/nvim/lua/config/keymaps.lua<cr>", { desc = "Edit keymaps" })
+
+-- Terminal shortcuts
+keymap.set("n", "<leader>t;", "<cmd>terminal<cr>", { desc = "Open terminal" })
+keymap.set("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+
+-- Clipboard operations  
+keymap.set("n", "<leader>y", '"+y', { desc = "Copy to system clipboard" })
+keymap.set("v", "<leader>y", '"+y', { desc = "Copy to system clipboard" })
+keymap.set("n", "<leader>p", '"+p', { desc = "Paste from system clipboard" })
+keymap.set("v", "<leader>p", '"+p', { desc = "Paste from system clipboard" })
+
 -- Move text up and down
 keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move text down" })
 keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move text up" })

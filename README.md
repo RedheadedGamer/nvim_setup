@@ -9,6 +9,7 @@ A modern, feature-rich Neovim configuration written in Lua with **complete mini.
 - **Plugin Manager**: Uses [lazy.nvim](https://github.com/folke/lazy.nvim) for fast, lazy-loaded plugin management
 - **Auto-completion**: Powerful completion engine with [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) replacing CoC
 - **Complete Mini.nvim Ecosystem**: All 28 mini.nvim plugins for comprehensive development tools
+- **170+ Keybinds**: Comprehensive keybind system with which-key integration for discoverability
 - **Optimized Performance**: Streamlined configuration with curated high-quality themes
 - **Smart Movement**: Mini.move integration for moving lines and selections with Alt+hjkl
 - **Advanced Text Objects**: Enhanced editing with mini.ai, mini.surround, and mini.operators
@@ -19,6 +20,7 @@ A modern, feature-rich Neovim configuration written in Lua with **complete mini.
 - **Multiple Themes**: Several beautiful colorschemes included
 - **LaTeX Support**: VimTeX integration for LaTeX document editing
 - **Transparent Background**: Configured for transparent terminal backgrounds
+- **Enhanced Transparency**: 80+ UI elements configured for full transparency support  
 - **Custom .wistl Filetype**: Specialized support for .wistl files
 
 ## 🚀 Installation
@@ -551,6 +553,26 @@ Autoformatting on save has been **disabled by default** to accommodate custom co
 | `<leader>wq` | Save & Quit | Write and quit |
 | `<leader>qa` | Quit All | Quit all windows |
 | `<Esc>` | Clear Search | Clear search highlighting |
+
+### 🔧 Configuration & Utilities
+| Key | Action | Description |
+|-----|--------|-------------|
+| `<leader>cc` | Edit Config | Open init.lua |
+| `<leader>cp` | Edit Plugins | Open plugins config |
+| `<leader>ck` | Edit Keymaps | Open keymaps config |
+| `<leader>so` | Source Config | Reload configuration |
+| `<leader><leader>` | Source File | Source current file |
+| `<leader>sr` | Search Replace | Search and replace text |
+| `<leader>cd` | Change Directory | Change to file directory |
+| `<leader>pwd` | Print Directory | Show current directory |
+
+### 📋 Clipboard & Terminal
+| Key | Action | Description |
+|-----|--------|-------------|
+| `<leader>y` | Copy to Clipboard | Copy to system clipboard |
+| `<leader>p` | Paste from Clipboard | Paste from system clipboard |
+| `<leader>t;` | Open Terminal | Open terminal window |
+| `<Esc>` (in terminal) | Exit Terminal | Return to normal mode |
 
 > **Tip**: Press `<leader>` (space) and wait to see all available keybinds in a popup menu!
 

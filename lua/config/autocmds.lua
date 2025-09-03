@@ -133,6 +133,35 @@ autocmd("VimEnter", {
       "CmpBorder",
       "CmpDocumentation",
       "CmpDocumentationBorder",
+      -- Trouble.nvim transparency
+      "TroubleNormal",
+      "TroubleBorder",
+      "TroubleText",
+      "TroubleCount",
+      "TroubleCode",
+      -- Mason.nvim transparency
+      "MasonNormal",
+      "MasonBorder",
+      "MasonHeader",
+      "MasonHighlight",
+      -- Lazy.nvim additional groups
+      "LazyProgressTodo",
+      "LazyProgressDone",
+      "LazyCommit",
+      "LazyCommitIssue",
+      "LazyCommitType",
+      "LazyCommitScope",
+      -- Which-key additional groups
+      "WhichKeyValue",
+      "WhichKeyIcon",
+      "WhichKeyTitle",
+      -- Additional floating windows
+      "NoiceNormal",
+      "NoiceBorder",
+      "NotifyBackground",
+      "NotifyBorder",
+      "DressingInput",
+      "DressingSelect",
     }
     
     for _, group in ipairs(transparent_groups) do
@@ -171,6 +200,11 @@ autocmd("ColorScheme", {
       "CmpBorder",
       "LspFloatWinNormal",
       "LspFloatWinBorder",
+      "TroubleNormal",
+      "MasonNormal",
+      "NotifyBackground",
+      "DressingInput",
+      "DressingSelect",
     }
     
     for _, group in ipairs(transparent_hl_groups) do

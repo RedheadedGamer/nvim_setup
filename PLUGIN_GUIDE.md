@@ -750,6 +750,36 @@ require("nvim-treesitter.configs").setup({
 
 ## 🏥 Health Check and Troubleshooting
 
+### Enhanced Transparency System
+This configuration includes **comprehensive transparency support** with 80+ UI elements configured:
+
+#### Covered UI Elements
+- **Core Neovim**: Normal, Float, Popup, Status, Tab, Line numbers
+- **Telescope**: All telescope windows and borders
+- **Which-key**: Popup, borders, and content areas  
+- **Mini.nvim**: All mini plugins (starter, files, pick, map, notify, etc.)
+- **LSP**: Floating windows, borders, and diagnostic displays
+- **Plugin Managers**: Lazy.nvim, Mason.nvim with all components
+- **Git Integration**: GitSigns and diff displays
+- **Completion**: nvim-cmp windows and documentation
+- **Notifications**: nvim-notify and all notification types
+
+#### Persistence Across Themes
+Transparency is automatically applied:
+- On Neovim startup (VimEnter autocmd)
+- After colorscheme changes (ColorScheme autocmd)  
+- For all supported themes in the configuration
+
+#### Disabling Transparency
+To disable transparency for specific themes:
+```lua
+-- In lua/plugins/init.lua, modify theme setup
+require("tokyonight").setup({
+  style = "night",
+  transparent = false,  -- Disable transparency
+})
+```
+
 ### Running Health Checks
 Use `:checkhealth` to diagnose configuration issues:
 ```vim

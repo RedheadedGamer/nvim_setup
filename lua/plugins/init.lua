@@ -542,6 +542,7 @@ return {
         { "<leader>h", group = "git hunks", icon = "📊" },
         { "<leader>l", group = "lsp", icon = "🔧" },
         { "<leader>n", group = "notifications", icon = "🔔" },
+        { "<leader>c", group = "config/code", icon = "⚙️" },
 
         -- Git hunk actions (gitsigns)
         { "<leader>hs", desc = "Stage hunk", icon = "+" },
