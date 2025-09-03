@@ -471,11 +471,11 @@ return {
           separator = "➜",
           group = "+",
         },
-        popup_mappings = {
+        keys = {
           scroll_down = "<c-d>",
           scroll_up = "<c-u>",
         },
-        window = {
+        win = {
           border = "rounded",
           position = "bottom",
           margin = { 1, 0, 1, 0 },
@@ -490,50 +490,46 @@ return {
         },
       })
 
-      -- Register key groups for better organization (comprehensive mini.nvim coverage)
-      require("which-key").register({
-        ["<leader>f"] = { name = "+find/telescope" },
-        ["<leader>p"] = { name = "+pick/mini.pick" },
-        ["<leader>x"] = { name = "+trouble/diagnostics" },
-        ["<leader>t"] = { name = "+theme/trim" },
-        ["<leader>g"] = { name = "+git/diff" },
-        ["<leader>c"] = { name = "+code/lsp" },
-        ["<leader>w"] = { name = "+window" },
-        ["<leader>b"] = { name = "+buffer" },
-        ["<leader>v"] = { name = "+visits/mini.visits" },
-        ["<leader>s"] = { name = "+session/mini.sessions" },
-        ["<leader>m"] = { name = "+map/minimap" },
-        ["<leader>r"] = { name = "+refactor/rename" },
-        ["<leader>d"] = { name = "+diagnostics" },
-        ["g"] = { 
-          name = "+goto/operators", 
-          a = "Mini align",
-          A = "Mini align with preview",
-          S = "Mini splitjoin toggle",
-          s = "Mini sort operator",
-          r = "Mini replace operator",
-          m = "Mini multiply operator",
-          x = "Mini exchange operator",
-          ["="] = "Mini evaluate operator",
-          h = "Apply diff hunk",
-          H = "Reset diff hunk"
-        },
-        ["s"] = { 
-          name = "+surround/mini.surround",
-          a = "Add surround",
-          d = "Delete surround", 
-          r = "Replace surround",
-          f = "Find surround (right)",
-          F = "Find surround (left)",
-          h = "Highlight surround",
-          n = "Update n_lines"
-        },
-        ["<M-h>"] = "Move left (mini.move)",
-        ["<M-j>"] = "Move down (mini.move)", 
-        ["<M-k>"] = "Move up (mini.move)",
-        ["<M-l>"] = "Move right (mini.move)",
-        ["["] = { name = "+previous (mini.bracketed)" },
-        ["]"] = { name = "+next (mini.bracketed)" },
+      -- Register key groups using new spec format
+      require("which-key").add({
+        { "<leader>f", group = "find/telescope" },
+        { "<leader>p", group = "pick/mini.pick" },
+        { "<leader>x", group = "trouble/diagnostics" },
+        { "<leader>t", group = "theme/trim" },
+        { "<leader>g", group = "git/diff" },
+        { "<leader>c", group = "code/lsp" },
+        { "<leader>w", group = "window" },
+        { "<leader>b", group = "buffer" },
+        { "<leader>v", group = "visits/mini.visits" },
+        { "<leader>s", group = "session/mini.sessions" },
+        { "<leader>m", group = "map/minimap" },
+        { "<leader>r", group = "refactor/rename" },
+        { "<leader>d", group = "diagnostics" },
+        { "g", group = "goto/operators" },
+        { "ga", desc = "Mini align" },
+        { "gA", desc = "Mini align with preview" },
+        { "gS", desc = "Mini splitjoin toggle" },
+        { "gs", desc = "Mini sort operator" },
+        { "gr", desc = "Mini replace operator" },
+        { "gm", desc = "Mini multiply operator" },
+        { "gx", desc = "Mini exchange operator" },
+        { "g=", desc = "Mini evaluate operator" },
+        { "gh", desc = "Apply diff hunk" },
+        { "gH", desc = "Reset diff hunk" },
+        { "s", group = "surround/mini.surround" },
+        { "sa", desc = "Add surround" },
+        { "sd", desc = "Delete surround" },
+        { "sr", desc = "Replace surround" },
+        { "sf", desc = "Find surround (right)" },
+        { "sF", desc = "Find surround (left)" },
+        { "sh", desc = "Highlight surround" },
+        { "sn", desc = "Update n_lines" },
+        { "<M-h>", desc = "Move left (mini.move)" },
+        { "<M-j>", desc = "Move down (mini.move)" },
+        { "<M-k>", desc = "Move up (mini.move)" },
+        { "<M-l>", desc = "Move right (mini.move)" },
+        { "[", group = "previous (mini.bracketed)" },
+        { "]", group = "next (mini.bracketed)" },
       })
     end,
   },
@@ -1214,17 +1210,34 @@ return {
   {
     "stevearc/conform.nvim",
     config = function()
+      -- Helper function to check if a formatter is available
+      local function is_formatter_available(formatter)
+        return vim.fn.executable(formatter) == 1
+      end
+
+      -- Build formatters table based on what's available
+      local formatters_by_ft = {}
+      
+      -- Only add formatters that are available
+      if is_formatter_available("stylua") then
+        formatters_by_ft.lua = { "stylua" }
+      end
+      
+      if is_formatter_available("black") then
+        formatters_by_ft.python = { "black" }
+      end
+      
+      if is_formatter_available("prettier") then
+        formatters_by_ft.javascript = { "prettier" }
+        formatters_by_ft.typescript = { "prettier" }
+        formatters_by_ft.html = { "prettier" }
+        formatters_by_ft.css = { "prettier" }
+        formatters_by_ft.json = { "prettier" }
+        formatters_by_ft.yaml = { "prettier" }
+      end
+
       require("conform").setup({
-        formatters_by_ft = {
-          lua = { "stylua" },
-          python = { "black" },
-          javascript = { "prettier" },
-          typescript = { "prettier" },
-          html = { "prettier" },
-          css = { "prettier" },
-          json = { "prettier" },
-          yaml = { "prettier" },
-        },
+        formatters_by_ft = formatters_by_ft,
         -- format_on_save disabled for custom varsity standards
         -- format_on_save = {
         --   timeout_ms = 500,
