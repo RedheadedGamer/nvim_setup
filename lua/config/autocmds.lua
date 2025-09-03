@@ -50,17 +50,29 @@ autocmd("VimEnter", {
       "NormalNC",
       "SignColumn",
       "Pmenu",
+      "PmenuSel",
+      "PmenuSbar",
+      "PmenuThumb",
       "FloatBorder",
       "NormalFloat",
       "TabLine",
+      "TabLineSel",
+      "TabLineFill",
       "LineNr",
       "CursorLineNr",
       "StatusLine",
       "StatusLineNC",
+      "WinBar",
+      "WinBarNC",
       -- Additional groups for better transparency
       "EndOfBuffer",
       "VertSplit",
       "WinSeparator",
+      "Folded",
+      "FoldColumn",
+      "ColorColumn",
+      "CursorLine",
+      "CursorColumn",
       -- Lazy.nvim transparency
       "LazyNormal",
       "LazyReasonPlugin", 
@@ -68,18 +80,59 @@ autocmd("VimEnter", {
       "LazyReasonSource",
       "LazyH1",
       "LazyH2",
+      "LazyButton",
+      "LazyButtonActive",
       -- Telescope transparency
       "TelescopeNormal",
       "TelescopeBorder",
       "TelescopePromptBorder",
       "TelescopeResultsBorder",
       "TelescopePreviewBorder",
+      "TelescopePromptNormal",
+      "TelescopeResultsNormal",
+      "TelescopePreviewNormal",
+      "TelescopeSelection",
+      "TelescopeMultiSelection",
       -- Which-key transparency
       "WhichKeyFloat",
+      "WhichKeyBorder",
+      "WhichKeyGroup",
+      "WhichKeyDesc",
+      "WhichKeySeperator",
+      "WhichKey",
       -- Mini.nvim transparency
       "MiniStarterHeader",
       "MiniStarterSection",
       "MiniStarterItem",
+      "MiniStarterQuery",
+      "MiniStarterCurrent",
+      "MiniStarterInactive",
+      "MiniFilesNormal",
+      "MiniFilesBorder",
+      "MiniPickNormal",
+      "MiniPickBorder",
+      "MiniPickPrompt",
+      "MiniNotifyNormal",
+      "MiniNotifyBorder",
+      "MiniMapNormal",
+      "MiniMapSymbolCount",
+      "MiniMapSymbolLine",
+      "MiniMapSymbolView",
+      -- Additional common transparency groups
+      "NvimTreeNormal",
+      "NvimTreeNormalNC",
+      "BufferLineBackground",
+      "BufferLineFill",
+      "LspFloatWinNormal",
+      "LspFloatWinBorder",
+      "DiagnosticFloatingWarn",
+      "DiagnosticFloatingError",
+      "DiagnosticFloatingInfo",
+      "DiagnosticFloatingHint",
+      "CmpNormal",
+      "CmpBorder",
+      "CmpDocumentation",
+      "CmpDocumentationBorder",
     }
     
     for _, group in ipairs(transparent_groups) do
@@ -93,11 +146,35 @@ autocmd("ColorScheme", {
   group = general,
   callback = function()
     -- Ensure transparency persists across colorscheme changes
-    vim.api.nvim_set_hl(0, "Normal", { bg = "NONE" })
-    vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
-    vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "NONE" })
-    vim.api.nvim_set_hl(0, "LazyNormal", { bg = "NONE" })
-    vim.api.nvim_set_hl(0, "TelescopeNormal", { bg = "NONE" })
-    vim.api.nvim_set_hl(0, "WhichKeyFloat", { bg = "NONE" })
+    local transparent_hl_groups = {
+      "Normal",
+      "NormalFloat",
+      "EndOfBuffer",
+      "LazyNormal",
+      "TelescopeNormal",
+      "TelescopeBorder",
+      "TelescopePromptNormal",
+      "TelescopeResultsNormal",
+      "TelescopePreviewNormal",
+      "WhichKeyFloat",
+      "WhichKeyBorder",
+      "MiniStarterHeader",
+      "MiniStarterSection",
+      "MiniStarterItem",
+      "MiniFilesNormal",
+      "MiniPickNormal",
+      "MiniMapNormal",
+      "Pmenu",
+      "PmenuSel",
+      "FloatBorder",
+      "CmpNormal",
+      "CmpBorder",
+      "LspFloatWinNormal",
+      "LspFloatWinBorder",
+    }
+    
+    for _, group in ipairs(transparent_hl_groups) do
+      vim.api.nvim_set_hl(0, group, { bg = "NONE" })
+    end
   end,
 })

@@ -418,6 +418,142 @@ Autoformatting on save has been **disabled by default** to accommodate custom co
 - **Organized groups**: Commands are grouped by function (find, trouble, theme, etc.)
 - **Visual clarity**: Clean popup interface showing all available shortcuts
 
+## ⌨️ Key Bindings Reference
+
+### 🔍 Finding & Navigation (Telescope)
+| Key | Action | Description |
+|-----|--------|-------------|
+| `<leader>ff` | Find Files | Find files in current project |
+| `<leader>fg` | Live Grep | Search text across all files |
+| `<leader>fb` | Find Buffers | Switch between open buffers |
+| `<leader>fh` | Help Tags | Search through help documentation |
+| `<leader>fc` | Commands | Search and execute commands |
+| `<leader>fk` | Keymaps | Search through all keymaps |
+| `<leader>fr` | Recent Files | Open recently used files |
+| `<leader>fs` | Grep String | Search for string under cursor |
+| `<leader>fm` | Marks | Navigate to bookmarks |
+| `<leader>fj` | Jumplist | Navigate jump history |
+| `<leader>fd` | Diagnostics | Find LSP diagnostics |
+| `<leader>fq` | Quickfix | Open quickfix list |
+
+### 📁 File & Buffer Management
+| Key | Action | Description |
+|-----|--------|-------------|
+| `<leader>e` | File Explorer | Open mini.files explorer |
+| `<leader>bd` | Delete Buffer | Close buffer safely |
+| `<leader>bD` | Force Delete | Force close buffer |
+| `<leader>bn` | Next Buffer | Switch to next buffer |
+| `<leader>bp` | Previous Buffer | Switch to previous buffer |
+| `<leader>bl` | Last Buffer | Switch to last buffer |
+| `<leader>bf` | First Buffer | Switch to first buffer |
+
+### 🪟 Window Management
+| Key | Action | Description |
+|-----|--------|-------------|
+| `<C-h/j/k/l>` | Navigate Windows | Move between windows |
+| `<C-Arrow>` | Resize Windows | Resize current window |
+| `<leader>wv` | Vertical Split | Create vertical split |
+| `<leader>wh` | Horizontal Split | Create horizontal split |
+| `<leader>wc` | Close Window | Close current window |
+| `<leader>wo` | Close Others | Close all other windows |
+
+### 🔧 LSP & Code Actions
+| Key | Action | Description |
+|-----|--------|-------------|
+| `gd` | Go to Definition | Jump to symbol definition |
+| `gi` | Go to Implementation | Jump to implementation |
+| `gr` | Go to References | Show all references |
+| `gy` | Go to Type Definition | Jump to type definition |
+| `K` | Hover Documentation | Show hover information |
+| `<leader>rn` | Rename Symbol | Rename symbol under cursor |
+| `<leader>ca` | Code Action | Show available code actions |
+| `<leader>lf` | Format Buffer | Format current buffer |
+| `<leader>ld` | Show Diagnostic | Show diagnostic for current line |
+| `<leader>lr` | Restart LSP | Restart LSP server |
+| `<leader>li` | LSP Info | Show LSP information |
+| `[d` / `]d` | Navigate Diagnostics | Jump to prev/next diagnostic |
+
+### 📦 Git Integration
+| Key | Action | Description |
+|-----|--------|-------------|
+| `<leader>hs` | Stage Hunk | Stage current hunk |
+| `<leader>hr` | Reset Hunk | Reset current hunk |
+| `<leader>hS` | Stage Buffer | Stage entire buffer |
+| `<leader>hu` | Undo Stage | Undo last stage |
+| `<leader>hR` | Reset Buffer | Reset entire buffer |
+| `<leader>hp` | Preview Hunk | Preview hunk changes |
+| `<leader>hb` | Blame Line | Show git blame |
+| `<leader>hd` | Diff This | Show diff for current file |
+| `<leader>tb` | Toggle Blame | Toggle git blame display |
+| `<leader>td` | Toggle Deleted | Toggle deleted line display |
+
+### 🎨 Theme & Toggles
+| Key | Action | Description |
+|-----|--------|-------------|
+| `<leader>tt` | Theme Switcher | Open theme selector |
+| `<leader>tw` | Trim Whitespace | Remove trailing whitespace |
+| `<leader>tl` | Trim Lines | Remove empty lines at EOF |
+| `<leader>tn` | Toggle Line Numbers | Toggle line numbers |
+| `<leader>tr` | Toggle Relative Numbers | Toggle relative line numbers |
+
+### 💾 Session Management
+| Key | Action | Description |
+|-----|--------|-------------|
+| `<leader>ss` | Select Session | Load existing session |
+| `<leader>sw` | Write Session | Save current session |
+| `<leader>sd` | Delete Session | Delete saved session |
+
+### 🗺️ Minimap & Navigation
+| Key | Action | Description |
+|-----|--------|-------------|
+| `<leader>mm` | Toggle Minimap | Show/hide code minimap |
+| `<leader>mr` | Refresh Minimap | Refresh minimap display |
+| `<leader>mf` | Focus Minimap | Focus on minimap window |
+| `<leader>z` | Zoom Window | Zoom current window |
+
+### 🔔 Notifications
+| Key | Action | Description |
+|-----|--------|-------------|
+| `<leader>nd` | Dismiss Notifications | Clear all notifications |
+| `<leader>nh` | Notification History | Show notification history |
+| `<leader>nc` | Clear Notifications | Clear notification display |
+
+### 🎯 Text Objects & Operators
+| Key | Action | Description |
+|-----|--------|-------------|
+| `sa` | Add Surrounding | Add surrounding characters |
+| `sd` | Delete Surrounding | Remove surrounding characters |
+| `sr` | Replace Surrounding | Replace surrounding characters |
+| `ga` | Align Text | Align text selections |
+| `gS` | Split/Join | Toggle function arguments split |
+| `gs` | Sort | Sort text selections |
+| `gr` | Replace | Replace with register content |
+| `gm` | Multiply | Duplicate text |
+| `gx` | Exchange | Exchange text regions |
+| `g=` | Evaluate | Evaluate and replace expression |
+| `<M-h/j/k/l>` | Move Lines | Move lines/selections |
+
+### 📍 Mini Visits & Picks
+| Key | Action | Description |
+|-----|--------|-------------|
+| `<leader>vv` | Add Visit | Mark current location |
+| `<leader>vr` | Remove Visit | Remove visit mark |
+| `<leader>vl` | List Visits | Show all visit marks |
+| `<leader>pf` | Pick Files | Alternative file picker |
+| `<leader>pg` | Pick Grep | Alternative grep picker |
+| `<leader>pb` | Pick Buffers | Alternative buffer picker |
+
+### 💾 Basic File Operations
+| Key | Action | Description |
+|-----|--------|-------------|
+| `<leader>w` | Save File | Write current file |
+| `<leader>q` | Quit | Quit current window |
+| `<leader>wq` | Save & Quit | Write and quit |
+| `<leader>qa` | Quit All | Quit all windows |
+| `<Esc>` | Clear Search | Clear search highlighting |
+
+> **Tip**: Press `<leader>` (space) and wait to see all available keybinds in a popup menu!
+
 ### 📢 Better Notifications
 - **nvim-notify**: Enhanced notification system with animations
 - **Visual feedback**: Theme changes, errors, and info messages display beautifully

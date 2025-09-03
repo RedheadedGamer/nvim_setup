@@ -295,11 +295,23 @@ return {
           require("mini.starter").sections.builtin_actions(),
           require("mini.starter").sections.recent_files(10, false),
           require("mini.starter").sections.recent_files(10, true),
-          -- Custom section for common tasks
+          -- Enhanced custom section for common tasks
           {
-            { action = "Telescope find_files", name = "F: Find files", section = "Telescope" },
-            { action = "Telescope live_grep", name = "G: Live grep", section = "Telescope" },
-            { action = "Telescope buffers", name = "B: Buffers", section = "Telescope" },
+            { action = "Telescope find_files", name = "F: Find files", section = "🔍 Telescope" },
+            { action = "Telescope live_grep", name = "G: Live grep", section = "🔍 Telescope" },
+            { action = "Telescope buffers", name = "B: Buffers", section = "🔍 Telescope" },
+            { action = "Telescope themes", name = "T: Theme switcher", section = "🔍 Telescope" },
+          },
+          -- Plugin management section
+          {
+            { action = "Lazy", name = "L: Plugin manager", section = "🔧 Management" },
+            { action = "Mason", name = "M: LSP manager", section = "🔧 Management" },
+            { action = "checkhealth", name = "H: Health check", section = "🔧 Management" },
+          },
+          -- Session management
+          {
+            { action = "lua require('mini.sessions').select()", name = "S: Load session", section = "💾 Sessions" },
+            { action = "lua require('mini.sessions').write(vim.fn.input('Session name: '))", name = "W: Save session", section = "💾 Sessions" },
           },
         },
         header = function()
@@ -307,9 +319,37 @@ return {
           local part_id = math.floor((hour + 4) / 8) + 1
           local day_part = ({ 'evening', 'morning', 'afternoon', 'evening' })[part_id]
           local username = vim.loop.os_getenv('USER') or 'user'
-          return ('Good %s, %s!'):format(day_part, username)
+          
+          -- Enhanced ASCII art header
+          local header_art = {
+            "╭─────────────────────────────────────────────────────────╮",
+            "│                                                         │",
+            "│  ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗    │",
+            "│  ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║    │", 
+            "│  ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║    │",
+            "│  ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║    │",
+            "│  ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║    │",
+            "│  ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝    │",
+            "│                                                         │",
+            "│           " .. string.format("Good %s, %s!", day_part, username) .. string.rep(" ", 25 - string.len(day_part .. username)) .. "│",
+            "│                                                         │",
+            "╰─────────────────────────────────────────────────────────╯",
+          }
+          
+          return table.concat(header_art, '\n')
         end,
-        footer = '',
+        footer = function()
+          local stats = require("lazy").stats()
+          local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
+          return "⚡ Loaded " .. stats.loaded .. "/" .. stats.count .. " plugins in " .. ms .. "ms"
+        end,
+        content_hooks = {
+          require("mini.starter").gen_hook.adding_bullet("│ ", false),
+          require("mini.starter").gen_hook.indexing('all', { 'Builtin actions' }),
+          require("mini.starter").gen_hook.padding(3, 2),
+          require("mini.starter").gen_hook.aligning('center', 'center'),
+        },
+        query_updaters = 'abcdefghijklmnopqrstuvwxyz0123456789_-.',
       })
     end,
   },
@@ -479,7 +519,7 @@ return {
     "folke/which-key.nvim",
     event = "VeryLazy",
     opts = {
-      preset = "modern",
+      preset = "helix", -- Changed from "modern" to "helix" for better theme
       -- Delay before showing the popup
       delay = function(ctx)
         return ctx.plugin and 0 or 200
@@ -500,6 +540,8 @@ return {
         { "<leader>r", group = "refactor/rename", icon = "♻️" },
         { "<leader>d", group = "diagnostics", icon = "🩺" },
         { "<leader>h", group = "git hunks", icon = "📊" },
+        { "<leader>l", group = "lsp", icon = "🔧" },
+        { "<leader>n", group = "notifications", icon = "🔔" },
 
         -- Git hunk actions (gitsigns)
         { "<leader>hs", desc = "Stage hunk", icon = "+" },
@@ -517,6 +559,9 @@ return {
         { "<leader>td", desc = "Toggle deleted", icon = "🗑️" },
         { "<leader>tw", desc = "Trim trailing whitespace", icon = "✂️" },
         { "<leader>tl", desc = "Trim trailing empty lines", icon = "📝" },
+        { "<leader>tt", desc = "Theme switcher", icon = "🎨" },
+        { "<leader>tn", desc = "Toggle line numbers", icon = "🔢" },
+        { "<leader>tr", desc = "Toggle relative numbers", icon = "🔢" },
 
         -- Goto operations
         { "g", group = "goto/operators", icon = "🎯" },
@@ -575,18 +620,19 @@ return {
         },
       },
       win = {
-        border = "rounded",
-        padding = { 1, 2 },
+        border = "double", -- Changed from "rounded" to "double" for more attractive appearance
+        padding = { 2, 3 }, -- Increased padding for better spacing
         title = true,
         title_pos = "center",
         zindex = 1000,
         wo = {
-          winblend = 10,
+          winblend = 15, -- Slightly increased transparency
         },
       },
       layout = {
-        width = { min = 20 },
-        spacing = 3,
+        width = { min = 20, max = 50 }, -- Added max width for better layout
+        spacing = 4, -- Increased spacing
+        align = "center", -- Center alignment
       },
       keys = {
         scroll_down = "<c-d>",
@@ -682,6 +728,19 @@ return {
       
       -- Set nvim-notify as the default notification handler
       vim.notify = require("notify")
+      
+      -- Notification keymaps
+      vim.keymap.set("n", "<leader>nd", function()
+        require("notify").dismiss({ silent = true, pending = true })
+      end, { desc = "Dismiss notifications" })
+      
+      vim.keymap.set("n", "<leader>nh", function()
+        require("notify").history()
+      end, { desc = "Notification history" })
+      
+      vim.keymap.set("n", "<leader>nc", function()
+        require("notify").dismiss()
+      end, { desc = "Clear notifications" })
     end,
   },
 
@@ -729,6 +788,20 @@ return {
       keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { desc = "Live Grep" })
       keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Find Buffers" })
       keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", { desc = "Help Tags" })
+      keymap.set("n", "<leader>fc", "<cmd>Telescope commands<cr>", { desc = "Commands" })
+      keymap.set("n", "<leader>fk", "<cmd>Telescope keymaps<cr>", { desc = "Keymaps" })
+      keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", { desc = "Recent Files" })
+      keymap.set("n", "<leader>fs", "<cmd>Telescope grep_string<cr>", { desc = "Grep String" })
+      keymap.set("n", "<leader>fw", "<cmd>Telescope live_grep<cr>", { desc = "Grep Word" })
+      keymap.set("n", "<leader>fm", "<cmd>Telescope marks<cr>", { desc = "Marks" })
+      keymap.set("n", "<leader>fj", "<cmd>Telescope jumplist<cr>", { desc = "Jumplist" })
+      keymap.set("n", "<leader>fp", "<cmd>Telescope projects<cr>", { desc = "Projects" })
+      keymap.set("n", "<leader>fd", "<cmd>Telescope diagnostics<cr>", { desc = "Diagnostics" })
+      keymap.set("n", "<leader>fq", "<cmd>Telescope quickfix<cr>", { desc = "Quickfix" })
+      keymap.set("n", "<leader>fl", "<cmd>Telescope loclist<cr>", { desc = "Location List" })
+      
+      -- Theme switcher keymap
+      keymap.set("n", "<leader>tt", function() theme_switcher() end, { desc = "Theme Switcher" })
       
       -- Optimized theme switcher with curated high-quality themes
       local function theme_switcher()
@@ -836,18 +909,22 @@ return {
         local keymap = vim.keymap
         local opts = { buffer = bufnr, silent = true }
         
-        -- LSP keymaps (replacing CoC mappings)
-        keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-        keymap.set("n", "gy", vim.lsp.buf.type_definition, opts)
-        keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-        keymap.set("n", "gr", vim.lsp.buf.references, opts)
-        keymap.set("n", "K", vim.lsp.buf.hover, opts)
-        keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-        keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-        keymap.set("n", "<leader>f", vim.lsp.buf.format, opts)
-        keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-        keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-        keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts)
+        -- LSP keymaps (replacing CoC mappings) - with proper descriptions for which-key
+        keymap.set("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go to definition" }))
+        keymap.set("n", "gy", vim.lsp.buf.type_definition, vim.tbl_extend("force", opts, { desc = "Go to type definition" }))
+        keymap.set("n", "gi", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "Go to implementation" }))
+        keymap.set("n", "gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { desc = "Go to references" }))
+        keymap.set("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
+        keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
+        keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code action" }))
+        keymap.set("n", "<leader>lf", vim.lsp.buf.format, vim.tbl_extend("force", opts, { desc = "Format buffer" }))
+        keymap.set("n", "[d", vim.diagnostic.goto_prev, vim.tbl_extend("force", opts, { desc = "Previous diagnostic" }))
+        keymap.set("n", "]d", vim.diagnostic.goto_next, vim.tbl_extend("force", opts, { desc = "Next diagnostic" }))
+        keymap.set("n", "<leader>ld", vim.diagnostic.open_float, vim.tbl_extend("force", opts, { desc = "Show diagnostic" }))
+        keymap.set("n", "<leader>ll", vim.diagnostic.setloclist, vim.tbl_extend("force", opts, { desc = "Diagnostic loclist" }))
+        keymap.set("n", "<leader>lq", vim.diagnostic.setqflist, vim.tbl_extend("force", opts, { desc = "Diagnostic quickfix" }))
+        keymap.set("n", "<leader>lr", "<cmd>LspRestart<cr>", vim.tbl_extend("force", opts, { desc = "Restart LSP" }))
+        keymap.set("n", "<leader>li", "<cmd>LspInfo<cr>", vim.tbl_extend("force", opts, { desc = "LSP info" }))
       end
 
       -- Configure LSP servers with shared setup
