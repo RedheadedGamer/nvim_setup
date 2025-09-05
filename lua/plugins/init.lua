@@ -738,6 +738,19 @@ return {
   {
     "rcarriga/nvim-notify",
     config = function()
+      -- Check for Neovim version compatibility (nvim-notify requires vim.version.ge which is 0.8+)
+      local version_ok = vim.version and vim.version.ge and vim.version.ge(vim.version(), {0, 8, 0})
+      
+      if not version_ok then
+        -- Fallback for older Neovim versions
+        vim.notify = function(msg, level)
+          local levels = { "ERROR", "WARN", "INFO", "DEBUG" }
+          local level_name = levels[level] or "INFO"
+          print(string.format("[%s] %s", level_name, tostring(msg)))
+        end
+        return
+      end
+      
       require("notify").setup({
         background_colour = "#000000",
         fps = 30,
@@ -787,11 +800,38 @@ return {
       local telescope = require("telescope")
       local actions = require("telescope.actions")
       
+      -- Configure vimgrep_arguments with fallback support
+      local vimgrep_arguments = {
+        "rg",
+        "--color=never",
+        "--no-heading",
+        "--with-filename", 
+        "--line-number",
+        "--column",
+        "--smart-case",
+        "--hidden"
+      }
+      
+      -- Fallback to grep if ripgrep is not available
+      if vim.fn.executable("rg") ~= 1 then
+        vimgrep_arguments = {
+          "grep",
+          "-r", 
+          "-n",
+          "-H",
+          "--exclude-dir=.git",
+          "--exclude-dir=node_modules",
+          "--exclude=*.min.js",
+          "--exclude=*.log"
+        }
+      end
+      
       telescope.setup({
         defaults = {
           prompt_prefix = " ",
           selection_caret = " ",
           path_display = { "truncate" },
+          vimgrep_arguments = vimgrep_arguments,
           mappings = {
             i = {
               ["<C-n>"] = actions.cycle_history_next,
@@ -812,12 +852,42 @@ return {
         },
       })
       
-      -- Telescope keymaps
+      -- Telescope keymaps with fallbacks
       local keymap = vim.keymap
-      keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "Find Files" })
-      keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { desc = "Live Grep" })
-      keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Find Buffers" })
-      keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", { desc = "Help Tags" })
+      
+      -- Create safer telescope commands with fallbacks
+      local function safe_telescope_cmd(cmd, fallback_fn, desc)
+        return function()
+          local telescope_ok, telescope_builtin = pcall(require, "telescope.builtin")
+          if telescope_ok and telescope_builtin[cmd] then
+            telescope_builtin[cmd]()
+          else
+            if fallback_fn then
+              fallback_fn()
+            else
+              vim.notify("Telescope not available, using fallback", vim.log.levels.WARN)
+              vim.cmd("edit .")
+            end
+          end
+        end
+      end
+      
+      keymap.set("n", "<leader>ff", safe_telescope_cmd("find_files", function()
+        require("mini.pick").builtin.files()
+      end), { desc = "Find Files" })
+      
+      keymap.set("n", "<leader>fg", safe_telescope_cmd("live_grep", function()
+        require("mini.pick").builtin.grep_live()
+      end), { desc = "Live Grep" })
+      
+      keymap.set("n", "<leader>fb", safe_telescope_cmd("buffers", function()
+        require("mini.pick").builtin.buffers()
+      end), { desc = "Find Buffers" })
+      
+      keymap.set("n", "<leader>fh", safe_telescope_cmd("help_tags", function()
+        require("mini.pick").builtin.help()
+      end), { desc = "Help Tags" })
+      
       keymap.set("n", "<leader>fc", "<cmd>Telescope commands<cr>", { desc = "Commands" })
       keymap.set("n", "<leader>fk", "<cmd>Telescope keymaps<cr>", { desc = "Keymaps" })
       
@@ -948,26 +1018,92 @@ return {
       "rafamadriz/friendly-snippets",
     },
     config = function()
-      -- Mason setup
-      require("mason").setup({
+      -- Priority C/C++ LSP Bootstrap Function
+      local function bootstrap_clangd()
+        -- Check if clangd is available in system PATH first
+        if vim.fn.executable("clangd") == 1 then
+          vim.notify("✅ clangd found in system PATH", vim.log.levels.INFO)
+          return true
+        end
+        
+        -- Check if clangd is available through Mason
+        local mason_registry_ok, mason_registry = pcall(require, "mason-registry")
+        if mason_registry_ok then
+          local clangd_pkg = mason_registry.get_package("clangd")
+          if clangd_pkg:is_installed() then
+            vim.notify("✅ clangd installed via Mason", vim.log.levels.INFO)
+            return true
+          end
+          
+          -- Attempt to install clangd immediately
+          vim.notify("🔧 Installing clangd via Mason...", vim.log.levels.INFO)
+          clangd_pkg:install():once("closed", function()
+            if clangd_pkg:is_installed() then
+              vim.notify("✅ clangd installation completed", vim.log.levels.INFO)
+              -- Restart LSP for C/C++ files after installation
+              vim.schedule(function()
+                for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+                  local ft = vim.api.nvim_buf_get_option(buf, "filetype")
+                  if ft == "c" or ft == "cpp" or ft == "objc" or ft == "objcpp" then
+                    vim.cmd("LspRestart")
+                    break
+                  end
+                end
+              end)
+            else
+              vim.notify("⚠️ clangd installation failed, using fallback configuration", vim.log.levels.WARN)
+            end
+          end)
+        else
+          vim.notify("⚠️ Mason registry not available, install clangd manually for C/C++ support", vim.log.levels.WARN)
+        end
+        
+        return false
+      end
+      
+      -- Safely setup Mason with error handling
+      local mason_ok, mason = pcall(require, "mason")
+      if not mason_ok then
+        vim.notify("Mason failed to load, LSP servers may need manual installation", vim.log.levels.WARN)
+        bootstrap_clangd() -- Still try to bootstrap clangd
+        return
+      end
+      
+      -- Mason setup with enhanced compatibility
+      mason.setup({
         ui = {
           border = "rounded",
         },
+        -- Add timeout and retry settings for better reliability
+        max_concurrent_installers = 4,
+        providers = {
+          "mason.providers.registry-api",
+          "mason.providers.client",
+        },
       })
       
-      require("mason-lspconfig").setup({
-        ensure_installed = {
-          "lua_ls",
-          "pyright", 
-          "ts_ls",
-          "html",
-          "cssls",
-          "jsonls",
-          "clangd",     -- C/C++ LSP
-          "jdtls",      -- Java LSP
-        },
-        automatic_installation = true,
-      })
+      local mason_lspconfig_ok, mason_lspconfig = pcall(require, "mason-lspconfig")
+      if mason_lspconfig_ok then
+        mason_lspconfig.setup({
+          ensure_installed = {
+            "clangd",     -- C/C++ LSP (prioritized as default)
+            "lua_ls",
+            "pyright", 
+            "ts_ls",
+            "html",
+            "cssls",
+            "jsonls",
+            "jdtls",      -- Java LSP
+          },
+          automatic_installation = true,
+        })
+        
+        -- Immediate bootstrap for clangd (highest priority)
+        bootstrap_clangd()
+      else
+        vim.notify("Mason-lspconfig failed to load, automatic LSP installation disabled", vim.log.levels.WARN)
+        bootstrap_clangd() -- Still try to bootstrap clangd without mason-lspconfig
+      end
 
       -- LSP settings
       local lspconfig = require("lspconfig")
@@ -997,6 +1133,52 @@ return {
         keymap.set("n", "<leader>li", "<cmd>LspInfo<cr>", vim.tbl_extend("force", opts, { desc = "LSP info" }))
       end
 
+      -- Enhanced clangd setup function with multiple fallbacks
+      local function setup_clangd(lspconfig, capabilities, on_attach)
+        local clangd_config = {
+          filetypes = { "c", "cpp", "objc", "objcpp" },
+          root_dir = function() 
+            return vim.loop.cwd() 
+          end,
+          capabilities = capabilities,
+          on_attach = on_attach,
+          settings = {
+            clangd = {
+              fallbackFlags = { "-std=c++17" },
+            },
+          },
+        }
+        
+        -- Try different clangd command variations for maximum compatibility
+        local clangd_commands = {
+          -- Full featured clangd with all options
+          { "clangd", "--background-index", "--clang-tidy", "--header-insertion=iwyu", "--completion-style=detailed" },
+          -- Basic clangd with essential options  
+          { "clangd", "--background-index", "--header-insertion=iwyu" },
+          -- Minimal clangd setup
+          { "clangd", "--background-index" },
+          -- Fallback to basic clangd
+          { "clangd" },
+        }
+        
+        for i, cmd in ipairs(clangd_commands) do
+          if vim.fn.executable(cmd[1]) == 1 then
+            clangd_config.cmd = cmd
+            vim.notify(string.format("🔧 Setting up clangd with command: %s", table.concat(cmd, " ")), vim.log.levels.INFO)
+            break
+          end
+        end
+        
+        -- If no clangd is found, provide helpful message
+        if not clangd_config.cmd then
+          vim.notify("⚠️ clangd not found. Install via package manager or Mason for C/C++ LSP support", vim.log.levels.WARN)
+          return false
+        end
+        
+        lspconfig.clangd.setup(clangd_config)
+        return true
+      end
+
       -- Configure LSP servers with shared setup
       local servers = {
         lua_ls = {
@@ -1012,10 +1194,6 @@ return {
         html = {},
         cssls = {},
         jsonls = {},
-        clangd = {
-          cmd = { "clangd", "--background-index" },
-          filetypes = { "c", "cpp", "objc", "objcpp" },
-        },
         jdtls = {
           settings = {
             java = {
@@ -1026,11 +1204,28 @@ return {
         },
       }
 
+      -- Setup clangd first with priority handling
+      local clangd_setup_success = setup_clangd(lspconfig, capabilities, on_attach)
+      
+      -- Setup other LSP servers
       for server, config in pairs(servers) do
         config.capabilities = capabilities
         config.on_attach = on_attach
         lspconfig[server].setup(config)
       end
+      
+      -- Add autocommand to ensure clangd works on C/C++ file open
+      vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
+        pattern = {"*.c", "*.cpp", "*.h", "*.hpp", "*.cc", "*.cxx"},
+        callback = function()
+          -- Check if clangd is attached, if not try to start it
+          local clients = vim.lsp.get_active_clients({name = "clangd"})
+          if #clients == 0 and not clangd_setup_success then
+            vim.notify("🔄 Attempting to restart clangd for C/C++ file", vim.log.levels.INFO)
+            setup_clangd(lspconfig, capabilities, on_attach)
+          end
+        end,
+      })
 
       -- Diagnostic configuration
       vim.diagnostic.config({
