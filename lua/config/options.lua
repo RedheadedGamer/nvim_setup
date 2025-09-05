@@ -63,8 +63,15 @@ vim.cmd([[
   let &t_SR = "\e[2 q"
 ]])
 
--- Grep settings (if ripgrep is available)
+-- Grep settings with fallback support
 if vim.fn.executable("rg") == 1 then
   opt.grepprg = "rg --vimgrep --hidden --smart-case"
   opt.grepformat = "%f:%l:%c:%m"
+elseif vim.fn.executable("grep") == 1 then
+  -- Fallback to system grep with reasonable options
+  opt.grepprg = "grep -r -n -H --exclude-dir=.git --exclude-dir=node_modules --exclude='*.min.js' --exclude='*.log'"
+  opt.grepformat = "%f:%l:%m"
+else
+  -- Final fallback to internal grep
+  opt.grepprg = "internal"
 end

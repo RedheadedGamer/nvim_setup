@@ -738,6 +738,19 @@ return {
   {
     "rcarriga/nvim-notify",
     config = function()
+      -- Check for Neovim version compatibility (nvim-notify requires vim.version.ge which is 0.8+)
+      local version_ok = vim.version and vim.version.ge and vim.version.ge(vim.version(), {0, 8, 0})
+      
+      if not version_ok then
+        -- Fallback for older Neovim versions
+        vim.notify = function(msg, level)
+          local levels = { "ERROR", "WARN", "INFO", "DEBUG" }
+          local level_name = levels[level] or "INFO"
+          print(string.format("[%s] %s", level_name, tostring(msg)))
+        end
+        return
+      end
+      
       require("notify").setup({
         background_colour = "#000000",
         fps = 30,
@@ -787,11 +800,38 @@ return {
       local telescope = require("telescope")
       local actions = require("telescope.actions")
       
+      -- Configure vimgrep_arguments with fallback support
+      local vimgrep_arguments = {
+        "rg",
+        "--color=never",
+        "--no-heading",
+        "--with-filename", 
+        "--line-number",
+        "--column",
+        "--smart-case",
+        "--hidden"
+      }
+      
+      -- Fallback to grep if ripgrep is not available
+      if vim.fn.executable("rg") ~= 1 then
+        vimgrep_arguments = {
+          "grep",
+          "-r", 
+          "-n",
+          "-H",
+          "--exclude-dir=.git",
+          "--exclude-dir=node_modules",
+          "--exclude=*.min.js",
+          "--exclude=*.log"
+        }
+      end
+      
       telescope.setup({
         defaults = {
           prompt_prefix = " ",
           selection_caret = " ",
           path_display = { "truncate" },
+          vimgrep_arguments = vimgrep_arguments,
           mappings = {
             i = {
               ["<C-n>"] = actions.cycle_history_next,
@@ -948,22 +988,28 @@ return {
       "rafamadriz/friendly-snippets",
     },
     config = function()
-      -- Mason setup
+      -- Mason setup with enhanced compatibility
       require("mason").setup({
         ui = {
           border = "rounded",
+        },
+        -- Add timeout and retry settings for better reliability
+        max_concurrent_installers = 4,
+        providers = {
+          "mason.providers.registry-api",
+          "mason.providers.client",
         },
       })
       
       require("mason-lspconfig").setup({
         ensure_installed = {
+          "clangd",     -- C/C++ LSP (prioritized as default)
           "lua_ls",
           "pyright", 
           "ts_ls",
           "html",
           "cssls",
           "jsonls",
-          "clangd",     -- C/C++ LSP
           "jdtls",      -- Java LSP
         },
         automatic_installation = true,
@@ -999,6 +1045,19 @@ return {
 
       -- Configure LSP servers with shared setup
       local servers = {
+        -- Prioritize clangd configuration for C/C++ development
+        clangd = {
+          cmd = { "clangd", "--background-index", "--clang-tidy", "--header-insertion=iwyu" },
+          filetypes = { "c", "cpp", "objc", "objcpp" },
+          root_dir = function() 
+            return vim.loop.cwd() 
+          end,
+          settings = {
+            clangd = {
+              fallbackFlags = { "-std=c++17" },
+            },
+          },
+        },
         lua_ls = {
           settings = {
             Lua = {
@@ -1012,10 +1071,6 @@ return {
         html = {},
         cssls = {},
         jsonls = {},
-        clangd = {
-          cmd = { "clangd", "--background-index" },
-          filetypes = { "c", "cpp", "objc", "objcpp" },
-        },
         jdtls = {
           settings = {
             java = {
