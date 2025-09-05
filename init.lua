@@ -53,6 +53,25 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- Early C/C++ LSP Priority Check
+-- This ensures clangd is prioritized even before plugins load
+vim.schedule(function()
+  -- Check for C/C++ development environment on startup
+  local cwd = vim.loop.cwd()
+  local has_c_files = vim.fn.glob(cwd .. "/*.{c,cpp,h,hpp,cc,cxx}", false, true)
+  
+  if #has_c_files > 0 then
+    vim.notify("🔍 C/C++ project detected - prioritizing clangd setup", vim.log.levels.INFO)
+    
+    -- Pre-check clangd availability
+    if vim.fn.executable("clangd") == 1 then
+      vim.notify("✅ clangd ready for C/C++ development", vim.log.levels.INFO)
+    else
+      vim.notify("⚠️ clangd not found - will attempt installation via Mason", vim.log.levels.WARN)
+    end
+  end
+end)
+
 -- Load plugins
 require("lazy").setup(require("plugins"), {
   git = {

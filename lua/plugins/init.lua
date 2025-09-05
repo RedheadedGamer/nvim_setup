@@ -1018,10 +1018,54 @@ return {
       "rafamadriz/friendly-snippets",
     },
     config = function()
+      -- Priority C/C++ LSP Bootstrap Function
+      local function bootstrap_clangd()
+        -- Check if clangd is available in system PATH first
+        if vim.fn.executable("clangd") == 1 then
+          vim.notify("✅ clangd found in system PATH", vim.log.levels.INFO)
+          return true
+        end
+        
+        -- Check if clangd is available through Mason
+        local mason_registry_ok, mason_registry = pcall(require, "mason-registry")
+        if mason_registry_ok then
+          local clangd_pkg = mason_registry.get_package("clangd")
+          if clangd_pkg:is_installed() then
+            vim.notify("✅ clangd installed via Mason", vim.log.levels.INFO)
+            return true
+          end
+          
+          -- Attempt to install clangd immediately
+          vim.notify("🔧 Installing clangd via Mason...", vim.log.levels.INFO)
+          clangd_pkg:install():once("closed", function()
+            if clangd_pkg:is_installed() then
+              vim.notify("✅ clangd installation completed", vim.log.levels.INFO)
+              -- Restart LSP for C/C++ files after installation
+              vim.schedule(function()
+                for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+                  local ft = vim.api.nvim_buf_get_option(buf, "filetype")
+                  if ft == "c" or ft == "cpp" or ft == "objc" or ft == "objcpp" then
+                    vim.cmd("LspRestart")
+                    break
+                  end
+                end
+              end)
+            else
+              vim.notify("⚠️ clangd installation failed, using fallback configuration", vim.log.levels.WARN)
+            end
+          end)
+        else
+          vim.notify("⚠️ Mason registry not available, install clangd manually for C/C++ support", vim.log.levels.WARN)
+        end
+        
+        return false
+      end
+      
       -- Safely setup Mason with error handling
       local mason_ok, mason = pcall(require, "mason")
       if not mason_ok then
         vim.notify("Mason failed to load, LSP servers may need manual installation", vim.log.levels.WARN)
+        bootstrap_clangd() -- Still try to bootstrap clangd
         return
       end
       
@@ -1053,8 +1097,12 @@ return {
           },
           automatic_installation = true,
         })
+        
+        -- Immediate bootstrap for clangd (highest priority)
+        bootstrap_clangd()
       else
         vim.notify("Mason-lspconfig failed to load, automatic LSP installation disabled", vim.log.levels.WARN)
+        bootstrap_clangd() -- Still try to bootstrap clangd without mason-lspconfig
       end
 
       -- LSP settings
@@ -1085,21 +1133,54 @@ return {
         keymap.set("n", "<leader>li", "<cmd>LspInfo<cr>", vim.tbl_extend("force", opts, { desc = "LSP info" }))
       end
 
-      -- Configure LSP servers with shared setup
-      local servers = {
-        -- Prioritize clangd configuration for C/C++ development
-        clangd = {
-          cmd = { "clangd", "--background-index", "--clang-tidy", "--header-insertion=iwyu" },
+      -- Enhanced clangd setup function with multiple fallbacks
+      local function setup_clangd(lspconfig, capabilities, on_attach)
+        local clangd_config = {
           filetypes = { "c", "cpp", "objc", "objcpp" },
           root_dir = function() 
             return vim.loop.cwd() 
           end,
+          capabilities = capabilities,
+          on_attach = on_attach,
           settings = {
             clangd = {
               fallbackFlags = { "-std=c++17" },
             },
           },
-        },
+        }
+        
+        -- Try different clangd command variations for maximum compatibility
+        local clangd_commands = {
+          -- Full featured clangd with all options
+          { "clangd", "--background-index", "--clang-tidy", "--header-insertion=iwyu", "--completion-style=detailed" },
+          -- Basic clangd with essential options  
+          { "clangd", "--background-index", "--header-insertion=iwyu" },
+          -- Minimal clangd setup
+          { "clangd", "--background-index" },
+          -- Fallback to basic clangd
+          { "clangd" },
+        }
+        
+        for i, cmd in ipairs(clangd_commands) do
+          if vim.fn.executable(cmd[1]) == 1 then
+            clangd_config.cmd = cmd
+            vim.notify(string.format("🔧 Setting up clangd with command: %s", table.concat(cmd, " ")), vim.log.levels.INFO)
+            break
+          end
+        end
+        
+        -- If no clangd is found, provide helpful message
+        if not clangd_config.cmd then
+          vim.notify("⚠️ clangd not found. Install via package manager or Mason for C/C++ LSP support", vim.log.levels.WARN)
+          return false
+        end
+        
+        lspconfig.clangd.setup(clangd_config)
+        return true
+      end
+
+      -- Configure LSP servers with shared setup
+      local servers = {
         lua_ls = {
           settings = {
             Lua = {
@@ -1123,11 +1204,28 @@ return {
         },
       }
 
+      -- Setup clangd first with priority handling
+      local clangd_setup_success = setup_clangd(lspconfig, capabilities, on_attach)
+      
+      -- Setup other LSP servers
       for server, config in pairs(servers) do
         config.capabilities = capabilities
         config.on_attach = on_attach
         lspconfig[server].setup(config)
       end
+      
+      -- Add autocommand to ensure clangd works on C/C++ file open
+      vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
+        pattern = {"*.c", "*.cpp", "*.h", "*.hpp", "*.cc", "*.cxx"},
+        callback = function()
+          -- Check if clangd is attached, if not try to start it
+          local clients = vim.lsp.get_active_clients({name = "clangd"})
+          if #clients == 0 and not clangd_setup_success then
+            vim.notify("🔄 Attempting to restart clangd for C/C++ file", vim.log.levels.INFO)
+            setup_clangd(lspconfig, capabilities, on_attach)
+          end
+        end,
+      })
 
       -- Diagnostic configuration
       vim.diagnostic.config({
