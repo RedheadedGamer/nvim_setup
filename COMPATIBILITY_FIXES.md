@@ -24,9 +24,71 @@ if not version_ok then
 end
 ```
 
-### 2. Ripgrep Dependency Fallbacks
+### 4. Ripgrep Dependency Fallbacks
 
 **Problem**: Missing ripgrep on Ubuntu systems without sudo access caused telescope and grep functionality to fail.
+
+### 2. Completion Failsafes for LSP Dependencies
+
+**Problem**: Autocompletion degraded or failed when LSP servers couldn't start due to missing sudo access or ripgrep dependencies.
+
+**Solution**: Enhanced nvim-cmp configuration with dynamic source detection and comprehensive fallbacks:
+
+#### A. Dynamic Completion Source Detection
+```lua
+-- Before: Hardcoded LSP sources that fail silently
+sources = {
+  { name = "nvim_lsp" },  -- Always included, even if unavailable
+  { name = "luasnip" },
+  { name = "buffer" },
+  { name = "path" },
+}
+
+-- After: Dynamic detection based on availability
+local function get_completion_sources()
+  local sources = {}
+  
+  -- Check if LSP completion is available
+  local lsp_available = false
+  local cmp_nvim_lsp_ok = pcall(require, "cmp_nvim_lsp")
+  if cmp_nvim_lsp_ok then
+    lsp_available = true
+    table.insert(sources, { name = "nvim_lsp", priority = 1000 })
+  end
+  
+  -- Add other sources with safe loading...
+  return sources
+end
+```
+
+#### B. Runtime LSP Integration
+```lua
+-- Add LSP completion when servers become available
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function()
+    -- Dynamically add LSP source when servers start
+    if not has_lsp_source then
+      cmp.setup({ sources = new_sources })
+      vim.notify("🔄 Completion sources updated: LSP now available")
+    end
+  end,
+})
+```
+
+#### C. Multi-Level Snippet Fallbacks
+```lua
+snippet = {
+  expand = function(args)
+    if luasnip_ok then
+      luasnip.lsp_expand(args.body)
+    elseif vim.snippet and vim.snippet.expand then
+      vim.snippet.expand(args.body)  -- Neovim 0.10+ fallback
+    else
+      vim.api.nvim_put({ args.body }, "c", true, true)  -- Final fallback
+    end
+  end,
+}
+```
 
 **Solutions**:
 
@@ -126,7 +188,7 @@ clangd = {
 },
 ```
 
-### 4. Global Safety Measures
+### 5. Global Safety Measures
 
 **Problem**: Various plugins could fail and break the entire configuration.
 
@@ -153,6 +215,7 @@ The configuration now supports these fallback chains:
 2. **Live Grep**: Telescope live_grep (with rg) → Telescope live_grep (with grep) → mini.pick grep_live
 3. **Buffer Management**: Telescope buffers → mini.pick buffers → built-in buffer list
 4. **Help System**: Telescope help_tags → mini.pick help → built-in help
+5. **Code Completion**: LSP completion → snippet completion → buffer/path completion → manual completion
 
 ## Validation
 
