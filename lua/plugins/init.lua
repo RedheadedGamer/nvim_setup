@@ -852,12 +852,42 @@ return {
         },
       })
       
-      -- Telescope keymaps
+      -- Telescope keymaps with fallbacks
       local keymap = vim.keymap
-      keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "Find Files" })
-      keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { desc = "Live Grep" })
-      keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Find Buffers" })
-      keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", { desc = "Help Tags" })
+      
+      -- Create safer telescope commands with fallbacks
+      local function safe_telescope_cmd(cmd, fallback_fn, desc)
+        return function()
+          local telescope_ok, telescope_builtin = pcall(require, "telescope.builtin")
+          if telescope_ok and telescope_builtin[cmd] then
+            telescope_builtin[cmd]()
+          else
+            if fallback_fn then
+              fallback_fn()
+            else
+              vim.notify("Telescope not available, using fallback", vim.log.levels.WARN)
+              vim.cmd("edit .")
+            end
+          end
+        end
+      end
+      
+      keymap.set("n", "<leader>ff", safe_telescope_cmd("find_files", function()
+        require("mini.pick").builtin.files()
+      end), { desc = "Find Files" })
+      
+      keymap.set("n", "<leader>fg", safe_telescope_cmd("live_grep", function()
+        require("mini.pick").builtin.grep_live()
+      end), { desc = "Live Grep" })
+      
+      keymap.set("n", "<leader>fb", safe_telescope_cmd("buffers", function()
+        require("mini.pick").builtin.buffers()
+      end), { desc = "Find Buffers" })
+      
+      keymap.set("n", "<leader>fh", safe_telescope_cmd("help_tags", function()
+        require("mini.pick").builtin.help()
+      end), { desc = "Help Tags" })
+      
       keymap.set("n", "<leader>fc", "<cmd>Telescope commands<cr>", { desc = "Commands" })
       keymap.set("n", "<leader>fk", "<cmd>Telescope keymaps<cr>", { desc = "Keymaps" })
       
@@ -988,8 +1018,15 @@ return {
       "rafamadriz/friendly-snippets",
     },
     config = function()
+      -- Safely setup Mason with error handling
+      local mason_ok, mason = pcall(require, "mason")
+      if not mason_ok then
+        vim.notify("Mason failed to load, LSP servers may need manual installation", vim.log.levels.WARN)
+        return
+      end
+      
       -- Mason setup with enhanced compatibility
-      require("mason").setup({
+      mason.setup({
         ui = {
           border = "rounded",
         },
@@ -1001,19 +1038,24 @@ return {
         },
       })
       
-      require("mason-lspconfig").setup({
-        ensure_installed = {
-          "clangd",     -- C/C++ LSP (prioritized as default)
-          "lua_ls",
-          "pyright", 
-          "ts_ls",
-          "html",
-          "cssls",
-          "jsonls",
-          "jdtls",      -- Java LSP
-        },
-        automatic_installation = true,
-      })
+      local mason_lspconfig_ok, mason_lspconfig = pcall(require, "mason-lspconfig")
+      if mason_lspconfig_ok then
+        mason_lspconfig.setup({
+          ensure_installed = {
+            "clangd",     -- C/C++ LSP (prioritized as default)
+            "lua_ls",
+            "pyright", 
+            "ts_ls",
+            "html",
+            "cssls",
+            "jsonls",
+            "jdtls",      -- Java LSP
+          },
+          automatic_installation = true,
+        })
+      else
+        vim.notify("Mason-lspconfig failed to load, automatic LSP installation disabled", vim.log.levels.WARN)
+      end
 
       -- LSP settings
       local lspconfig = require("lspconfig")

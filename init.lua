@@ -17,6 +17,18 @@ require("config.options")
 require("config.keymaps")
 require("config.autocmds")
 
+-- Add global error handling for better plugin compatibility
+vim.schedule(function()
+  -- Ensure vim.notify has a safe fallback even if nvim-notify fails
+  if not vim.notify then
+    vim.notify = function(msg, level)
+      local levels = { "ERROR", "WARN", "INFO", "DEBUG" }
+      local level_name = levels[level] or "INFO"
+      print(string.format("[%s] %s", level_name, tostring(msg)))
+    end
+  end
+end)
+
 -- Bootstrap lazy.nvim plugin manager
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
