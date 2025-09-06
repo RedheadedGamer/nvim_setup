@@ -86,21 +86,40 @@ function M.get_available_themes()
   
   -- Add themes that might not be loaded yet but should be available
   local additional_themes = {
+    -- OneDark variants
     "onedark_dark", "onedark_vivid", "onedark_cool", "onedark_warm",
+    -- Tokyo Night variants
     "tokyonight-night", "tokyonight-storm", "tokyonight-day", "tokyonight-moon",
-    "gruvbox", "gruvbox-baby", "gruvbox-material",
+    -- Gruvbox family
+    "gruvbox", "gruvbox-baby", "gruvbox-material", "gruvbox-flat",
+    -- Dracula variants
     "dracula", "dracula-soft",
+    -- Nord theme
     "nord",
+    -- Catppuccin variants
     "catppuccin-latte", "catppuccin-frappe", "catppuccin-macchiato", "catppuccin-mocha",
+    -- Fox themes
     "nightfox", "dawnfox", "dayfox", "duskfox", "nordfox", "terafox", "carbonfox",
+    -- Rose Pine variants
     "rose-pine", "rose-pine-main", "rose-pine-moon", "rose-pine-dawn",
+    -- Kanagawa variants
     "kanagawa", "kanagawa-wave", "kanagawa-dragon", "kanagawa-lotus",
+    -- Popular themes
     "sonokai", "edge", "everforest", "material",
     "vscode", "github_dark", "github_light", "github_dark_dimmed",
-    "darkplus", "aurora", "monokai-pro", "solarized", "ayu-dark", "ayu-light",
+    "darkplus", "aurora",
+    -- Premium modern themes  
+    "monokai-pro", "solarized", "ayu-dark", "ayu-light", "ayu-mirage",
     "oceanic-next", "palenight", "tender", "spaceduck", "deep-space",
     "moonfly", "nightfly", "zephyr", "oxocarbon", "melange", "flow",
-    "cyberdream", "vesper", "bamboo", "flexoki", "lackluster"
+    "cyberdream", "vesper", "bamboo", "flexoki", "lackluster",
+    -- Additional premium themes for 50+ count
+    "onehalf-dark", "onehalf-light", "papercolor-theme", "apprentice",
+    "seoul256", "hybrid", "jellybeans", "molokai", "srcery", "base16-default-dark",
+    "base16-tomorrow-night", "base16-ocean", "base16-eighties", "base16-mocha",
+    "iceberg", "falcon", "challenger-deep", "vim-monokai-tasty", "substrata",
+    "calvera-dark", "tokyodark", "alduin", "tender-vim", "space-vim-dark",
+    "gotham", "zenburn", "railscasts", "badwolf", "lucius"
   }
   
   -- Combine and deduplicate

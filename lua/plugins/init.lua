@@ -245,7 +245,8 @@ return {
   -- Monokai Pro family - Professional themes
   {
     "loctvl842/monokai-pro.nvim",
-    lazy = true,
+    lazy = false, -- Load immediately for theme switcher
+    priority = 995,
     config = function()
       require("monokai-pro").setup({
         transparent_background = true,
@@ -257,7 +258,8 @@ return {
   -- Solarized - Classic and beloved
   {
     "maxmx03/solarized.nvim",
-    lazy = true,
+    lazy = false, -- Load immediately for theme switcher
+    priority = 994,
     config = function()
       require("solarized").setup({
         transparent = true,
@@ -274,7 +276,8 @@ return {
   -- Ayu - Elegant minimal themes
   {
     "Shatur/neovim-ayu",
-    lazy = true,
+    lazy = false, -- Load immediately for theme switcher
+    priority = 993,
     config = function()
       require("ayu").setup({
         mirage = true,
@@ -287,19 +290,22 @@ return {
   -- Oceanic Next - Beautiful blue theme
   {
     "mhartington/oceanic-next",
-    lazy = true,
+    lazy = false, -- Load immediately for theme switcher
+    priority = 992,
   },
 
   -- Palenight - Material inspired
   {
     "drewtempelmeyer/palenight.vim",
-    lazy = true,
+    lazy = false, -- Load immediately for theme switcher
+    priority = 991,
   },
 
   -- Gruvbox Baby - Modern Gruvbox
   {
     "luisiacc/gruvbox-baby",
-    lazy = true,
+    lazy = false, -- Load immediately for theme switcher
+    priority = 990,
     config = function()
       vim.g.gruvbox_baby_transparent_mode = 1
       vim.g.gruvbox_baby_function_style = "NONE"
@@ -310,46 +316,53 @@ return {
   -- Tender - Gentle purple theme
   {
     "jacoborus/tender.vim",
-    lazy = true,
+    lazy = false, -- Load immediately for theme switcher
+    priority = 989,
   },
 
   -- Spaceduck - Retro space theme
   {
     "pineapplegiant/spaceduck",
-    lazy = true,
+    lazy = false, -- Load immediately for theme switcher
+    priority = 988,
   },
 
   -- Deep Space - Cosmic dark theme
   {
     "tyrannicaltoucan/vim-deep-space",
-    lazy = true,
+    lazy = false, -- Load immediately for theme switcher
+    priority = 987,
   },
 
   -- Moonfly - Dark blue theme
   {
     "bluz71/vim-moonfly-colors",
     name = "moonfly",
-    lazy = true,
+    lazy = false, -- Load immediately for theme switcher
+    priority = 986,
   },
 
   -- Nightowl - Dark theme for night owls
   {
     "bluz71/vim-nightfly-colors",
     name = "nightfly",
-    lazy = true,
+    lazy = false, -- Load immediately for theme switcher
+    priority = 985,
   },
 
   -- Zephyr - Modern dark theme
   {
     "glepnir/zephyr-nvim",
-    lazy = true,
+    lazy = false, -- Load immediately for theme switcher
+    priority = 984,
   },
 
   -- Onedark Vivid - Enhanced OneDark
   {
     "navarasu/onedark.nvim",
     name = "onedark-nvim", -- Avoid name conflict
-    lazy = true,
+    lazy = false, -- Load immediately for theme switcher
+    priority = 983,
     config = function()
       require("onedark").setup({
         style = "vivid", -- dark, darker, cool, deep, warm, warmer, vivid
@@ -368,19 +381,22 @@ return {
   -- Oxocarbon - Modern IBM inspired
   {
     "nyoom-engineering/oxocarbon.nvim",
-    lazy = true,
+    lazy = false, -- Load immediately for theme switcher
+    priority = 982,
   },
 
   -- Melange - Warm color palette
   {
     "savq/melange-nvim",
-    lazy = true,
+    lazy = false, -- Load immediately for theme switcher
+    priority = 981,
   },
 
   -- Flow - Minimal and clean
   {
     "0xstepit/flow.nvim",
-    lazy = true,
+    lazy = false, -- Load immediately for theme switcher
+    priority = 980,
     config = function()
       require("flow").setup({
         transparent = true,
@@ -394,7 +410,8 @@ return {
   -- Cyberdream - Futuristic theme
   {
     "scottmckendry/cyberdream.nvim",
-    lazy = true,
+    lazy = false, -- Load immediately for theme switcher
+    priority = 979,
     config = function()
       require("cyberdream").setup({
         transparent = true,
@@ -408,13 +425,15 @@ return {
   -- Vesper - Dark purple theme
   {
     "datsfilipe/vesper.nvim",
-    lazy = true,
+    lazy = false, -- Load immediately for theme switcher
+    priority = 978,
   },
 
   -- Bamboo - Natural green theme
   {
     "ribru17/bamboo.nvim",
-    lazy = true,
+    lazy = false, -- Load immediately for theme switcher
+    priority = 977,
     config = function()
       require("bamboo").setup({
         transparent = true,
@@ -426,20 +445,23 @@ return {
   -- Base16 - Classic terminal themes
   {
     "RRethy/base16-nvim",
-    lazy = true,
+    lazy = false, -- Load immediately for theme switcher
+    priority = 976,
   },
 
   -- Flexoki - Modern neutral theme
   {
     "kepano/flexoki-neovim",
     name = "flexoki",
-    lazy = true,
+    lazy = false, -- Load immediately for theme switcher
+    priority = 975,
   },
 
   -- Lackluster - Deliberately muted
   {
     "slugbyte/lackluster.nvim",
-    lazy = true,
+    lazy = false, -- Load immediately for theme switcher
+    priority = 974,
   },
 
   -- Essential dependencies
@@ -1126,7 +1148,7 @@ return {
             winblend = 10,
             layout_config = {
               width = 0.8,
-              height = 0.8,
+              height = 0.9, -- Increased height for more themes
             },
           }),
           -- Enhanced builtin config for better theme switcher experience
@@ -1151,26 +1173,22 @@ return {
               ["<CR>"] = "Confirm",
             },
           },
-          -- Use builtin for better scrolling behavior (avoids infinite indent)
+          -- Use telescope for theme selection to handle large lists with proper scrolling
           get_config = function(opts)
             if opts.prompt and opts.prompt:match("theme") then
               return {
-                backend = "builtin",
-                builtin = {
-                  border = "rounded",
-                  relative = "editor",
-                  max_height = 0.6,
-                  max_width = 0.6,
-                  mappings = {
-                    ["<Esc>"] = "Close",
-                    ["<C-c>"] = "Close", 
-                    ["<CR>"] = "Confirm",
-                    ["j"] = "Next",
-                    ["k"] = "Prev",
-                    ["<Down>"] = "Next",
-                    ["<Up>"] = "Prev",
+                backend = "telescope",
+                telescope = require("telescope.themes").get_dropdown({
+                  winblend = 10,
+                  layout_config = {
+                    width = 0.7,
+                    height = 0.9, -- Use 90% of screen height to show more themes
+                    preview_cutoff = 120,
                   },
-                },
+                  -- Enable scrolling and navigation
+                  scroll_strategy = "limit",
+                  layout_strategy = "vertical",
+                }),
               }
             end
             return {}
