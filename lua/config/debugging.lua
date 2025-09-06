@@ -8,8 +8,19 @@ M.check_debug_tools = function()
   local tools = {
     gdb = vim.fn.executable("gdb") == 1,
     valgrind = vim.fn.executable("valgrind") == 1,
-    python_debugpy = pcall(require, "debugpy"),
   }
+  
+  -- Check for Python debugpy module
+  local python_debugpy = false
+  if vim.fn.executable("python3") == 1 then
+    local handle = io.popen("python3 -c 'import debugpy; print(\"available\")' 2>/dev/null")
+    if handle then
+      local result = handle:read("*a")
+      handle:close()
+      python_debugpy = result and result:match("available") ~= nil
+    end
+  end
+  tools.python_debugpy = python_debugpy
   
   -- Check for GEF
   local gef_available = false
@@ -258,12 +269,12 @@ M.setup = function()
   end
   
   if #available > 0 then
-    vim.notify("🔧 Debug tools available: " .. table.concat(available, ", "), vim.log.levels.INFO)
+    vim.notify("🔧 Debug tools available: " .. table.concat(available, ", "), vim.log.levels.DEBUG)
   end
   
   if #missing > 0 then
     vim.notify("⚠️ Missing debug tools: " .. table.concat(missing, ", "), vim.log.levels.WARN)
-    vim.notify("💡 Install missing tools for full debugging capabilities", vim.log.levels.INFO)
+    vim.notify("💡 Install missing tools for full debugging capabilities", vim.log.levels.DEBUG)
   end
   
   -- Setup debug keymaps with which-key integration
@@ -279,7 +290,7 @@ M.setup = function()
   
   M.setup_debug_statusline()
   
-  vim.notify("🚀 Advanced debugging environment initialized", vim.log.levels.INFO)
+  vim.notify("🚀 Advanced debugging environment initialized", vim.log.levels.DEBUG)
 end
 
 return M
