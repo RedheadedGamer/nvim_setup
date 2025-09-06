@@ -280,27 +280,42 @@ return {
       starter.setup({
         evaluate_single = true,
         items = {
-          starter.sections.builtin_actions(),
-          starter.sections.recent_files(10, false),
-          starter.sections.recent_files(10, true),
-          -- Enhanced custom section for common tasks
+          -- Essential actions section
           {
-            { action = "Telescope find_files", name = "F: Find files", section = "🔍 Telescope" },
-            { action = "Telescope live_grep", name = "G: Live grep", section = "🔍 Telescope" },
-            { action = "Telescope buffers", name = "B: Buffers", section = "🔍 Telescope" },
-            { action = "Telescope themes", name = "T: Theme switcher", section = "🔍 Telescope" },
+            { action = "enew", name = "N: New file", section = "📝 Quick Actions" },
+            { action = "Telescope find_files", name = "F: Find files", section = "📝 Quick Actions" },
+            { action = "Telescope live_grep", name = "G: Live grep", section = "📝 Quick Actions" },
+            { action = "Telescope oldfiles", name = "R: Recent files", section = "📝 Quick Actions" },
           },
-          -- Plugin management section
+          -- Discovery and help section  
+          {
+            { action = "Telescope keymaps", name = "K: Browse keymaps", section = "🔍 Discovery" },
+            { action = "Telescope commands", name = "C: Browse commands", section = "🔍 Discovery" },
+            { action = "Telescope help_tags", name = "H: Browse help", section = "🔍 Discovery" },
+            { action = "lua require('which-key').show({ global = true })", name = "?: Global keymaps", section = "🔍 Discovery" },
+          },
+          -- Theme and customization
+          {
+            { action = "lua require('telescope.builtin').colorscheme({enable_preview = true})", name = "T: Theme switcher", section = "🎨 Customize" },
+            { action = "Telescope buffers", name = "B: Buffers", section = "🎨 Customize" },
+            { action = "e ~/.config/nvim/init.lua", name = "I: Edit config", section = "🎨 Customize" },
+            { action = "e ~/.config/nvim/lua/config/keymaps.lua", name = "M: Edit keymaps", section = "🎨 Customize" },
+          },
+          -- Management section
           {
             { action = "Lazy", name = "L: Plugin manager", section = "🔧 Management" },
-            { action = "Mason", name = "M: LSP manager", section = "🔧 Management" },
-            { action = "checkhealth", name = "H: Health check", section = "🔧 Management" },
+            { action = "Mason", name = "S: LSP manager", section = "🔧 Management" },
+            { action = "checkhealth", name = "D: Health check", section = "🔧 Management" },
+            { action = "Lazy sync", name = "Y: Sync plugins", section = "🔧 Management" },
           },
-          -- Session management
+          -- Session management (if sessions plugin is available)
           {
-            { action = "lua require('mini.sessions').select()", name = "S: Load session", section = "💾 Sessions" },
+            { action = "lua require('mini.sessions').select()", name = "O: Load session", section = "💾 Sessions" },
             { action = "lua require('mini.sessions').write(vim.fn.input('Session name: '))", name = "W: Save session", section = "💾 Sessions" },
           },
+          -- Built-in actions last
+          starter.sections.recent_files(8, false),
+          starter.sections.recent_files(5, true),
         },
         header = function()
           local hour = tonumber(vim.fn.strftime('%H'))
@@ -540,7 +555,7 @@ return {
         { "<leader>d", group = "diagnostics", icon = "🩺" },
         { "<leader>h", group = "git hunks", icon = "📊" },
         { "<leader>l", group = "lsp", icon = "🔧" },
-        { "<leader>n", group = "notifications", icon = "🔔" },
+        { "<leader>n", group = "notifications/new", icon = "🔔" },
         { "<leader>c", group = "config/code", icon = "⚙️" },
 
         -- Git hunk actions (gitsigns)
@@ -562,6 +577,13 @@ return {
         { "<leader>tt", desc = "Theme switcher", icon = "🎨" },
         { "<leader>tn", desc = "Toggle line numbers", icon = "🔢" },
         { "<leader>tr", desc = "Toggle relative numbers", icon = "🔢" },
+        { "<leader>te", desc = "Open terminal", icon = "💻" },
+        
+        -- Enhanced keymap discovery
+        { "<leader>fK", desc = "All keymaps browser", icon = "🗝️" },
+        { "<leader>fkn", desc = "Normal mode keymaps", icon = "📝" },
+        { "<leader>fkv", desc = "Visual mode keymaps", icon = "👁️" },
+        { "<leader>fki", desc = "Insert mode keymaps", icon = "✏️" },
 
         -- Goto operations
         { "g", group = "goto/operators", icon = "🎯" },
@@ -626,7 +648,8 @@ return {
         title_pos = "center",
         zindex = 1000,
         wo = {
-          winblend = 15, -- Slightly increased transparency
+          winblend = 0, -- Full transparency for better background blending
+          winhighlight = "Normal:WhichKeyFloat,FloatBorder:WhichKeyBorder",
         },
       },
       layout = {
@@ -666,6 +689,13 @@ return {
           require("which-key").show({ global = false })
         end,
         desc = "Buffer Local Keymaps (which-key)",
+      },
+      {
+        "<leader><leader>?",
+        function()
+          require("which-key").show({ global = true })
+        end,
+        desc = "Global Keymaps (which-key)",
       },
     },
   },
@@ -708,19 +738,6 @@ return {
   {
     "rcarriga/nvim-notify",
     config = function()
-      -- Check for Neovim version compatibility (nvim-notify requires vim.version.ge which is 0.8+)
-      local version_ok = vim.version and vim.version.ge and vim.version.ge(vim.version(), {0, 8, 0})
-      
-      if not version_ok then
-        -- Fallback for older Neovim versions
-        vim.notify = function(msg, level)
-          local levels = { "ERROR", "WARN", "INFO", "DEBUG" }
-          local level_name = levels[level] or "INFO"
-          print(string.format("[%s] %s", level_name, tostring(msg)))
-        end
-        return
-      end
-      
       require("notify").setup({
         background_colour = "#000000",
         fps = 30,
@@ -770,38 +787,11 @@ return {
       local telescope = require("telescope")
       local actions = require("telescope.actions")
       
-      -- Configure vimgrep_arguments with fallback support
-      local vimgrep_arguments = {
-        "rg",
-        "--color=never",
-        "--no-heading",
-        "--with-filename", 
-        "--line-number",
-        "--column",
-        "--smart-case",
-        "--hidden"
-      }
-      
-      -- Fallback to grep if ripgrep is not available
-      if vim.fn.executable("rg") ~= 1 then
-        vimgrep_arguments = {
-          "grep",
-          "-r", 
-          "-n",
-          "-H",
-          "--exclude-dir=.git",
-          "--exclude-dir=node_modules",
-          "--exclude=*.min.js",
-          "--exclude=*.log"
-        }
-      end
-      
       telescope.setup({
         defaults = {
           prompt_prefix = " ",
           selection_caret = " ",
           path_display = { "truncate" },
-          vimgrep_arguments = vimgrep_arguments,
           mappings = {
             i = {
               ["<C-n>"] = actions.cycle_history_next,
@@ -822,44 +812,54 @@ return {
         },
       })
       
-      -- Telescope keymaps with fallbacks
+      -- Telescope keymaps
       local keymap = vim.keymap
-      
-      -- Create safer telescope commands with fallbacks
-      local function safe_telescope_cmd(cmd, fallback_fn, desc)
-        return function()
-          local telescope_ok, telescope_builtin = pcall(require, "telescope.builtin")
-          if telescope_ok and telescope_builtin[cmd] then
-            telescope_builtin[cmd]()
-          else
-            if fallback_fn then
-              fallback_fn()
-            else
-              vim.notify("Telescope not available, using fallback", vim.log.levels.WARN)
-              vim.cmd("edit .")
-            end
-          end
-        end
-      end
-      
-      keymap.set("n", "<leader>ff", safe_telescope_cmd("find_files", function()
-        require("mini.pick").builtin.files()
-      end), { desc = "Find Files" })
-      
-      keymap.set("n", "<leader>fg", safe_telescope_cmd("live_grep", function()
-        require("mini.pick").builtin.grep_live()
-      end), { desc = "Live Grep" })
-      
-      keymap.set("n", "<leader>fb", safe_telescope_cmd("buffers", function()
-        require("mini.pick").builtin.buffers()
-      end), { desc = "Find Buffers" })
-      
-      keymap.set("n", "<leader>fh", safe_telescope_cmd("help_tags", function()
-        require("mini.pick").builtin.help()
-      end), { desc = "Help Tags" })
-      
+      keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "Find Files" })
+      keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { desc = "Live Grep" })
+      keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Find Buffers" })
+      keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", { desc = "Help Tags" })
       keymap.set("n", "<leader>fc", "<cmd>Telescope commands<cr>", { desc = "Commands" })
       keymap.set("n", "<leader>fk", "<cmd>Telescope keymaps<cr>", { desc = "Keymaps" })
+      
+      -- Enhanced keymap discovery - comprehensive keymap browser
+      keymap.set("n", "<leader>fK", function()
+        require("telescope.builtin").keymaps({
+          prompt_title = "🗝️  All Keymaps Browser",
+          show_plug = true,
+          only_buf = false,
+          modes = {"n", "i", "v", "x", "c", "t", "o"}, -- All modes
+          layout_strategy = "vertical",
+          layout_config = {
+            vertical = {
+              width = 0.9,
+              height = 0.9,
+              preview_height = 0.6,
+            },
+          },
+        })
+      end, { desc = "All Keymaps Browser" })
+      
+      -- Quick keymap help for specific modes
+      keymap.set("n", "<leader>fkn", function()
+        require("telescope.builtin").keymaps({
+          prompt_title = "Normal Mode Keymaps",
+          modes = {"n"},
+        })
+      end, { desc = "Normal Mode Keymaps" })
+      
+      keymap.set("n", "<leader>fkv", function()
+        require("telescope.builtin").keymaps({
+          prompt_title = "Visual Mode Keymaps", 
+          modes = {"v", "x"},
+        })
+      end, { desc = "Visual Mode Keymaps" })
+      
+      keymap.set("n", "<leader>fki", function()
+        require("telescope.builtin").keymaps({
+          prompt_title = "Insert Mode Keymaps",
+          modes = {"i"},
+        })
+      end, { desc = "Insert Mode Keymaps" })
       keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", { desc = "Recent Files" })
       keymap.set("n", "<leader>fs", "<cmd>Telescope grep_string<cr>", { desc = "Grep String" })
       keymap.set("n", "<leader>fw", "<cmd>Telescope live_grep<cr>", { desc = "Grep Word" })
@@ -948,92 +948,26 @@ return {
       "rafamadriz/friendly-snippets",
     },
     config = function()
-      -- Priority C/C++ LSP Bootstrap Function
-      local function bootstrap_clangd()
-        -- Check if clangd is available in system PATH first
-        if vim.fn.executable("clangd") == 1 then
-          vim.notify("✅ clangd found in system PATH", vim.log.levels.INFO)
-          return true
-        end
-        
-        -- Check if clangd is available through Mason
-        local mason_registry_ok, mason_registry = pcall(require, "mason-registry")
-        if mason_registry_ok then
-          local clangd_pkg = mason_registry.get_package("clangd")
-          if clangd_pkg:is_installed() then
-            vim.notify("✅ clangd installed via Mason", vim.log.levels.INFO)
-            return true
-          end
-          
-          -- Attempt to install clangd immediately
-          vim.notify("🔧 Installing clangd via Mason...", vim.log.levels.INFO)
-          clangd_pkg:install():once("closed", function()
-            if clangd_pkg:is_installed() then
-              vim.notify("✅ clangd installation completed", vim.log.levels.INFO)
-              -- Restart LSP for C/C++ files after installation
-              vim.schedule(function()
-                for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-                  local ft = vim.api.nvim_buf_get_option(buf, "filetype")
-                  if ft == "c" or ft == "cpp" or ft == "objc" or ft == "objcpp" then
-                    vim.cmd("LspRestart")
-                    break
-                  end
-                end
-              end)
-            else
-              vim.notify("⚠️ clangd installation failed, using fallback configuration", vim.log.levels.WARN)
-            end
-          end)
-        else
-          vim.notify("⚠️ Mason registry not available, install clangd manually for C/C++ support", vim.log.levels.WARN)
-        end
-        
-        return false
-      end
-      
-      -- Safely setup Mason with error handling
-      local mason_ok, mason = pcall(require, "mason")
-      if not mason_ok then
-        vim.notify("Mason failed to load, LSP servers may need manual installation", vim.log.levels.WARN)
-        bootstrap_clangd() -- Still try to bootstrap clangd
-        return
-      end
-      
-      -- Mason setup with enhanced compatibility
-      mason.setup({
+      -- Mason setup
+      require("mason").setup({
         ui = {
           border = "rounded",
         },
-        -- Add timeout and retry settings for better reliability
-        max_concurrent_installers = 4,
-        providers = {
-          "mason.providers.registry-api",
-          "mason.providers.client",
-        },
       })
       
-      local mason_lspconfig_ok, mason_lspconfig = pcall(require, "mason-lspconfig")
-      if mason_lspconfig_ok then
-        mason_lspconfig.setup({
-          ensure_installed = {
-            "clangd",     -- C/C++ LSP (prioritized as default)
-            "lua_ls",
-            "pyright", 
-            "ts_ls",
-            "html",
-            "cssls",
-            "jsonls",
-            "jdtls",      -- Java LSP
-          },
-          automatic_installation = true,
-        })
-        
-        -- Immediate bootstrap for clangd (highest priority)
-        bootstrap_clangd()
-      else
-        vim.notify("Mason-lspconfig failed to load, automatic LSP installation disabled", vim.log.levels.WARN)
-        bootstrap_clangd() -- Still try to bootstrap clangd without mason-lspconfig
-      end
+      require("mason-lspconfig").setup({
+        ensure_installed = {
+          "lua_ls",
+          "pyright", 
+          "ts_ls",
+          "html",
+          "cssls",
+          "jsonls",
+          "clangd",     -- C/C++ LSP
+          "jdtls",      -- Java LSP
+        },
+        automatic_installation = true,
+      })
 
       -- LSP settings
       local lspconfig = require("lspconfig")
@@ -1063,52 +997,6 @@ return {
         keymap.set("n", "<leader>li", "<cmd>LspInfo<cr>", vim.tbl_extend("force", opts, { desc = "LSP info" }))
       end
 
-      -- Enhanced clangd setup function with multiple fallbacks
-      local function setup_clangd(lspconfig, capabilities, on_attach)
-        local clangd_config = {
-          filetypes = { "c", "cpp", "objc", "objcpp" },
-          root_dir = function() 
-            return vim.loop.cwd() 
-          end,
-          capabilities = capabilities,
-          on_attach = on_attach,
-          settings = {
-            clangd = {
-              fallbackFlags = { "-std=c++17" },
-            },
-          },
-        }
-        
-        -- Try different clangd command variations for maximum compatibility
-        local clangd_commands = {
-          -- Full featured clangd with all options
-          { "clangd", "--background-index", "--clang-tidy", "--header-insertion=iwyu", "--completion-style=detailed" },
-          -- Basic clangd with essential options  
-          { "clangd", "--background-index", "--header-insertion=iwyu" },
-          -- Minimal clangd setup
-          { "clangd", "--background-index" },
-          -- Fallback to basic clangd
-          { "clangd" },
-        }
-        
-        for i, cmd in ipairs(clangd_commands) do
-          if vim.fn.executable(cmd[1]) == 1 then
-            clangd_config.cmd = cmd
-            vim.notify(string.format("🔧 Setting up clangd with command: %s", table.concat(cmd, " ")), vim.log.levels.INFO)
-            break
-          end
-        end
-        
-        -- If no clangd is found, provide helpful message
-        if not clangd_config.cmd then
-          vim.notify("⚠️ clangd not found. Install via package manager or Mason for C/C++ LSP support", vim.log.levels.WARN)
-          return false
-        end
-        
-        lspconfig.clangd.setup(clangd_config)
-        return true
-      end
-
       -- Configure LSP servers with shared setup
       local servers = {
         lua_ls = {
@@ -1124,6 +1012,10 @@ return {
         html = {},
         cssls = {},
         jsonls = {},
+        clangd = {
+          cmd = { "clangd", "--background-index" },
+          filetypes = { "c", "cpp", "objc", "objcpp" },
+        },
         jdtls = {
           settings = {
             java = {
@@ -1134,28 +1026,11 @@ return {
         },
       }
 
-      -- Setup clangd first with priority handling
-      local clangd_setup_success = setup_clangd(lspconfig, capabilities, on_attach)
-      
-      -- Setup other LSP servers
       for server, config in pairs(servers) do
         config.capabilities = capabilities
         config.on_attach = on_attach
         lspconfig[server].setup(config)
       end
-      
-      -- Add autocommand to ensure clangd works on C/C++ file open
-      vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
-        pattern = {"*.c", "*.cpp", "*.h", "*.hpp", "*.cc", "*.cxx"},
-        callback = function()
-          -- Check if clangd is attached, if not try to start it
-          local clients = vim.lsp.get_active_clients({name = "clangd"})
-          if #clients == 0 and not clangd_setup_success then
-            vim.notify("🔄 Attempting to restart clangd for C/C++ file", vim.log.levels.INFO)
-            setup_clangd(lspconfig, capabilities, on_attach)
-          end
-        end,
-      })
 
       -- Diagnostic configuration
       vim.diagnostic.config({
@@ -1166,88 +1041,16 @@ return {
         severity_sort = false,
       })
 
-      -- Completion setup (nvim-cmp) with failsafe source detection
-      local cmp_ok, cmp = pcall(require, "cmp")
-      if not cmp_ok then
-        vim.notify("⚠️ nvim-cmp failed to load, completion disabled", vim.log.levels.WARN)
-        return
-      end
+      -- Completion setup (nvim-cmp)
+      local cmp = require("cmp")
+      local luasnip = require("luasnip")
       
-      local luasnip_ok, luasnip = pcall(require, "luasnip")
-      if luasnip_ok then
-        pcall(require("luasnip.loaders.from_vscode").lazy_load)
-      end
-      
-      -- Dynamic completion sources based on availability
-      local function get_completion_sources()
-        local sources = {}
-        
-        -- Check if LSP is available and has active clients
-        local lsp_available = false
-        local cmp_nvim_lsp_ok = pcall(require, "cmp_nvim_lsp")
-        if cmp_nvim_lsp_ok then
-          -- Check if any LSP clients are active (even if none yet, the source can still provide completions)
-          lsp_available = true
-          vim.notify("✅ LSP completion source available", vim.log.levels.INFO)
-        else
-          vim.notify("⚠️ LSP completion source unavailable, using fallbacks", vim.log.levels.WARN)
-        end
-        
-        -- Add LSP source with high priority if available
-        if lsp_available then
-          table.insert(sources, { name = "nvim_lsp", priority = 1000 })
-        end
-        
-        -- Add snippet source if luasnip is available
-        if luasnip_ok then
-          table.insert(sources, { name = "luasnip", priority = 750 })
-        else
-          vim.notify("⚠️ LuaSnip unavailable, snippet completion disabled", vim.log.levels.WARN)
-        end
-        
-        -- Add buffer and path sources (these should always work)
-        local cmp_buffer_ok = pcall(require, "cmp_buffer")
-        if cmp_buffer_ok then
-          table.insert(sources, { name = "buffer", priority = 500 })
-        end
-        
-        local cmp_path_ok = pcall(require, "cmp_path")
-        if cmp_path_ok then
-          table.insert(sources, { name = "path", priority = 250 })
-        end
-        
-        -- Notify about available completion sources
-        local source_names = {}
-        for _, source in ipairs(sources) do
-          table.insert(source_names, source.name)
-        end
-        vim.notify(string.format("🔧 Completion sources: %s", table.concat(source_names, ", ")), vim.log.levels.INFO)
-        
-        return sources
-      end
-      
-      local completion_sources = get_completion_sources()
-      
-      -- Only setup completion if we have at least one source
-      if #completion_sources == 0 then
-        vim.notify("❌ No completion sources available, completion disabled", vim.log.levels.ERROR)
-        return
-      end
+      require("luasnip.loaders.from_vscode").lazy_load()
       
       cmp.setup({
         snippet = {
           expand = function(args)
-            if luasnip_ok then
-              luasnip.lsp_expand(args.body)
-            else
-              -- Fallback for when luasnip is not available
-              if vim.snippet and vim.snippet.expand then
-                vim.snippet.expand(args.body)
-              else
-                -- Final fallback: just insert the text
-                vim.api.nvim_put({ args.body }, "c", true, true)
-              end
-            end
+            luasnip.lsp_expand(args.body)
           end,
         },
         mapping = cmp.mapping.preset.insert({
@@ -1264,7 +1067,7 @@ return {
           ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_next_item()
-            elseif luasnip_ok and luasnip.expand_or_jumpable() then
+            elseif luasnip.expand_or_jumpable() then
               luasnip.expand_or_jump()
             else
               fallback()
@@ -1273,14 +1076,19 @@ return {
           ["<S-Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_prev_item()
-            elseif luasnip_ok and luasnip.jumpable(-1) then
+            elseif luasnip.jumpable(-1) then
               luasnip.jump(-1)
             else
               fallback()
             end
           end, { "i", "s" }),
         }),
-        sources = completion_sources,
+        sources = {
+          { name = "nvim_lsp" },
+          { name = "luasnip" },
+          { name = "buffer" },
+          { name = "path" },
+        },
         formatting = {
           fields = { "kind", "abbr", "menu" },
           format = function(entry, vim_item)
@@ -1294,56 +1102,6 @@ return {
           end,
         },
       })
-      
-      -- Add dynamic completion source refresh when LSP becomes available
-      -- This ensures completion adapts when LSP servers start after initial setup
-      vim.api.nvim_create_autocmd("LspAttach", {
-        callback = function()
-          -- Refresh completion sources when LSP attaches
-          local current_sources = cmp.get_config().sources or {}
-          local has_lsp_source = false
-          
-          for _, source in ipairs(current_sources) do
-            if source.name == "nvim_lsp" then
-              has_lsp_source = true
-              break
-            end
-          end
-          
-          if not has_lsp_source then
-            -- Add LSP source dynamically
-            local new_sources = { { name = "nvim_lsp", priority = 1000 } }
-            for _, source in ipairs(current_sources) do
-              table.insert(new_sources, source)
-            end
-            
-            cmp.setup({ sources = new_sources })
-            vim.notify("🔄 Completion sources updated: LSP now available", vim.log.levels.INFO)
-          end
-        end,
-      })
-      
-      -- Fallback completion setup for command line
-      local cmp_cmdline_ok = pcall(require, "cmp_cmdline")
-      if cmp_cmdline_ok then
-        -- Command line path completion
-        cmp.setup.cmdline(":", {
-          mapping = cmp.mapping.preset.cmdline(),
-          sources = cmp.config.sources({
-            { name = "path" }
-          }, {
-            { name = "cmdline" }
-          })
-        })
-        
-        -- Command line search completion
-        cmp.setup.cmdline({ "/", "?" }, {
-          mapping = cmp.mapping.preset.cmdline(),
-          sources = {
-            { name = "buffer" }
-          }
-        })
-      end
     end,
   },
 
