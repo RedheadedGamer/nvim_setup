@@ -98,6 +98,127 @@ return {
     end,
   },
 
+  -- Additional popular themes
+  {
+    "sainnhe/sonokai",
+    lazy = true,
+    config = function()
+      vim.g.sonokai_style = "default"
+      vim.g.sonokai_transparent_background = 1
+    end,
+  },
+
+  {
+    "sainnhe/edge",
+    lazy = true,
+    config = function()
+      vim.g.edge_style = "default"
+      vim.g.edge_transparent_background = 1
+    end,
+  },
+
+  {
+    "sainnhe/everforest",
+    lazy = true,
+    config = function()
+      vim.g.everforest_background = "medium"
+      vim.g.everforest_transparent_background = 1
+    end,
+  },
+
+  {
+    "sainnhe/gruvbox-material",
+    lazy = true,
+    config = function()
+      vim.g.gruvbox_material_background = "medium"
+      vim.g.gruvbox_material_transparent_background = 1
+    end,
+  },
+
+  {
+    "marko-cerovac/material.nvim",
+    lazy = true,
+    config = function()
+      require("material").setup({
+        contrast = {
+          terminal = false,
+          sidebars = false,
+          floating_windows = false,
+          cursor_line = false,
+          non_current_windows = false,
+          filetypes = {},
+        },
+        styles = {
+          comments = { italic = true },
+          strings = { italic = false },
+          keywords = { italic = false },
+          functions = { italic = false },
+          variables = {},
+          operators = {},
+          types = {},
+        },
+        plugins = {
+          "telescope",
+          "nvim-cmp",
+          "nvim-web-devicons",
+          "mini",
+        },
+        disable = {
+          colored_cursor = false,
+          borders = false,
+          background = true, -- Enable transparency
+          term_colors = false,
+          eob_lines = false,
+        },
+      })
+    end,
+  },
+
+  {
+    "Mofiqul/vscode.nvim",
+    lazy = true,
+    config = function()
+      require("vscode").setup({
+        transparent = true,
+        italic_comments = true,
+        disable_nvimtree_bg = true,
+      })
+    end,
+  },
+
+  {
+    "projekt0n/github-nvim-theme",
+    lazy = true,
+    config = function()
+      require("github-theme").setup({
+        options = {
+          transparent = true,
+        }
+      })
+    end,
+  },
+
+  {
+    "navarasu/onedark.nvim",
+    lazy = true,
+    config = function()
+      require("onedark").setup({
+        style = "dark",
+        transparent = true,
+      })
+    end,
+  },
+
+  {
+    "lunarvim/darkplus.nvim",
+    lazy = true,
+  },
+
+  {
+    "ray-x/aurora",
+    lazy = true,
+  },
+
   -- Essential dependencies
   {
     "nvim-lua/plenary.nvim",
@@ -144,7 +265,59 @@ return {
     "echasnovski/mini.pairs",
     version = "*",
     config = function()
-      require("mini.pairs").setup()
+      require("mini.pairs").setup({
+        -- In which modes mappings from this `config` should be created
+        modes = { insert = true, command = false, terminal = false },
+        
+        -- Global mappings. Each right hand side should be a pair information, a
+        -- table with at least these fields (see more in help):
+        -- - <action> - one of 'open', 'close', 'closeopen'.
+        -- - <pair> - two character string for pair to be used.
+        -- By default pair is not inserted after `\`, quotes are not recognized by
+        -- `<CR>`, `'` does not insert pair after a letter.
+        mappings = {
+          ["("] = { action = "open", pair = "()", neigh_pattern = "[^\\]." },
+          ["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\]." },
+          ["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\]." },
+          
+          [")"] = { action = "close", pair = "()", neigh_pattern = "[^\\]." },
+          ["]"] = { action = "close", pair = "[]", neigh_pattern = "[^\\]." },
+          ["}"] = { action = "close", pair = "{}", neigh_pattern = "[^\\]." },
+          
+          ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^\\].", register = { cr = false } },
+          ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^%a\\].", register = { cr = false } },
+          ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^\\].", register = { cr = false } },
+        }
+      })
+    end,
+  },
+
+  -- Rainbow brackets for better bracket visibility
+  {
+    "HiPhish/rainbow-delimiters.nvim",
+    event = "VeryLazy",
+    config = function()
+      local rainbow_delimiters = require("rainbow-delimiters")
+      
+      vim.g.rainbow_delimiters = {
+        strategy = {
+          [""] = rainbow_delimiters.strategy["global"],
+          vim = rainbow_delimiters.strategy["local"],
+        },
+        query = {
+          [""] = "rainbow-delimiters",
+          lua = "rainbow-blocks",
+        },
+        highlight = {
+          "RainbowDelimiterRed",
+          "RainbowDelimiterYellow", 
+          "RainbowDelimiterBlue",
+          "RainbowDelimiterOrange",
+          "RainbowDelimiterGreen",
+          "RainbowDelimiterViolet",
+          "RainbowDelimiterCyan",
+        },
+      }
     end,
   },
 
@@ -870,63 +1043,14 @@ return {
       keymap.set("n", "<leader>fq", "<cmd>Telescope quickfix<cr>", { desc = "Quickfix" })
       keymap.set("n", "<leader>fl", "<cmd>Telescope loclist<cr>", { desc = "Location List" })
       
-      -- Theme switcher keymap
-      keymap.set("n", "<leader>tt", function() theme_switcher() end, { desc = "Theme Switcher" })
-      
-      -- Optimized theme switcher with curated high-quality themes
+      -- Optimized theme switcher using Telescope for better UX (fixes infinite indenting issue)
       local function theme_switcher()
-        local themes = {
-          -- Primary themes
-          "onedark_dark",
-          "tokyonight",
-          "tokyonight-night",
-          "tokyonight-storm", 
-          "tokyonight-day",
-          "gruvbox",
-          "dracula",
-          "nord",
-          -- Catppuccin variants
-          "catppuccin",
-          "catppuccin-latte",
-          "catppuccin-frappe", 
-          "catppuccin-macchiato",
-          "catppuccin-mocha",
-          -- Nightfox family
-          "nightfox",
-          "nordfox",
-          "dawnfox",
-          "duskfox",
-          "terafox",
-          "carbonfox",
-          -- Rose Pine variants
-          "rose-pine",
-          "rose-pine-main",
-          "rose-pine-moon",
-          "rose-pine-dawn",
-          -- Kanagawa variants
-          "kanagawa",
-          "kanagawa-wave",
-          "kanagawa-dragon",
-          "kanagawa-lotus",
-        }
-        
-        vim.ui.select(themes, {
-          prompt = "Select a theme:",
-          format_item = function(item)
-            return "🎨 " .. item
-          end,
-        }, function(choice)
-          if choice then
-            local theme_manager = require("config.theme")
-            -- Try to apply the colorscheme
-            if theme_manager.apply_theme(choice) then
-              -- If successful, save it for persistence
-              theme_manager.save_theme(choice)
-            end
-          end
-        end)
+        require("telescope.builtin").colorscheme({
+          enable_preview = true,
+        })
       end
       
+      -- Theme switcher keymaps
       keymap.set("n", "<leader>th", theme_switcher, { desc = "Theme switcher" })
       keymap.set("n", "<leader>tt", theme_switcher, { desc = "Theme switcher" })
     end,

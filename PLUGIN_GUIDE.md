@@ -81,18 +81,32 @@ The which-key theme has been upgraded to the **"helix"** preset for a more moder
 
 ## 🎨 Theme Management
 
-### Using the Theme Switcher
-The configuration includes multiple colorschemes that you can switch between:
+### Enhanced Theme Switcher
+The theme switcher has been **completely redesigned** to fix infinite indenting issues:
 
+- **🔭 Telescope Integration**: Uses Telescope's built-in colorscheme picker 
+- **📱 Live Preview**: See themes instantly as you browse
+- **🎯 No More Infinite Indenting**: Fixed the UI scrolling bug
+- **⚡ Fast Navigation**: Smooth selection with arrow keys
+
+### Available Themes
+The configuration includes **38+ high-quality themes**:
+
+#### Core Themes
 ```vim
-:colorscheme tokyonight-night
-:colorscheme gruvbox
-:colorscheme dracula
-:colorscheme catppuccin-mocha
-:colorscheme nord
-:colorscheme rose-pine
-:colorscheme kanagawa
-:colorscheme onedark_dark
+:colorscheme tokyonight-night    :colorscheme gruvbox
+:colorscheme dracula             :colorscheme catppuccin-mocha  
+:colorscheme nord                :colorscheme rose-pine
+:colorscheme kanagawa            :colorscheme onedark_dark
+```
+
+#### New Premium Themes
+```vim
+:colorscheme sonokai             :colorscheme edge
+:colorscheme everforest          :colorscheme gruvbox-material
+:colorscheme material            :colorscheme vscode  
+:colorscheme github_dark         :colorscheme onedark
+:colorscheme darkplus            :colorscheme aurora
 ```
 
 ### Customizing Themes
@@ -107,7 +121,10 @@ require("tokyonight").setup({
 ```
 
 ### Quick Theme Switch
-Use `<leader>tt` to open the enhanced theme switcher with instant preview and curated themes.
+Use `<leader>tt` or `<leader>th` to open the enhanced Telescope theme switcher with:
+- **Live preview** of all available themes
+- **Fuzzy search** to quickly find themes by name
+- **Instant application** - no more UI bugs!
 
 ## 🚀 Enhanced Start Screen (Mini.starter)
 
@@ -471,13 +488,20 @@ Works in both normal and visual mode!
 
 ### Mini.pairs
 
-#### Auto-pairing
+#### Auto-pairing Features
 Automatically closes:
 - `()` parentheses
-- `[]` brackets
+- `[]` brackets  
 - `{}` braces
 - `""` quotes
 - `''` single quotes
+- `` ` `` backticks
+
+#### Enhanced Configuration
+- Smart neighborhood pattern detection
+- Escape sequence awareness
+- Command and terminal mode exclusion for better UX
+- Customizable bracket insertion behavior
 
 #### Disabling Auto-pairs
 ```lua
@@ -489,6 +513,22 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 ```
+
+### Rainbow Brackets
+Enhanced bracket visibility with rainbow coloring:
+- **Multi-level highlighting**: Different colors for nested brackets
+- **Treesitter integration**: Smart parsing for accurate highlighting  
+- **Multiple languages**: Supports Lua, Python, JavaScript, and more
+- **Visual clarity**: Makes deeply nested code easier to read
+
+#### Bracket Colors
+1. Red
+2. Yellow
+3. Blue
+4. Orange
+5. Green
+6. Violet
+7. Cyan
 
 ### Mini.splitjoin
 

@@ -9,6 +9,7 @@ opt.compatible = false
 
 -- Display settings
 opt.showmatch = true               -- show matching brackets
+opt.matchtime = 2                  -- how long to show matching bracket (in tenths of a second)
 opt.showcmd = true                 -- show command in status line
 opt.number = true                  -- add line numbers
 opt.relativenumber = true          -- relative line numbers
@@ -55,6 +56,11 @@ opt.formatoptions:append("t")     -- auto-wrap text using textwidth
 -- Enable filetype detection
 vim.cmd("filetype plugin indent on")
 vim.cmd("syntax on")
+
+-- Enhanced bracket matching
+vim.cmd("highlight MatchParen cterm=bold ctermbg=none ctermfg=magenta guibg=none guifg=magenta gui=bold")
+vim.g.matchparen_timeout = 20
+vim.g.matchparen_insert_timeout = 20
 
 -- Cursor shape configuration
 vim.cmd([[
