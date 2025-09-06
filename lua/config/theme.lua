@@ -51,14 +51,30 @@ function M.load_theme()
   end
 end
 
--- Apply theme with error handling
+-- Apply theme with error handling and validation
 function M.apply_theme(theme_name)
+  -- First check if the theme exists by trying to get colorscheme info
+  local available_schemes = vim.fn.getcompletion("", "color")
+  local theme_exists = false
+  
+  for _, scheme in ipairs(available_schemes) do
+    if scheme == theme_name then
+      theme_exists = true
+      break
+    end
+  end
+  
+  if not theme_exists then
+    vim.notify("Theme '" .. theme_name .. "' is not installed. Please install the corresponding theme plugin.", vim.log.levels.WARN)
+    return false
+  end
+  
   local ok, _ = pcall(vim.cmd, "colorscheme " .. theme_name)
   if ok then
     vim.g.current_theme = theme_name
     return true
   else
-    vim.notify("Failed to load theme: " .. theme_name, vim.log.levels.ERROR)
+    vim.notify("Failed to load theme: " .. theme_name .. ". The theme plugin may not be properly configured.", vim.log.levels.ERROR)
     return false
   end
 end

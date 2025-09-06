@@ -261,21 +261,33 @@ For detailed instructions on using all plugins, customizing features, and troubl
 
 ### Colorschemes & Themes
 - **[onedarkpro.nvim](https://github.com/olimorris/onedarkpro.nvim)** - One Dark theme (default)
-- **[tokyonight.nvim](https://github.com/folke/tokyonight.nvim)** - Tokyo Night theme
+- **[tokyonight.nvim](https://github.com/folke/tokyonight.nvim)** - Tokyo Night theme collection
 - **[gruvbox.nvim](https://github.com/ellisonleao/gruvbox.nvim)** - Gruvbox theme
 - **[dracula.nvim](https://github.com/Mofiqul/dracula.nvim)** - Dracula theme
 - **[nord.nvim](https://github.com/shaunsingh/nord.nvim)** - Nord theme
-- **[everforest](https://github.com/sainnhe/everforest)** - Everforest theme
-- **[catppuccin](https://github.com/catppuccin/nvim)** - Catppuccin theme
+- **[catppuccin](https://github.com/catppuccin/nvim)** - Catppuccin theme family
 - **[nightfox.nvim](https://github.com/EdenEast/nightfox.nvim)** - Nightfox theme collection
-- **[rose-pine](https://github.com/rose-pine/neovim)** - Rose Pine theme
-- **[kanagawa.nvim](https://github.com/rebelot/kanagawa.nvim)** - Kanagawa theme
-- **[material.nvim](https://github.com/marko-cerovac/material.nvim)** - Material theme
+- **[rose-pine](https://github.com/rose-pine/neovim)** - Rose Pine theme family
+- **[kanagawa.nvim](https://github.com/rebelot/kanagawa.nvim)** - Kanagawa theme family
+- **[material.nvim](https://github.com/marko-cerovac/material.nvim)** - Material Design themes
 - **[monokai.nvim](https://github.com/tanvirtin/monokai.nvim)** - Monokai theme
-- **[onedark.nvim](https://github.com/navarasu/onedark.nvim)** - OneDark theme
-- **[github-nvim-theme](https://github.com/projekt0n/github-nvim-theme)** - GitHub theme
-- **[sonokai](https://github.com/sainnhe/sonokai)** - Sonokai theme
-- **[edge](https://github.com/sainnhe/edge)** - Edge theme
+- **[nvim-solarized-lua](https://github.com/ishan9299/nvim-solarized-lua)** - Solarized theme
+- **[neovim-ayu](https://github.com/Shatur/neovim-ayu)** - Ayu theme collection
+- **[oxocarbon.nvim](https://github.com/nyoom-engineering/oxocarbon.nvim)** - IBM Carbon theme
+- **[everforest](https://github.com/sainnhe/everforest)** - Everforest theme
+- **[cyberdream.nvim](https://github.com/scottmckendry/cyberdream.nvim)** - Cyberdream theme
+
+**Enhanced Theme Switcher** with 45+ curated themes organized by categories:
+- 🌙 Popular Dark themes (onedark, tokyonight, gruvbox, dracula, nord)
+- ☀️ Light themes (tokyonight-day, catppuccin-latte, rose-pine-dawn)
+- 🐱 Catppuccin family (4 variants)
+- 🦊 Nightfox family (6 variants)  
+- 🌹 Rose Pine family (3 variants)
+- 🌊 Kanagawa family (3 variants)
+- 🌞 Classic themes (solarized, monokai)
+- 🎨 Material & Modern themes (material variants, ayu, oxocarbon)
+- 🌲 Nature themes (everforest)
+- 🚀 Futuristic themes (cyberdream)
 
 ## 🎨 Additional Plugin Recommendations
 
@@ -370,12 +382,28 @@ Edit `lua/plugins/init.lua` and add your plugin specification:
 
 ### Changing Theme
 
-**Easy Theme Switcher** (New Feature!)
+**Enhanced Theme Switcher** (Improved!)
 
-Use the built-in theme switcher for easy theme changing:
-- Press `<leader>th` or `<leader>tt` to open the theme selector
-- Choose from 70+ available themes including dracula, gruvbox, tokyonight, etc.
-- Themes are applied instantly with notification feedback
+The improved theme switcher now provides a superior user experience:
+- Press `<leader>th` or `<leader>tt` to open the enhanced theme selector
+- **45+ curated themes** organized in intuitive categories
+- **Visual indicators**: Current theme is clearly marked with ●
+- **Rich descriptions**: Each theme includes category emoji and descriptive text
+- **Better UI**: Fixed scrolling and indentation issues with improved dressing.nvim configuration
+- **Smart feedback**: Shows current theme in prompt and prevents unnecessary reloads
+- **Error handling**: Clear notifications for missing themes with installation hints
+
+**Theme Categories:**
+- 🌙 Popular Dark - Most popular dark themes
+- ☀️ Light Themes - Beautiful light variants
+- 🐱 Catppuccin - All Catppuccin flavors
+- 🦊 Nightfox - Complete Nightfox family
+- 🌹 Rose Pine - Rose Pine variants
+- 🌊 Kanagawa - Kanagawa collection
+- 🌞 Classic - Timeless themes like Solarized
+- 🎨 Material & Modern - Contemporary designs
+- 🌲 Nature - Nature-inspired themes
+- 🚀 Futuristic - Modern neon themes
 
 **Manual Theme Change**
 
@@ -386,12 +414,14 @@ vim.cmd("colorscheme your_preferred_theme")
 ```
 
 Available themes include:
-- `dracula` - Dracula theme
-- `gruvbox` - Gruvbox theme  
-- `tokyonight`, `tokyonight-night`, `tokyonight-storm`
-- `catppuccin`, `catppuccin-mocha`, `catppuccin-latte`
-- `nord` - Nord theme
-- `rose-pine`, `rose-pine-moon`, `rose-pine-dawn`
+- **Popular Dark**: `onedark_dark`, `tokyonight-night`, `gruvbox`, `dracula`, `nord`
+- **Light Themes**: `tokyonight-day`, `catppuccin-latte`, `rose-pine-dawn`
+- **Catppuccin**: `catppuccin`, `catppuccin-mocha`, `catppuccin-macchiato`, `catppuccin-frappe`
+- **Nightfox**: `nightfox`, `nordfox`, `carbonfox`, `dawnfox`, `duskfox`, `terafox`
+- **Rose Pine**: `rose-pine`, `rose-pine-main`, `rose-pine-moon`
+- **Kanagawa**: `kanagawa`, `kanagawa-wave`, `kanagawa-dragon`
+- **Classic**: `solarized`, `monokai`
+- **Modern**: `material`, `ayu`, `oxocarbon`, `everforest`, `cyberdream`
 - And many more!
 
 ### Custom Key Mappings
@@ -410,9 +440,11 @@ Autoformatting on save has been **disabled by default** to accommodate custom co
 - **Re-enable auto-format**: Uncomment the `format_on_save` section in `lua/plugins/init.lua`
 
 ### 🎨 Enhanced Theme Switcher
-- **Quick access**: `<leader>th` or `<leader>tt` opens theme selector
-- **70+ themes available**: Including dracula, gruvbox, tokyonight, catppuccin, and more
-- **Instant preview**: Themes apply immediately with notification feedback
+- **Quick access**: `<leader>th` or `<leader>tt` opens the improved theme selector
+- **45+ organized themes**: Categorized by style (Dark, Light, Material, Nature, etc.)
+- **Visual feedback**: Current theme clearly marked, rich descriptions, category icons
+- **Better UI**: Fixed scrolling/indentation issues, improved selection visibility
+- **Smart features**: Shows current theme, prevents unnecessary reloads, error handling
 
 ### 🔍 Which-Key Integration
 - **Key binding hints**: Press any leader key and wait to see available commands

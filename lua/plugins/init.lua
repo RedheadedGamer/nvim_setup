@@ -98,6 +98,70 @@ return {
     end,
   },
 
+  -- Additional popular themes for comprehensive collection
+  {
+    "ishan9299/nvim-solarized-lua",
+    lazy = true,
+    config = function()
+      vim.g.solarized_transparent = true
+    end,
+  },
+
+  {
+    "tanvirtin/monokai.nvim",
+    lazy = true,
+    config = function()
+      require("monokai").setup({
+        transparent = true,
+      })
+    end,
+  },
+
+  {
+    "marko-cerovac/material.nvim",
+    lazy = true,
+    config = function()
+      require("material").setup({
+        disable = {
+          background = true, -- For transparency
+        },
+      })
+    end,
+  },
+
+  {
+    "Shatur/neovim-ayu",
+    lazy = true,
+    config = function()
+      require("ayu").setup({
+        transparent = true,
+      })
+    end,
+  },
+
+  {
+    "nyoom-engineering/oxocarbon.nvim",
+    lazy = true,
+  },
+
+  {
+    "sainnhe/everforest",
+    lazy = true,
+    config = function()
+      vim.g.everforest_transparent_background = 1
+    end,
+  },
+
+  {
+    "scottmckendry/cyberdream.nvim",
+    lazy = true,
+    config = function()
+      require("cyberdream").setup({
+        transparent = true,
+      })
+    end,
+  },
+
   -- Essential dependencies
   {
     "nvim-lua/plenary.nvim",
@@ -726,9 +790,32 @@ return {
           enabled = true,
           backend = { "telescope", "fzf_lua", "fzf", "builtin", "nui" },
           trim_prompt = true,
-          telescope = require("telescope.themes").get_dropdown({
+          telescope = require("telescope.themes").get_cursor({
+            initial_mode = "normal",
+            layout_config = {
+              width = 0.8,
+              height = 0.6,
+            },
             winblend = 10,
+            sorting_strategy = "ascending",
+            border = true,
+            borderchars = {
+              { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
+              prompt = { "─", "│", " ", "│", "╭", "╮", "│", "│" },
+              results = { "─", "│", "─", "│", "├", "┤", "╯", "╰" },
+              preview = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
+            },
           }),
+          builtin = {
+            show_numbers = true,
+            border = "rounded",
+            relative = "editor",
+            min_width = 40,
+            max_width = 80,
+            min_height = 10,
+            max_height = 20,
+            winblend = 10,
+          },
         },
       })
     end,
@@ -943,55 +1030,114 @@ return {
       -- Theme switcher keymap
       keymap.set("n", "<leader>tt", function() theme_switcher() end, { desc = "Theme Switcher" })
       
-      -- Optimized theme switcher with curated high-quality themes
+      -- Enhanced theme switcher with comprehensive theme collection and improved UI
       local function theme_switcher()
+        -- Get current theme for display
+        local current_theme = vim.g.current_theme or vim.g.colors_name or "unknown"
+        
         local themes = {
-          -- Primary themes
-          "onedark_dark",
-          "tokyonight",
-          "tokyonight-night",
-          "tokyonight-storm", 
-          "tokyonight-day",
-          "gruvbox",
-          "dracula",
-          "nord",
-          -- Catppuccin variants
-          "catppuccin",
-          "catppuccin-latte",
-          "catppuccin-frappe", 
-          "catppuccin-macchiato",
-          "catppuccin-mocha",
+          -- Primary dark themes
+          { name = "onedark_dark", category = "🌙 Popular Dark", desc = "OneDark - VSCode inspired" },
+          { name = "tokyonight", category = "🌙 Popular Dark", desc = "Tokyo Night - Modern dark" },
+          { name = "tokyonight-night", category = "🌙 Popular Dark", desc = "Tokyo Night - Extra dark" },
+          { name = "tokyonight-storm", category = "🌙 Popular Dark", desc = "Tokyo Night - Storm variant" },
+          { name = "gruvbox", category = "🌙 Popular Dark", desc = "Gruvbox - Retro groove" },
+          { name = "dracula", category = "🌙 Popular Dark", desc = "Dracula - Gothic elegance" },
+          { name = "nord", category = "🌙 Popular Dark", desc = "Nord - Arctic inspired" },
+          
+          -- Light themes
+          { name = "tokyonight-day", category = "☀️ Light Themes", desc = "Tokyo Night - Day variant" },
+          { name = "catppuccin-latte", category = "☀️ Light Themes", desc = "Catppuccin - Light latte" },
+          { name = "rose-pine-dawn", category = "☀️ Light Themes", desc = "Rose Pine - Dawn light" },
+          { name = "kanagawa-lotus", category = "☀️ Light Themes", desc = "Kanagawa - Lotus light" },
+          
+          -- Catppuccin family
+          { name = "catppuccin", category = "🐱 Catppuccin", desc = "Catppuccin - Default" },
+          { name = "catppuccin-frappe", category = "🐱 Catppuccin", desc = "Catppuccin - Frappé" },
+          { name = "catppuccin-macchiato", category = "🐱 Catppuccin", desc = "Catppuccin - Macchiato" },
+          { name = "catppuccin-mocha", category = "🐱 Catppuccin", desc = "Catppuccin - Mocha (darkest)" },
+          
           -- Nightfox family
-          "nightfox",
-          "nordfox",
-          "dawnfox",
-          "duskfox",
-          "terafox",
-          "carbonfox",
-          -- Rose Pine variants
-          "rose-pine",
-          "rose-pine-main",
-          "rose-pine-moon",
-          "rose-pine-dawn",
-          -- Kanagawa variants
-          "kanagawa",
-          "kanagawa-wave",
-          "kanagawa-dragon",
-          "kanagawa-lotus",
+          { name = "nightfox", category = "🦊 Nightfox", desc = "Nightfox - Balanced dark" },
+          { name = "nordfox", category = "🦊 Nightfox", desc = "Nordfox - Nord inspired" },
+          { name = "dawnfox", category = "🦊 Nightfox", desc = "Dawnfox - Warm dawn" },
+          { name = "duskfox", category = "🦊 Nightfox", desc = "Duskfox - Evening colors" },
+          { name = "terafox", category = "🦊 Nightfox", desc = "Terafox - Green earth" },
+          { name = "carbonfox", category = "🦊 Nightfox", desc = "Carbonfox - Carbon dark" },
+          
+          -- Rose Pine family
+          { name = "rose-pine", category = "🌹 Rose Pine", desc = "Rose Pine - Default" },
+          { name = "rose-pine-main", category = "🌹 Rose Pine", desc = "Rose Pine - Main variant" },
+          { name = "rose-pine-moon", category = "🌹 Rose Pine", desc = "Rose Pine - Moon dark" },
+          
+          -- Kanagawa family
+          { name = "kanagawa", category = "🌊 Kanagawa", desc = "Kanagawa - Default" },
+          { name = "kanagawa-wave", category = "🌊 Kanagawa", desc = "Kanagawa - Wave variant" },
+          { name = "kanagawa-dragon", category = "🌊 Kanagawa", desc = "Kanagawa - Dragon dark" },
+          
+          -- Additional popular themes
+          { name = "solarized", category = "🌞 Classic", desc = "Solarized - Precision colors" },
+          { name = "monokai", category = "🌞 Classic", desc = "Monokai - Sublime inspired" },
+          { name = "material", category = "🎨 Material", desc = "Material - Google design" },
+          { name = "material-darker", category = "🎨 Material", desc = "Material - Darker variant" },
+          { name = "material-palenight", category = "🎨 Material", desc = "Material - Pale night" },
+          { name = "material-ocean", category = "🎨 Material", desc = "Material - Ocean blue" },
+          { name = "ayu", category = "🎨 Modern", desc = "Ayu - Mirage colors" },
+          { name = "ayu-dark", category = "🎨 Modern", desc = "Ayu - Dark variant" },
+          { name = "ayu-light", category = "🎨 Modern", desc = "Ayu - Light variant" },
+          { name = "oxocarbon", category = "🎨 Modern", desc = "Oxocarbon - IBM inspired" },
+          { name = "everforest", category = "🌲 Nature", desc = "Everforest - Green comfort" },
+          { name = "cyberdream", category = "🚀 Futuristic", desc = "Cyberdream - Neon future" },
         }
         
-        vim.ui.select(themes, {
-          prompt = "Select a theme:",
+        -- Extract just the theme names for the selection
+        local theme_names = {}
+        local theme_lookup = {}
+        
+        for _, theme in ipairs(themes) do
+          table.insert(theme_names, theme.name)
+          theme_lookup[theme.name] = theme
+        end
+        
+        vim.ui.select(theme_names, {
+          prompt = "🎨 Choose colorscheme (current: " .. current_theme .. "):",
           format_item = function(item)
-            return "🎨 " .. item
+            local theme_info = theme_lookup[item]
+            local current_indicator = (item == current_theme) and "● " or "  "
+            if theme_info then
+              return string.format("%s%s %-20s │ %s", 
+                current_indicator,
+                theme_info.category:sub(1, 2), -- Get just the emoji
+                item, 
+                theme_info.desc)
+            else
+              return current_indicator .. "🎨 " .. item
+            end
           end,
         }, function(choice)
           if choice then
             local theme_manager = require("config.theme")
+            -- Don't reload if it's the current theme
+            if choice == current_theme then
+              vim.notify("✨ Already using theme: " .. choice, vim.log.levels.INFO)
+              return
+            end
+            
+            -- Show loading notification
+            vim.notify("Applying theme: " .. choice, vim.log.levels.INFO)
+            
             -- Try to apply the colorscheme
             if theme_manager.apply_theme(choice) then
               -- If successful, save it for persistence
               theme_manager.save_theme(choice)
+              local theme_info = theme_lookup[choice]
+              if theme_info then
+                vim.notify("✨ Theme applied: " .. theme_info.desc, vim.log.levels.INFO)
+              else
+                vim.notify("✨ Theme applied: " .. choice, vim.log.levels.INFO)
+              end
+            else
+              vim.notify("❌ Failed to apply theme: " .. choice .. "\nTheme might not be installed.", vim.log.levels.ERROR)
             end
           end
         end)
