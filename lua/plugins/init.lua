@@ -1563,6 +1563,374 @@ return {
   },
 
   -- ============================================================================
+  -- DEBUGGING TOOLS (GDB GEF & Valgrind Integration)
+  -- ============================================================================
+
+  -- Core debugging support with nvim-dap
+  {
+    "mfussenegger/nvim-dap",
+    dependencies = {
+      "rcarriga/nvim-dap-ui",
+      "theHamsta/nvim-dap-virtual-text",
+      "nvim-neotest/nvim-nio",
+      "williamboman/mason.nvim",
+      "jay-babu/mason-nvim-dap.nvim",
+    },
+    config = function()
+      local dap = require("dap")
+      local dapui = require("dapui")
+      
+      -- Setup dap-ui with enhanced configuration
+      dapui.setup({
+        icons = { expanded = "▾", collapsed = "▸", current_frame = "▸" },
+        mappings = {
+          expand = { "<CR>", "<2-LeftMouse>" },
+          open = "o",
+          remove = "d",
+          edit = "e",
+          repl = "r",
+          toggle = "t",
+        },
+        element_mappings = {},
+        expand_lines = vim.fn.has("nvim-0.7") == 1,
+        layouts = {
+          {
+            elements = {
+              { id = "scopes", size = 0.25 },
+              "breakpoints",
+              "stacks",
+              "watches",
+            },
+            size = 40,
+            position = "left",
+          },
+          {
+            elements = {
+              "repl",
+              "console",
+            },
+            size = 0.25,
+            position = "bottom",
+          },
+        },
+        controls = {
+          enabled = true,
+          element = "repl",
+          icons = {
+            pause = "",
+            play = "",
+            step_into = "",
+            step_over = "",
+            step_out = "",
+            step_back = "",
+            run_last = "↻",
+            terminate = "□",
+          },
+        },
+        floating = {
+          max_height = nil,
+          max_width = nil,
+          border = "single",
+          mappings = {
+            close = { "q", "<Esc>" },
+          },
+        },
+      })
+
+      -- Setup virtual text debugging
+      require("nvim-dap-virtual-text").setup({
+        enabled = true,
+        enabled_commands = true,
+        highlight_changed_variables = true,
+        highlight_new_as_changed = false,
+        show_stop_reason = true,
+        commented = false,
+        only_first_definition = true,
+        all_references = false,
+        filter_references_pattern = '<module',
+        virt_text_pos = 'eol',
+        all_frames = false,
+        virt_lines = false,
+        virt_text_win_col = nil
+      })
+
+      -- GDB/GEF Configuration for C/C++
+      dap.adapters.gdb = {
+        type = "executable",
+        command = "gdb",
+        args = { "--interpreter=dap", "--eval-command", "set print pretty on" }
+      }
+
+      -- Enhanced GEF configuration (if GEF is available)
+      dap.adapters.gef = {
+        type = "executable",
+        command = "gdb",
+        args = { 
+          "--interpreter=dap", 
+          "--eval-command", "source ~/.gef.py",
+          "--eval-command", "set print pretty on",
+          "--eval-command", "set disassembly-flavor intel"
+        }
+      }
+
+      -- C/C++ configuration with GDB/GEF support
+      dap.configurations.c = {
+        {
+          name = "Launch (GDB)",
+          type = "gdb",
+          request = "launch",
+          program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+          end,
+          cwd = "${workspaceFolder}",
+          stopAtBeginningOfMainSubprogram = false,
+        },
+        {
+          name = "Launch with GEF",
+          type = "gef",
+          request = "launch",
+          program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+          end,
+          cwd = "${workspaceFolder}",
+          stopAtBeginningOfMainSubprogram = false,
+        },
+        {
+          name = "Attach to process (GDB)",
+          type = "gdb",
+          request = "attach",
+          pid = function()
+            return tonumber(vim.fn.input('Process ID: '))
+          end,
+          cwd = "${workspaceFolder}",
+        },
+        {
+          name = "Launch with Valgrind",
+          type = "gdb",
+          request = "launch",
+          program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+          end,
+          cwd = "${workspaceFolder}",
+          args = function()
+            local args_string = vim.fn.input('Arguments: ')
+            return vim.split(args_string, " ")
+          end,
+          runInTerminal = true,
+          console = "integratedTerminal",
+          setupCommands = {
+            {
+              text = "target exec " .. function()
+                return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+              end,
+              description = "Set target executable",
+              ignoreFailures = false,
+            },
+          },
+        },
+      }
+
+      -- Copy C configuration to C++
+      dap.configurations.cpp = dap.configurations.c
+
+      -- Python debugging configuration
+      dap.adapters.python = {
+        type = "executable",
+        command = "python",
+        args = { "-m", "debugpy.adapter" },
+      }
+
+      dap.configurations.python = {
+        {
+          type = "python",
+          request = "launch",
+          name = "Launch file",
+          program = "${file}",
+          pythonPath = function()
+            return "/usr/bin/python3"
+          end,
+        },
+        {
+          type = "python",
+          request = "launch",
+          name = "Launch with arguments",
+          program = "${file}",
+          args = function()
+            local args_string = vim.fn.input('Arguments: ')
+            return vim.split(args_string, " ")
+          end,
+          pythonPath = function()
+            return "/usr/bin/python3"
+          end,
+        },
+      }
+
+      -- JavaScript/TypeScript debugging
+      dap.adapters.node2 = {
+        type = "executable",
+        command = "node",
+        args = { vim.fn.stdpath("data") .. "/mason/packages/node-debug2-adapter/node_modules/node-debug2/out/src/nodeDebug.js" },
+      }
+
+      dap.configurations.javascript = {
+        {
+          name = "Launch",
+          type = "node2",
+          request = "launch",
+          program = "${file}",
+          cwd = vim.fn.getcwd(),
+          sourceMaps = true,
+          protocol = "inspector",
+          console = "integratedTerminal",
+        },
+      }
+
+      dap.configurations.typescript = dap.configurations.javascript
+
+      -- Auto-open/close dapui
+      dap.listeners.after.event_initialized["dapui_config"] = function()
+        dapui.open()
+      end
+      dap.listeners.before.event_terminated["dapui_config"] = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited["dapui_config"] = function()
+        dapui.close()
+      end
+
+      -- Debugging keymaps
+      local keymap = vim.keymap
+      keymap.set("n", "<leader>db", function() dap.toggle_breakpoint() end, { desc = "Toggle Breakpoint" })
+      keymap.set("n", "<leader>dB", function() dap.set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, { desc = "Conditional Breakpoint" })
+      keymap.set("n", "<leader>dc", function() dap.continue() end, { desc = "Continue" })
+      keymap.set("n", "<leader>da", function() dap.continue({ before = get_args }) end, { desc = "Run with Args" })
+      keymap.set("n", "<leader>dC", function() dap.run_to_cursor() end, { desc = "Run to Cursor" })
+      keymap.set("n", "<leader>dg", function() dap.goto_() end, { desc = "Go to line (no execute)" })
+      keymap.set("n", "<leader>di", function() dap.step_into() end, { desc = "Step Into" })
+      keymap.set("n", "<leader>dj", function() dap.down() end, { desc = "Down" })
+      keymap.set("n", "<leader>dk", function() dap.up() end, { desc = "Up" })
+      keymap.set("n", "<leader>dl", function() dap.run_last() end, { desc = "Run Last" })
+      keymap.set("n", "<leader>do", function() dap.step_out() end, { desc = "Step Out" })
+      keymap.set("n", "<leader>dO", function() dap.step_over() end, { desc = "Step Over" })
+      keymap.set("n", "<leader>dp", function() dap.pause() end, { desc = "Pause" })
+      keymap.set("n", "<leader>dr", function() dap.repl.toggle() end, { desc = "Toggle REPL" })
+      keymap.set("n", "<leader>ds", function() dap.session() end, { desc = "Session" })
+      keymap.set("n", "<leader>dt", function() dap.terminate() end, { desc = "Terminate" })
+      keymap.set("n", "<leader>dw", function() require("dap.ui.widgets").hover() end, { desc = "Widgets" })
+      
+      -- DAP UI keymaps
+      keymap.set("n", "<leader>du", function() dapui.toggle() end, { desc = "Toggle Debug UI" })
+      keymap.set("n", "<leader>de", function() dapui.eval() end, { desc = "Evaluate" })
+      keymap.set("v", "<leader>de", function() dapui.eval() end, { desc = "Evaluate" })
+
+      -- Valgrind integration
+      keymap.set("n", "<leader>dv", function()
+        local file_path = vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+        if file_path ~= "" then
+          local args = vim.fn.input('Arguments (optional): ')
+          local valgrind_cmd = string.format(
+            "valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose %s %s",
+            file_path, args
+          )
+          vim.cmd("terminal " .. valgrind_cmd)
+        end
+      end, { desc = "Run with Valgrind" })
+
+      -- Advanced Valgrind options
+      keymap.set("n", "<leader>dvh", function()
+        local file_path = vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+        if file_path ~= "" then
+          local args = vim.fn.input('Arguments (optional): ')
+          local valgrind_cmd = string.format(
+            "valgrind --tool=helgrind --track-origins=yes %s %s",
+            file_path, args
+          )
+          vim.cmd("terminal " .. valgrind_cmd)
+        end
+      end, { desc = "Run with Valgrind Helgrind (race conditions)" })
+
+      keymap.set("n", "<leader>dvc", function()
+        local file_path = vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+        if file_path ~= "" then
+          local args = vim.fn.input('Arguments (optional): ')
+          local valgrind_cmd = string.format(
+            "valgrind --tool=cachegrind %s %s",
+            file_path, args
+          )
+          vim.cmd("terminal " .. valgrind_cmd)
+        end
+      end, { desc = "Run with Valgrind Cachegrind (performance analysis)" })
+
+      -- GEF-specific enhancements
+      keymap.set("n", "<leader>dgf", function()
+        vim.notify("🦊 Using GEF-enhanced GDB for next debug session", vim.log.levels.INFO)
+        dap.set_session(nil)
+        -- Set up to use GEF adapter for next session
+        for _, config in ipairs(dap.configurations.c) do
+          if config.name == "Launch with GEF" then
+            dap.run(config)
+            break
+          end
+        end
+      end, { desc = "Launch with GEF" })
+
+      -- Helper function for getting arguments
+      function get_args()
+        local args_string = vim.fn.input('Arguments: ')
+        return vim.split(args_string, " ")
+      end
+
+      vim.notify("🔧 Debugging setup complete with GDB, GEF, and Valgrind integration", vim.log.levels.INFO)
+    end,
+  },
+
+  -- Mason DAP for automatic debug adapter installation
+  {
+    "jay-babu/mason-nvim-dap.nvim",
+    dependencies = {
+      "williamboman/mason.nvim",
+      "mfussenegger/nvim-dap",
+    },
+    config = function()
+      require("mason-nvim-dap").setup({
+        ensure_installed = {
+          "python",
+          "codelldb",  -- For C/C++/Rust
+          "node2",     -- For JavaScript/TypeScript
+        },
+        automatic_installation = true,
+        handlers = {
+          function(config)
+            require('mason-nvim-dap').default_setup(config)
+          end,
+          python = function(config)
+            config.adapters = {
+              type = "executable",
+              command = "/usr/bin/python3",
+              args = {
+                "-m",
+                "debugpy.adapter",
+              },
+            }
+            require('mason-nvim-dap').default_setup(config)
+          end,
+          codelldb = function(config)
+            config.adapters = {
+              type = "server",
+              port = "${port}",
+              executable = {
+                command = vim.fn.stdpath("data") .. "/mason/bin/codelldb",
+                args = { "--port", "${port}" },
+              }
+            }
+            require('mason-nvim-dap').default_setup(config)
+          end,
+        },
+      })
+    end,
+  },
+
+  -- ============================================================================
   -- SPECIALIZED TOOLS
   -- ============================================================================
 

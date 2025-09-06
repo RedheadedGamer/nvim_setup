@@ -134,6 +134,11 @@ pcall(function()
   require("config.startup_optimizations").init()
 end)
 
+-- Initialize debugging environment
+pcall(function()
+  require("config.debugging").setup()
+end)
+
 -- Display startup message
 if vim.fn.argc() == 0 then
   vim.defer_fn(function()
