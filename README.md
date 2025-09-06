@@ -18,7 +18,7 @@ A modern, feature-rich Neovim configuration written in Lua with **complete mini.
 - **Tab-based Indentation**: Configured to use actual tabs (noexpandtab) for consistent formatting
 - **Fuzzy Finding**: Telescope integration for file finding, searching, and more
 - **Syntax Highlighting**: Enhanced syntax highlighting with Treesitter
-- **Multiple Themes**: 38+ beautiful colorschemes with live preview theme switcher
+- **Multiple Themes**: 50+ beautiful colorschemes with enhanced theme switcher (fixed infinite indenting issue)
 - **LaTeX Support**: VimTeX integration for LaTeX document editing
 - **Transparent Background**: Configured for transparent terminal backgrounds
 - **Enhanced Transparency**: 80+ UI elements configured for full transparency support  

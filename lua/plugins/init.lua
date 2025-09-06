@@ -19,18 +19,24 @@ return {
   -- Popular theme collection (optimized for transparency)
   {
     "folke/tokyonight.nvim",
-    lazy = true,
+    lazy = false, -- Load immediately for availability
+    priority = 999,
     config = function()
       require("tokyonight").setup({
         style = "night",
         transparent = true,
+        styles = {
+          sidebars = "transparent",
+          floats = "transparent",
+        },
       })
     end,
   },
   
   {
     "ellisonleao/gruvbox.nvim",
-    lazy = true,
+    lazy = false, -- Load immediately for availability
+    priority = 998,
     config = function()
       require("gruvbox").setup({
         transparent_mode = true,
@@ -40,7 +46,14 @@ return {
   
   {
     "Mofiqul/dracula.nvim",
-    lazy = true,
+    lazy = false, -- Load immediately for availability
+    priority = 997,
+    config = function()
+      require("dracula").setup({
+        transparent_bg = true,
+        show_end_of_buffer = false,
+      })
+    end,
   },
   
   {
@@ -56,11 +69,17 @@ return {
   {
     "catppuccin/nvim",
     name = "catppuccin",
-    lazy = true,
+    lazy = false, -- Load immediately for availability
+    priority = 996,
     config = function()
       require("catppuccin").setup({
         flavour = "mocha",
         transparent_background = true,
+        integrations = {
+          telescope = true,
+          nvimtree = true,
+          which_key = true,
+        },
       })
     end,
   },
@@ -216,6 +235,210 @@ return {
 
   {
     "ray-x/aurora",
+    lazy = true,
+  },
+
+  -- ============================================================================ 
+  -- ADDITIONAL PREMIUM THEMES (20+ new high-quality themes)
+  -- ============================================================================
+
+  -- Monokai Pro family - Professional themes
+  {
+    "loctvl842/monokai-pro.nvim",
+    lazy = true,
+    config = function()
+      require("monokai-pro").setup({
+        transparent_background = true,
+        filter = "pro", -- pro, classic, machine, octagon, ristretto, spectrum
+      })
+    end,
+  },
+
+  -- Solarized - Classic and beloved
+  {
+    "maxmx03/solarized.nvim",
+    lazy = true,
+    config = function()
+      require("solarized").setup({
+        transparent = true,
+        palette = "solarized", -- solarized, selenized
+        styles = {
+          comments = { italic = true },
+          functions = { italic = false },
+          variables = { italic = false },
+        },
+      })
+    end,
+  },
+
+  -- Ayu - Elegant minimal themes
+  {
+    "Shatur/neovim-ayu",
+    lazy = true,
+    config = function()
+      require("ayu").setup({
+        mirage = true,
+        terminal = false,
+        overrides = {},
+      })
+    end,
+  },
+
+  -- Oceanic Next - Beautiful blue theme
+  {
+    "mhartington/oceanic-next",
+    lazy = true,
+  },
+
+  -- Palenight - Material inspired
+  {
+    "drewtempelmeyer/palenight.vim",
+    lazy = true,
+  },
+
+  -- Gruvbox Baby - Modern Gruvbox
+  {
+    "luisiacc/gruvbox-baby",
+    lazy = true,
+    config = function()
+      vim.g.gruvbox_baby_transparent_mode = 1
+      vim.g.gruvbox_baby_function_style = "NONE"
+      vim.g.gruvbox_baby_keyword_style = "italic"
+    end,
+  },
+
+  -- Tender - Gentle purple theme
+  {
+    "jacoborus/tender.vim",
+    lazy = true,
+  },
+
+  -- Spaceduck - Retro space theme
+  {
+    "pineapplegiant/spaceduck",
+    lazy = true,
+  },
+
+  -- Deep Space - Cosmic dark theme
+  {
+    "tyrannicaltoucan/vim-deep-space",
+    lazy = true,
+  },
+
+  -- Moonfly - Dark blue theme
+  {
+    "bluz71/vim-moonfly-colors",
+    name = "moonfly",
+    lazy = true,
+  },
+
+  -- Nightowl - Dark theme for night owls
+  {
+    "bluz71/vim-nightfly-colors",
+    name = "nightfly",
+    lazy = true,
+  },
+
+  -- Zephyr - Modern dark theme
+  {
+    "glepnir/zephyr-nvim",
+    lazy = true,
+  },
+
+  -- Onedark Vivid - Enhanced OneDark
+  {
+    "navarasu/onedark.nvim",
+    name = "onedark-nvim", -- Avoid name conflict
+    lazy = true,
+    config = function()
+      require("onedark").setup({
+        style = "vivid", -- dark, darker, cool, deep, warm, warmer, vivid
+        transparent = true,
+        code_style = {
+          comments = "italic",
+          keywords = "bold",
+          functions = "bold",
+          strings = "italic",
+          variables = "NONE"
+        },
+      })
+    end,
+  },
+
+  -- Oxocarbon - Modern IBM inspired
+  {
+    "nyoom-engineering/oxocarbon.nvim",
+    lazy = true,
+  },
+
+  -- Melange - Warm color palette
+  {
+    "savq/melange-nvim",
+    lazy = true,
+  },
+
+  -- Flow - Minimal and clean
+  {
+    "0xstepit/flow.nvim",
+    lazy = true,
+    config = function()
+      require("flow").setup({
+        transparent = true,
+        fluo_color = "pink",
+        mode = "normal",
+        aggressive_spell = false,
+      })
+    end,
+  },
+
+  -- Cyberdream - Futuristic theme
+  {
+    "scottmckendry/cyberdream.nvim",
+    lazy = true,
+    config = function()
+      require("cyberdream").setup({
+        transparent = true,
+        italic_comments = true,
+        hide_fillchars = true,
+        borderless_telescope = true,
+      })
+    end,
+  },
+
+  -- Vesper - Dark purple theme
+  {
+    "datsfilipe/vesper.nvim",
+    lazy = true,
+  },
+
+  -- Bamboo - Natural green theme
+  {
+    "ribru17/bamboo.nvim",
+    lazy = true,
+    config = function()
+      require("bamboo").setup({
+        transparent = true,
+        style = "vulgaris", -- vulgaris, multiplex
+      })
+    end,
+  },
+
+  -- Base16 - Classic terminal themes
+  {
+    "RRethy/base16-nvim",
+    lazy = true,
+  },
+
+  -- Flexoki - Modern neutral theme
+  {
+    "kepano/flexoki-neovim",
+    name = "flexoki",
+    lazy = true,
+  },
+
+  -- Lackluster - Deliberately muted
+  {
+    "slugbyte/lackluster.nvim",
     lazy = true,
   },
 
@@ -897,11 +1120,61 @@ return {
         },
         select = {
           enabled = true,
-          backend = { "telescope", "fzf_lua", "fzf", "builtin", "nui" },
+          backend = { "telescope", "fzf_lua", "builtin", "nui" },
           trim_prompt = true,
           telescope = require("telescope.themes").get_dropdown({
             winblend = 10,
+            layout_config = {
+              width = 0.8,
+              height = 0.8,
+            },
           }),
+          -- Enhanced builtin config for better theme switcher experience
+          builtin = {
+            show_numbers = true,
+            border = "rounded",
+            relative = "editor",
+            buf_options = {},
+            win_options = {
+              winblend = 10,
+              winhighlight = "",
+            },
+            width = nil,
+            max_width = { 140, 0.8 },
+            min_width = { 40, 0.2 },
+            height = nil,
+            max_height = 0.9,
+            min_height = { 10, 0.2 },
+            mappings = {
+              ["<Esc>"] = "Close",
+              ["<C-c>"] = "Close",
+              ["<CR>"] = "Confirm",
+            },
+          },
+          -- Use builtin for better scrolling behavior (avoids infinite indent)
+          get_config = function(opts)
+            if opts.prompt and opts.prompt:match("theme") then
+              return {
+                backend = "builtin",
+                builtin = {
+                  border = "rounded",
+                  relative = "editor",
+                  max_height = 0.6,
+                  max_width = 0.6,
+                  mappings = {
+                    ["<Esc>"] = "Close",
+                    ["<C-c>"] = "Close", 
+                    ["<CR>"] = "Confirm",
+                    ["j"] = "Next",
+                    ["k"] = "Prev",
+                    ["<Down>"] = "Next",
+                    ["<Up>"] = "Prev",
+                  },
+                },
+              }
+            end
+            return {}
+          end,
         },
       })
     end,
@@ -1043,11 +1316,51 @@ return {
       keymap.set("n", "<leader>fq", "<cmd>Telescope quickfix<cr>", { desc = "Quickfix" })
       keymap.set("n", "<leader>fl", "<cmd>Telescope loclist<cr>", { desc = "Location List" })
       
-      -- Optimized theme switcher using Telescope for better UX (fixes infinite indenting issue)
+      -- Custom theme switcher using vim.ui.select (dressing.nvim) - fixes infinite indenting
       local function theme_switcher()
-        require("telescope.builtin").colorscheme({
-          enable_preview = true,
-        })
+        local theme_config = require("config.theme")
+        local all_themes = theme_config.get_available_themes()
+        
+        -- Create selection prompt with better formatting
+        vim.ui.select(all_themes, {
+          prompt = "🎨 Select a theme:",
+          format_item = function(item)
+            -- Add emoji indicators for theme types
+            local icon = "🎨"
+            if item:match("dark") or item:match("night") or item:match("mocha") or item:match("storm") then
+              icon = "🌙"
+            elseif item:match("light") or item:match("day") or item:match("dawn") or item:match("latte") then
+              icon = "☀️"
+            elseif item:match("gruvbox") or item:match("forest") or item:match("bamboo") then
+              icon = "🌲"
+            elseif item:match("ocean") or item:match("blue") or item:match("ayu") then
+              icon = "🌊"
+            elseif item:match("material") or item:match("modern") or item:match("cyber") then
+              icon = "💎"
+            elseif item:match("tender") or item:match("rose") or item:match("vesper") then
+              icon = "🌸"
+            elseif item:match("space") or item:match("cosmic") or item:match("aurora") then
+              icon = "🌌"
+            end
+            
+            -- Show current theme indicator
+            local current = vim.g.current_theme or ""
+            local indicator = (item == current) and " ← current" or ""
+            
+            return icon .. " " .. item .. indicator
+          end,
+        }, function(choice)
+          if choice then
+            -- Try to apply the theme using the enhanced theme system
+            if theme_config.apply_theme(choice) then
+              theme_config.save_theme(choice)
+              vim.notify("🎨 Theme switched to: " .. choice, vim.log.levels.INFO)
+            else
+              vim.notify("❌ Failed to load theme: " .. choice, vim.log.levels.ERROR)
+              vim.notify("💡 Try running :Lazy sync to install missing themes", vim.log.levels.INFO)
+            end
+          end
+        end)
       end
       
       -- Theme switcher keymaps
