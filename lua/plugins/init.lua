@@ -829,11 +829,11 @@ return {
           TRACE = "✎",
           WARN = ""
         },
-        level = 2,
+        level = 3, -- Only show WARN and ERROR by default (quieter)
         minimum_width = 50,
-        render = "default",
-        stages = "fade_in_slide_out",
-        timeout = 3000,
+        render = "compact", -- More compact rendering
+        stages = "fade", -- Simpler animation
+        timeout = 2000, -- Shorter timeout (was 3000)
         top_down = true
       })
       
@@ -1167,7 +1167,7 @@ return {
       local function bootstrap_clangd()
         -- Check if clangd is available in system PATH first
         if vim.fn.executable("clangd") == 1 then
-          vim.notify("✅ clangd found in system PATH", vim.log.levels.INFO)
+          vim.notify("✅ clangd found in system PATH", vim.log.levels.DEBUG)
           return true
         end
         
@@ -1176,7 +1176,7 @@ return {
         if mason_registry_ok then
           local clangd_pkg = mason_registry.get_package("clangd")
           if clangd_pkg:is_installed() then
-            vim.notify("✅ clangd installed via Mason", vim.log.levels.INFO)
+            vim.notify("✅ clangd installed via Mason", vim.log.levels.DEBUG)
             return true
           end
           
@@ -1366,7 +1366,7 @@ return {
           -- Check if clangd is attached, if not try to start it
           local clients = vim.lsp.get_active_clients({name = "clangd"})
           if #clients == 0 and not clangd_setup_success then
-            vim.notify("🔄 Attempting to restart clangd for C/C++ file", vim.log.levels.INFO)
+            vim.notify("🔄 Attempting to restart clangd for C/C++ file", vim.log.levels.DEBUG)
             setup_clangd(lspconfig, capabilities, on_attach)
           end
         end,
@@ -1720,8 +1720,9 @@ return {
           console = "integratedTerminal",
           setupCommands = {
             {
-              text = "target exec " .. function()
-                return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+              text = function()
+                local exec_path = vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+                return "target exec " .. exec_path
               end,
               description = "Set target executable",
               ignoreFailures = false,
