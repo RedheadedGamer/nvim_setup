@@ -106,3 +106,61 @@ keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Scroll up and center" })
 
 -- Better paste behavior
 keymap.set("v", "p", '"_dP', { desc = "Paste without overwriting register" })
+
+-- ============================================================================
+-- DEBUGGING KEYMAPS (GDB GEF & Valgrind Integration)
+-- ============================================================================
+
+-- Core debugging controls
+keymap.set("n", "<F5>", function() require("dap").continue() end, { desc = "Debug: Continue" })
+keymap.set("n", "<F10>", function() require("dap").step_over() end, { desc = "Debug: Step Over" })
+keymap.set("n", "<F11>", function() require("dap").step_into() end, { desc = "Debug: Step Into" })
+keymap.set("n", "<F12>", function() require("dap").step_out() end, { desc = "Debug: Step Out" })
+keymap.set("n", "<leader>b", function() require("dap").toggle_breakpoint() end, { desc = "Toggle Breakpoint" })
+
+-- Advanced debugging features
+keymap.set("n", "<leader>dM", function() require("config.debugging").memory_analysis() end, { desc = "Memory Analysis Tools" })
+keymap.set("n", "<leader>dS", function() require("config.debugging").security_analysis() end, { desc = "Security Analysis" })
+keymap.set("n", "<leader>dT", function() require("config.debugging").debug_templates() end, { desc = "Debug Templates" })
+keymap.set("n", "<leader>dgc", function() require("config.debugging").gef_commands() end, { desc = "GEF Commands" })
+
+-- Valgrind shortcuts
+keymap.set("n", "<leader>dvm", function() require("config.debugging").run_valgrind("memcheck") end, { desc = "Valgrind Memcheck" })
+keymap.set("n", "<leader>dvh", function() require("config.debugging").run_valgrind("helgrind") end, { desc = "Valgrind Helgrind" })
+keymap.set("n", "<leader>dvd", function() require("config.debugging").run_valgrind("drd") end, { desc = "Valgrind DRD" })
+keymap.set("n", "<leader>dvs", function() require("config.debugging").run_valgrind("massif") end, { desc = "Valgrind Massif" })
+keymap.set("n", "<leader>dvo", function() require("config.debugging").run_valgrind("cachegrind") end, { desc = "Valgrind Cachegrind" })
+keymap.set("n", "<leader>dvp", function() require("config.debugging").run_valgrind("callgrind") end, { desc = "Valgrind Callgrind" })
+
+-- Quick debug session management
+keymap.set("n", "<leader>dqs", function()
+  local dap = require("dap")
+  dap.close()
+  require("dapui").close()
+  vim.notify("🐛 Debug session terminated", vim.log.levels.INFO)
+end, { desc = "Quick Stop Debug" })
+
+keymap.set("n", "<leader>dqr", function()
+  local dap = require("dap")
+  dap.restart()
+  vim.notify("🔄 Debug session restarted", vim.log.levels.INFO)
+end, { desc = "Quick Restart Debug" })
+
+-- Debugging information display
+keymap.set("n", "<leader>dI", function()
+  local debug_info = require("config.debugging").check_debug_tools()
+  local info_lines = {"🔧 Debugging Tools Status:", ""}
+  
+  for tool, available in pairs(debug_info) do
+    if tool ~= "gef_path" then
+      local status = available and "✅" or "❌"
+      table.insert(info_lines, string.format("%s %s: %s", status, tool, available and "Available" or "Not Found"))
+    end
+  end
+  
+  if debug_info.gef and debug_info.gef_path then
+    table.insert(info_lines, string.format("📁 GEF Path: %s", debug_info.gef_path))
+  end
+  
+  vim.notify(table.concat(info_lines, "\n"), vim.log.levels.INFO)
+end, { desc = "Debug Tools Info" })

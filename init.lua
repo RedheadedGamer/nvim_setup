@@ -127,7 +127,17 @@ vim.env.GIT_ASKPASS = "echo"
 vim.env.SSH_ASKPASS = "echo"
 
 -- Initialize theme system after plugins are loaded
-require("config.theme").init()
+require("config.theme_enhanced").init()
+
+-- Initialize startup optimizations for better performance and UX
+pcall(function()
+  require("config.startup_optimizations").init()
+end)
+
+-- Initialize debugging environment
+pcall(function()
+  require("config.debugging").setup()
+end)
 
 -- Display startup message
 if vim.fn.argc() == 0 then

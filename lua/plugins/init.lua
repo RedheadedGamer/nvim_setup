@@ -98,6 +98,72 @@ return {
     end,
   },
 
+  -- Additional modern themes
+  {
+    "nyoom-engineering/oxocarbon.nvim",
+    lazy = true,
+    config = function()
+      -- Oxocarbon doesn't have built-in transparency, we'll handle it via autocmds
+    end,
+  },
+
+  {
+    "projekt0n/github-nvim-theme",
+    lazy = true,
+    config = function()
+      require("github-theme").setup({
+        options = {
+          transparent = true,
+        }
+      })
+    end,
+  },
+
+  {
+    "marko-cerovac/material.nvim",
+    lazy = true,
+    config = function()
+      vim.g.material_style = "darker"
+      require("material").setup({
+        disable = {
+          background = true, -- For transparency
+        },
+        high_visibility = {
+          lighter = true,
+          darker = true,
+        },
+      })
+    end,
+  },
+
+  {
+    "navarasu/onedark.nvim",
+    lazy = true,
+    config = function()
+      require("onedark").setup({
+        style = "dark",
+        transparent = true,
+        code_style = {
+          comments = "italic",
+          keywords = "bold",
+          functions = "none",
+          strings = "none",
+          variables = "none",
+        },
+      })
+    end,
+  },
+
+  {
+    "AlexvZyl/nordic.nvim",
+    lazy = true,
+    config = function()
+      require("nordic").setup({
+        transparent_bg = true,
+      })
+    end,
+  },
+
   -- Essential dependencies
   {
     "nvim-lua/plenary.nvim",
@@ -323,18 +389,20 @@ return {
           local day_part = ({ 'evening', 'morning', 'afternoon', 'evening' })[part_id]
           local username = vim.loop.os_getenv('USER') or 'user'
           
-          -- Enhanced ASCII art header
+          -- Enhanced ASCII art header with improved design
           local header_art = {
             "╭─────────────────────────────────────────────────────────╮",
             "│                                                         │",
-            "│  ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗    │",
-            "│  ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║    │", 
-            "│  ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║    │",
-            "│  ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║    │",
-            "│  ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║    │",
-            "│  ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝    │",
+            "│   ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗   │",
+            "│   ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║   │",
+            "│   ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║   │",
+            "│   ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║   │",
+            "│   ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║   │",
+            "│   ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝   │",
             "│                                                         │",
-            "│           " .. string.format("Good %s, %s!", day_part, username) .. string.rep(" ", 25 - string.len(day_part .. username)) .. "│",
+            "│            🚀 Your Ultimate Coding Companion 🚀          │",
+            "│                                                         │",
+            "│        " .. string.format("Good %s, %s!", day_part, username) .. string.rep(" ", math.max(0, 30 - string.len(day_part .. username))) .. " │",
             "│                                                         │",
             "╰─────────────────────────────────────────────────────────╯",
           }
@@ -943,55 +1011,118 @@ return {
       -- Theme switcher keymap
       keymap.set("n", "<leader>tt", function() theme_switcher() end, { desc = "Theme Switcher" })
       
-      -- Optimized theme switcher with curated high-quality themes
+      -- Enhanced theme switcher with categories and descriptions
       local function theme_switcher()
         local themes = {
-          -- Primary themes
-          "onedark_dark",
-          "tokyonight",
-          "tokyonight-night",
-          "tokyonight-storm", 
-          "tokyonight-day",
-          "gruvbox",
-          "dracula",
-          "nord",
-          -- Catppuccin variants
-          "catppuccin",
-          "catppuccin-latte",
-          "catppuccin-frappe", 
-          "catppuccin-macchiato",
-          "catppuccin-mocha",
-          -- Nightfox family
-          "nightfox",
-          "nordfox",
-          "dawnfox",
-          "duskfox",
-          "terafox",
-          "carbonfox",
-          -- Rose Pine variants
-          "rose-pine",
-          "rose-pine-main",
-          "rose-pine-moon",
-          "rose-pine-dawn",
-          -- Kanagawa variants
-          "kanagawa",
-          "kanagawa-wave",
-          "kanagawa-dragon",
-          "kanagawa-lotus",
+          -- Dark Themes - Professional
+          {
+            category = "🌙 Dark Professional",
+            themes = {
+              { name = "onedark_dark", desc = "OneDark Pro - Dark variant with excellent syntax highlighting" },
+              { name = "onedark", desc = "OneDark - Clean VSCode-inspired theme" },
+              { name = "tokyonight-night", desc = "Tokyo Night - Dark blue night theme" },
+              { name = "tokyonight-storm", desc = "Tokyo Night Storm - Darker variant with storm colors" },
+              { name = "oxocarbon", desc = "Oxocarbon - IBM's modern dark theme" },
+              { name = "github_dark", desc = "GitHub Dark - Official GitHub dark theme" },
+              { name = "github_dark_dimmed", desc = "GitHub Dark Dimmed - Softer dark theme" },
+            }
+          },
+          -- Dark Themes - Colorful
+          {
+            category = "🎨 Dark Colorful", 
+            themes = {
+              { name = "dracula", desc = "Dracula - Popular purple-based theme" },
+              { name = "gruvbox", desc = "Gruvbox - Retro groove color scheme" },
+              { name = "material", desc = "Material - Google's material design colors" },
+              { name = "catppuccin-mocha", desc = "Catppuccin Mocha - Warm, cozy dark theme" },
+              { name = "catppuccin-macchiato", desc = "Catppuccin Macchiato - Mid-tone variant" },
+              { name = "catppuccin-frappe", desc = "Catppuccin Frappe - Cool dark variant" },
+            }
+          },
+          -- Nature & Minimal
+          {
+            category = "🌿 Nature & Minimal",
+            themes = {
+              { name = "rose-pine-moon", desc = "Rose Pine Moon - Elegant purple night theme" },
+              { name = "rose-pine-main", desc = "Rose Pine - Natural, low-contrast theme" },
+              { name = "kanagawa-wave", desc = "Kanagawa Wave - Japanese-inspired dark theme" },
+              { name = "kanagawa-dragon", desc = "Kanagawa Dragon - Darker Japanese theme" },
+              { name = "nordic", desc = "Nordic - Clean Scandinavian-inspired theme" },
+              { name = "nord", desc = "Nord - Arctic, north-bluish color palette" },
+            }
+          },
+          -- Fox Family
+          {
+            category = "🦊 Nightfox Family",
+            themes = {
+              { name = "nightfox", desc = "Nightfox - Vibrant dark fox theme" },
+              { name = "carbonfox", desc = "Carbon Fox - Dark carbon-inspired variant" },
+              { name = "terafox", desc = "Tera Fox - Greenish dark variant" },
+              { name = "nordfox", desc = "Nord Fox - Arctic fox variant" },
+              { name = "duskfox", desc = "Dusk Fox - Warm sunset colors" },
+              { name = "dawnfox", desc = "Dawn Fox - Light sunrise variant" },
+            }
+          },
+          -- Light Themes
+          {
+            category = "☀️ Light Themes",
+            themes = {
+              { name = "tokyonight-day", desc = "Tokyo Night Day - Clean light theme" },
+              { name = "catppuccin-latte", desc = "Catppuccin Latte - Warm light theme" },
+              { name = "rose-pine-dawn", desc = "Rose Pine Dawn - Elegant light variant" },
+              { name = "github_light", desc = "GitHub Light - Official GitHub light theme" },
+              { name = "kanagawa-lotus", desc = "Kanagawa Lotus - Light Japanese theme" },
+            }
+          },
         }
+
+        -- Flatten themes for selection
+        local flattened_themes = {}
+        local theme_info = {}
         
-        vim.ui.select(themes, {
-          prompt = "Select a theme:",
+        for _, category in ipairs(themes) do
+          -- Add category header
+          table.insert(flattened_themes, "── " .. category.category .. " ──")
+          theme_info["── " .. category.category .. " ──"] = { is_header = true }
+          
+          -- Add themes in category
+          for _, theme in ipairs(category.themes) do
+            table.insert(flattened_themes, theme.name)
+            theme_info[theme.name] = { desc = theme.desc, category = category.category }
+          end
+          
+          -- Add spacer
+          table.insert(flattened_themes, "")
+          theme_info[""] = { is_spacer = true }
+        end
+        
+        vim.ui.select(flattened_themes, {
+          prompt = "🎨 Select a theme (↑↓ to navigate, Enter to apply):",
           format_item = function(item)
-            return "🎨 " .. item
+            local info = theme_info[item]
+            if info and info.is_header then
+              return item
+            elseif info and info.is_spacer then
+              return "   "
+            elseif info and info.desc then
+              return string.format("  🎨 %-20s │ %s", item, info.desc)
+            else
+              return "  🎨 " .. item
+            end
           end,
         }, function(choice)
-          if choice then
-            local theme_manager = require("config.theme")
+          if choice and choice ~= "" and not theme_info[choice].is_header and not theme_info[choice].is_spacer then
+            local theme_manager = require("config.theme_enhanced")
             -- Try to apply the colorscheme
             if theme_manager.apply_theme(choice) then
               -- If successful, save it for persistence
               theme_manager.save_theme(choice)
+              local info = theme_info[choice]
+              if info and info.desc then
+                vim.notify("🎨 Applied theme: " .. choice .. "\n" .. info.desc, vim.log.levels.INFO)
+              else
+                vim.notify("🎨 Applied theme: " .. choice, vim.log.levels.INFO)
+              end
             end
           end
         end)
@@ -999,6 +1130,20 @@ return {
       
       keymap.set("n", "<leader>th", theme_switcher, { desc = "Theme switcher" })
       keymap.set("n", "<leader>tt", theme_switcher, { desc = "Theme switcher" })
+      
+      -- Additional theme keybindings
+      keymap.set("n", "<leader>tl", function()
+        local theme_manager = require("config.theme_enhanced")
+        theme_manager.toggle_theme_type()
+      end, { desc = "Toggle light/dark theme" })
+      
+      keymap.set("n", "<leader>tc", function()
+        local theme_manager = require("config.theme_enhanced")
+        local current = theme_manager.get_current_theme()
+        local info = theme_manager.get_theme_info(current)
+        vim.notify(string.format("Current theme: %s\nType: %s\nFamily: %s\nDescription: %s", 
+          current, info.type, info.family, info.desc), vim.log.levels.INFO)
+      end, { desc = "Show current theme info" })
     end,
   },
 
@@ -1414,6 +1559,374 @@ return {
           }
         })
       end
+    end,
+  },
+
+  -- ============================================================================
+  -- DEBUGGING TOOLS (GDB GEF & Valgrind Integration)
+  -- ============================================================================
+
+  -- Core debugging support with nvim-dap
+  {
+    "mfussenegger/nvim-dap",
+    dependencies = {
+      "rcarriga/nvim-dap-ui",
+      "theHamsta/nvim-dap-virtual-text",
+      "nvim-neotest/nvim-nio",
+      "williamboman/mason.nvim",
+      "jay-babu/mason-nvim-dap.nvim",
+    },
+    config = function()
+      local dap = require("dap")
+      local dapui = require("dapui")
+      
+      -- Setup dap-ui with enhanced configuration
+      dapui.setup({
+        icons = { expanded = "▾", collapsed = "▸", current_frame = "▸" },
+        mappings = {
+          expand = { "<CR>", "<2-LeftMouse>" },
+          open = "o",
+          remove = "d",
+          edit = "e",
+          repl = "r",
+          toggle = "t",
+        },
+        element_mappings = {},
+        expand_lines = vim.fn.has("nvim-0.7") == 1,
+        layouts = {
+          {
+            elements = {
+              { id = "scopes", size = 0.25 },
+              "breakpoints",
+              "stacks",
+              "watches",
+            },
+            size = 40,
+            position = "left",
+          },
+          {
+            elements = {
+              "repl",
+              "console",
+            },
+            size = 0.25,
+            position = "bottom",
+          },
+        },
+        controls = {
+          enabled = true,
+          element = "repl",
+          icons = {
+            pause = "",
+            play = "",
+            step_into = "",
+            step_over = "",
+            step_out = "",
+            step_back = "",
+            run_last = "↻",
+            terminate = "□",
+          },
+        },
+        floating = {
+          max_height = nil,
+          max_width = nil,
+          border = "single",
+          mappings = {
+            close = { "q", "<Esc>" },
+          },
+        },
+      })
+
+      -- Setup virtual text debugging
+      require("nvim-dap-virtual-text").setup({
+        enabled = true,
+        enabled_commands = true,
+        highlight_changed_variables = true,
+        highlight_new_as_changed = false,
+        show_stop_reason = true,
+        commented = false,
+        only_first_definition = true,
+        all_references = false,
+        filter_references_pattern = '<module',
+        virt_text_pos = 'eol',
+        all_frames = false,
+        virt_lines = false,
+        virt_text_win_col = nil
+      })
+
+      -- GDB/GEF Configuration for C/C++
+      dap.adapters.gdb = {
+        type = "executable",
+        command = "gdb",
+        args = { "--interpreter=dap", "--eval-command", "set print pretty on" }
+      }
+
+      -- Enhanced GEF configuration (if GEF is available)
+      dap.adapters.gef = {
+        type = "executable",
+        command = "gdb",
+        args = { 
+          "--interpreter=dap", 
+          "--eval-command", "source ~/.gef.py",
+          "--eval-command", "set print pretty on",
+          "--eval-command", "set disassembly-flavor intel"
+        }
+      }
+
+      -- C/C++ configuration with GDB/GEF support
+      dap.configurations.c = {
+        {
+          name = "Launch (GDB)",
+          type = "gdb",
+          request = "launch",
+          program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+          end,
+          cwd = "${workspaceFolder}",
+          stopAtBeginningOfMainSubprogram = false,
+        },
+        {
+          name = "Launch with GEF",
+          type = "gef",
+          request = "launch",
+          program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+          end,
+          cwd = "${workspaceFolder}",
+          stopAtBeginningOfMainSubprogram = false,
+        },
+        {
+          name = "Attach to process (GDB)",
+          type = "gdb",
+          request = "attach",
+          pid = function()
+            return tonumber(vim.fn.input('Process ID: '))
+          end,
+          cwd = "${workspaceFolder}",
+        },
+        {
+          name = "Launch with Valgrind",
+          type = "gdb",
+          request = "launch",
+          program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+          end,
+          cwd = "${workspaceFolder}",
+          args = function()
+            local args_string = vim.fn.input('Arguments: ')
+            return vim.split(args_string, " ")
+          end,
+          runInTerminal = true,
+          console = "integratedTerminal",
+          setupCommands = {
+            {
+              text = "target exec " .. function()
+                return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+              end,
+              description = "Set target executable",
+              ignoreFailures = false,
+            },
+          },
+        },
+      }
+
+      -- Copy C configuration to C++
+      dap.configurations.cpp = dap.configurations.c
+
+      -- Python debugging configuration
+      dap.adapters.python = {
+        type = "executable",
+        command = "python",
+        args = { "-m", "debugpy.adapter" },
+      }
+
+      dap.configurations.python = {
+        {
+          type = "python",
+          request = "launch",
+          name = "Launch file",
+          program = "${file}",
+          pythonPath = function()
+            return "/usr/bin/python3"
+          end,
+        },
+        {
+          type = "python",
+          request = "launch",
+          name = "Launch with arguments",
+          program = "${file}",
+          args = function()
+            local args_string = vim.fn.input('Arguments: ')
+            return vim.split(args_string, " ")
+          end,
+          pythonPath = function()
+            return "/usr/bin/python3"
+          end,
+        },
+      }
+
+      -- JavaScript/TypeScript debugging
+      dap.adapters.node2 = {
+        type = "executable",
+        command = "node",
+        args = { vim.fn.stdpath("data") .. "/mason/packages/node-debug2-adapter/node_modules/node-debug2/out/src/nodeDebug.js" },
+      }
+
+      dap.configurations.javascript = {
+        {
+          name = "Launch",
+          type = "node2",
+          request = "launch",
+          program = "${file}",
+          cwd = vim.fn.getcwd(),
+          sourceMaps = true,
+          protocol = "inspector",
+          console = "integratedTerminal",
+        },
+      }
+
+      dap.configurations.typescript = dap.configurations.javascript
+
+      -- Auto-open/close dapui
+      dap.listeners.after.event_initialized["dapui_config"] = function()
+        dapui.open()
+      end
+      dap.listeners.before.event_terminated["dapui_config"] = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited["dapui_config"] = function()
+        dapui.close()
+      end
+
+      -- Debugging keymaps
+      local keymap = vim.keymap
+      keymap.set("n", "<leader>db", function() dap.toggle_breakpoint() end, { desc = "Toggle Breakpoint" })
+      keymap.set("n", "<leader>dB", function() dap.set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, { desc = "Conditional Breakpoint" })
+      keymap.set("n", "<leader>dc", function() dap.continue() end, { desc = "Continue" })
+      keymap.set("n", "<leader>da", function() dap.continue({ before = get_args }) end, { desc = "Run with Args" })
+      keymap.set("n", "<leader>dC", function() dap.run_to_cursor() end, { desc = "Run to Cursor" })
+      keymap.set("n", "<leader>dg", function() dap.goto_() end, { desc = "Go to line (no execute)" })
+      keymap.set("n", "<leader>di", function() dap.step_into() end, { desc = "Step Into" })
+      keymap.set("n", "<leader>dj", function() dap.down() end, { desc = "Down" })
+      keymap.set("n", "<leader>dk", function() dap.up() end, { desc = "Up" })
+      keymap.set("n", "<leader>dl", function() dap.run_last() end, { desc = "Run Last" })
+      keymap.set("n", "<leader>do", function() dap.step_out() end, { desc = "Step Out" })
+      keymap.set("n", "<leader>dO", function() dap.step_over() end, { desc = "Step Over" })
+      keymap.set("n", "<leader>dp", function() dap.pause() end, { desc = "Pause" })
+      keymap.set("n", "<leader>dr", function() dap.repl.toggle() end, { desc = "Toggle REPL" })
+      keymap.set("n", "<leader>ds", function() dap.session() end, { desc = "Session" })
+      keymap.set("n", "<leader>dt", function() dap.terminate() end, { desc = "Terminate" })
+      keymap.set("n", "<leader>dw", function() require("dap.ui.widgets").hover() end, { desc = "Widgets" })
+      
+      -- DAP UI keymaps
+      keymap.set("n", "<leader>du", function() dapui.toggle() end, { desc = "Toggle Debug UI" })
+      keymap.set("n", "<leader>de", function() dapui.eval() end, { desc = "Evaluate" })
+      keymap.set("v", "<leader>de", function() dapui.eval() end, { desc = "Evaluate" })
+
+      -- Valgrind integration
+      keymap.set("n", "<leader>dv", function()
+        local file_path = vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+        if file_path ~= "" then
+          local args = vim.fn.input('Arguments (optional): ')
+          local valgrind_cmd = string.format(
+            "valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose %s %s",
+            file_path, args
+          )
+          vim.cmd("terminal " .. valgrind_cmd)
+        end
+      end, { desc = "Run with Valgrind" })
+
+      -- Advanced Valgrind options
+      keymap.set("n", "<leader>dvh", function()
+        local file_path = vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+        if file_path ~= "" then
+          local args = vim.fn.input('Arguments (optional): ')
+          local valgrind_cmd = string.format(
+            "valgrind --tool=helgrind --track-origins=yes %s %s",
+            file_path, args
+          )
+          vim.cmd("terminal " .. valgrind_cmd)
+        end
+      end, { desc = "Run with Valgrind Helgrind (race conditions)" })
+
+      keymap.set("n", "<leader>dvc", function()
+        local file_path = vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+        if file_path ~= "" then
+          local args = vim.fn.input('Arguments (optional): ')
+          local valgrind_cmd = string.format(
+            "valgrind --tool=cachegrind %s %s",
+            file_path, args
+          )
+          vim.cmd("terminal " .. valgrind_cmd)
+        end
+      end, { desc = "Run with Valgrind Cachegrind (performance analysis)" })
+
+      -- GEF-specific enhancements
+      keymap.set("n", "<leader>dgf", function()
+        vim.notify("🦊 Using GEF-enhanced GDB for next debug session", vim.log.levels.INFO)
+        dap.set_session(nil)
+        -- Set up to use GEF adapter for next session
+        for _, config in ipairs(dap.configurations.c) do
+          if config.name == "Launch with GEF" then
+            dap.run(config)
+            break
+          end
+        end
+      end, { desc = "Launch with GEF" })
+
+      -- Helper function for getting arguments
+      function get_args()
+        local args_string = vim.fn.input('Arguments: ')
+        return vim.split(args_string, " ")
+      end
+
+      vim.notify("🔧 Debugging setup complete with GDB, GEF, and Valgrind integration", vim.log.levels.INFO)
+    end,
+  },
+
+  -- Mason DAP for automatic debug adapter installation
+  {
+    "jay-babu/mason-nvim-dap.nvim",
+    dependencies = {
+      "williamboman/mason.nvim",
+      "mfussenegger/nvim-dap",
+    },
+    config = function()
+      require("mason-nvim-dap").setup({
+        ensure_installed = {
+          "python",
+          "codelldb",  -- For C/C++/Rust
+          "node2",     -- For JavaScript/TypeScript
+        },
+        automatic_installation = true,
+        handlers = {
+          function(config)
+            require('mason-nvim-dap').default_setup(config)
+          end,
+          python = function(config)
+            config.adapters = {
+              type = "executable",
+              command = "/usr/bin/python3",
+              args = {
+                "-m",
+                "debugpy.adapter",
+              },
+            }
+            require('mason-nvim-dap').default_setup(config)
+          end,
+          codelldb = function(config)
+            config.adapters = {
+              type = "server",
+              port = "${port}",
+              executable = {
+                command = vim.fn.stdpath("data") .. "/mason/bin/codelldb",
+                args = { "--port", "${port}" },
+              }
+            }
+            require('mason-nvim-dap').default_setup(config)
+          end,
+        },
+      })
     end,
   },
 
