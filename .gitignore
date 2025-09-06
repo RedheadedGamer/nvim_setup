@@ -9,6 +9,9 @@ Thumbs.db
 test.*
 *.tmp
 
+# Downloaded binaries
+*.appimage
+
 # Backup files
 *.bak
 *.backup
