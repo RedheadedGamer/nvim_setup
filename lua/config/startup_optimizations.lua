@@ -29,14 +29,15 @@ function M.setup_error_handling()
   -- Global error handler
   vim.api.nvim_create_autocmd("VimEnter", {
     callback = function()
-      -- Set up better error messages
-      vim.notify = require("mini.notify").make_notify({
-        ERROR = { duration = 5000, hl_group = "DiagnosticError" },
-        WARN = { duration = 4000, hl_group = "DiagnosticWarn" },
-        INFO = { duration = 3000, hl_group = "DiagnosticInfo" },
-        DEBUG = { duration = 2000, hl_group = "Comment" },
-        TRACE = { duration = 1000, hl_group = "Comment" },
-      })
+      -- Notification system is already configured by nvim-notify in plugins/init.lua
+      -- This autocmd ensures vim.notify is available even if nvim-notify fails to load
+      if not vim.notify or vim.notify == vim.notify_once then
+        vim.notify = function(msg, level)
+          local levels = { "ERROR", "WARN", "INFO", "DEBUG" }
+          local level_name = levels[level] or "INFO"
+          print(string.format("[%s] %s", level_name, tostring(msg)))
+        end
+      end
     end,
   })
 
