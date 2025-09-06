@@ -98,6 +98,72 @@ return {
     end,
   },
 
+  -- Additional modern themes
+  {
+    "nyoom-engineering/oxocarbon.nvim",
+    lazy = true,
+    config = function()
+      -- Oxocarbon doesn't have built-in transparency, we'll handle it via autocmds
+    end,
+  },
+
+  {
+    "projekt0n/github-nvim-theme",
+    lazy = true,
+    config = function()
+      require("github-theme").setup({
+        options = {
+          transparent = true,
+        }
+      })
+    end,
+  },
+
+  {
+    "marko-cerovac/material.nvim",
+    lazy = true,
+    config = function()
+      vim.g.material_style = "darker"
+      require("material").setup({
+        disable = {
+          background = true, -- For transparency
+        },
+        high_visibility = {
+          lighter = true,
+          darker = true,
+        },
+      })
+    end,
+  },
+
+  {
+    "navarasu/onedark.nvim",
+    lazy = true,
+    config = function()
+      require("onedark").setup({
+        style = "dark",
+        transparent = true,
+        code_style = {
+          comments = "italic",
+          keywords = "bold",
+          functions = "none",
+          strings = "none",
+          variables = "none",
+        },
+      })
+    end,
+  },
+
+  {
+    "AlexvZyl/nordic.nvim",
+    lazy = true,
+    config = function()
+      require("nordic").setup({
+        transparent_bg = true,
+      })
+    end,
+  },
+
   -- Essential dependencies
   {
     "nvim-lua/plenary.nvim",
@@ -323,18 +389,20 @@ return {
           local day_part = ({ 'evening', 'morning', 'afternoon', 'evening' })[part_id]
           local username = vim.loop.os_getenv('USER') or 'user'
           
-          -- Enhanced ASCII art header
+          -- Enhanced ASCII art header with improved design
           local header_art = {
             "╭─────────────────────────────────────────────────────────╮",
             "│                                                         │",
-            "│  ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗    │",
-            "│  ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║    │", 
-            "│  ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║    │",
-            "│  ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║    │",
-            "│  ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║    │",
-            "│  ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝    │",
+            "│   ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗   │",
+            "│   ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║   │",
+            "│   ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║   │",
+            "│   ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║   │",
+            "│   ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║   │",
+            "│   ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝   │",
             "│                                                         │",
-            "│           " .. string.format("Good %s, %s!", day_part, username) .. string.rep(" ", 25 - string.len(day_part .. username)) .. "│",
+            "│            🚀 Your Ultimate Coding Companion 🚀          │",
+            "│                                                         │",
+            "│        " .. string.format("Good %s, %s!", day_part, username) .. string.rep(" ", math.max(0, 30 - string.len(day_part .. username))) .. " │",
             "│                                                         │",
             "╰─────────────────────────────────────────────────────────╯",
           }
@@ -943,55 +1011,118 @@ return {
       -- Theme switcher keymap
       keymap.set("n", "<leader>tt", function() theme_switcher() end, { desc = "Theme Switcher" })
       
-      -- Optimized theme switcher with curated high-quality themes
+      -- Enhanced theme switcher with categories and descriptions
       local function theme_switcher()
         local themes = {
-          -- Primary themes
-          "onedark_dark",
-          "tokyonight",
-          "tokyonight-night",
-          "tokyonight-storm", 
-          "tokyonight-day",
-          "gruvbox",
-          "dracula",
-          "nord",
-          -- Catppuccin variants
-          "catppuccin",
-          "catppuccin-latte",
-          "catppuccin-frappe", 
-          "catppuccin-macchiato",
-          "catppuccin-mocha",
-          -- Nightfox family
-          "nightfox",
-          "nordfox",
-          "dawnfox",
-          "duskfox",
-          "terafox",
-          "carbonfox",
-          -- Rose Pine variants
-          "rose-pine",
-          "rose-pine-main",
-          "rose-pine-moon",
-          "rose-pine-dawn",
-          -- Kanagawa variants
-          "kanagawa",
-          "kanagawa-wave",
-          "kanagawa-dragon",
-          "kanagawa-lotus",
+          -- Dark Themes - Professional
+          {
+            category = "🌙 Dark Professional",
+            themes = {
+              { name = "onedark_dark", desc = "OneDark Pro - Dark variant with excellent syntax highlighting" },
+              { name = "onedark", desc = "OneDark - Clean VSCode-inspired theme" },
+              { name = "tokyonight-night", desc = "Tokyo Night - Dark blue night theme" },
+              { name = "tokyonight-storm", desc = "Tokyo Night Storm - Darker variant with storm colors" },
+              { name = "oxocarbon", desc = "Oxocarbon - IBM's modern dark theme" },
+              { name = "github_dark", desc = "GitHub Dark - Official GitHub dark theme" },
+              { name = "github_dark_dimmed", desc = "GitHub Dark Dimmed - Softer dark theme" },
+            }
+          },
+          -- Dark Themes - Colorful
+          {
+            category = "🎨 Dark Colorful", 
+            themes = {
+              { name = "dracula", desc = "Dracula - Popular purple-based theme" },
+              { name = "gruvbox", desc = "Gruvbox - Retro groove color scheme" },
+              { name = "material", desc = "Material - Google's material design colors" },
+              { name = "catppuccin-mocha", desc = "Catppuccin Mocha - Warm, cozy dark theme" },
+              { name = "catppuccin-macchiato", desc = "Catppuccin Macchiato - Mid-tone variant" },
+              { name = "catppuccin-frappe", desc = "Catppuccin Frappe - Cool dark variant" },
+            }
+          },
+          -- Nature & Minimal
+          {
+            category = "🌿 Nature & Minimal",
+            themes = {
+              { name = "rose-pine-moon", desc = "Rose Pine Moon - Elegant purple night theme" },
+              { name = "rose-pine-main", desc = "Rose Pine - Natural, low-contrast theme" },
+              { name = "kanagawa-wave", desc = "Kanagawa Wave - Japanese-inspired dark theme" },
+              { name = "kanagawa-dragon", desc = "Kanagawa Dragon - Darker Japanese theme" },
+              { name = "nordic", desc = "Nordic - Clean Scandinavian-inspired theme" },
+              { name = "nord", desc = "Nord - Arctic, north-bluish color palette" },
+            }
+          },
+          -- Fox Family
+          {
+            category = "🦊 Nightfox Family",
+            themes = {
+              { name = "nightfox", desc = "Nightfox - Vibrant dark fox theme" },
+              { name = "carbonfox", desc = "Carbon Fox - Dark carbon-inspired variant" },
+              { name = "terafox", desc = "Tera Fox - Greenish dark variant" },
+              { name = "nordfox", desc = "Nord Fox - Arctic fox variant" },
+              { name = "duskfox", desc = "Dusk Fox - Warm sunset colors" },
+              { name = "dawnfox", desc = "Dawn Fox - Light sunrise variant" },
+            }
+          },
+          -- Light Themes
+          {
+            category = "☀️ Light Themes",
+            themes = {
+              { name = "tokyonight-day", desc = "Tokyo Night Day - Clean light theme" },
+              { name = "catppuccin-latte", desc = "Catppuccin Latte - Warm light theme" },
+              { name = "rose-pine-dawn", desc = "Rose Pine Dawn - Elegant light variant" },
+              { name = "github_light", desc = "GitHub Light - Official GitHub light theme" },
+              { name = "kanagawa-lotus", desc = "Kanagawa Lotus - Light Japanese theme" },
+            }
+          },
         }
+
+        -- Flatten themes for selection
+        local flattened_themes = {}
+        local theme_info = {}
         
-        vim.ui.select(themes, {
-          prompt = "Select a theme:",
+        for _, category in ipairs(themes) do
+          -- Add category header
+          table.insert(flattened_themes, "── " .. category.category .. " ──")
+          theme_info["── " .. category.category .. " ──"] = { is_header = true }
+          
+          -- Add themes in category
+          for _, theme in ipairs(category.themes) do
+            table.insert(flattened_themes, theme.name)
+            theme_info[theme.name] = { desc = theme.desc, category = category.category }
+          end
+          
+          -- Add spacer
+          table.insert(flattened_themes, "")
+          theme_info[""] = { is_spacer = true }
+        end
+        
+        vim.ui.select(flattened_themes, {
+          prompt = "🎨 Select a theme (↑↓ to navigate, Enter to apply):",
           format_item = function(item)
-            return "🎨 " .. item
+            local info = theme_info[item]
+            if info and info.is_header then
+              return item
+            elseif info and info.is_spacer then
+              return "   "
+            elseif info and info.desc then
+              return string.format("  🎨 %-20s │ %s", item, info.desc)
+            else
+              return "  🎨 " .. item
+            end
           end,
         }, function(choice)
-          if choice then
-            local theme_manager = require("config.theme")
+          if choice and choice ~= "" and not theme_info[choice].is_header and not theme_info[choice].is_spacer then
+            local theme_manager = require("config.theme_enhanced")
             -- Try to apply the colorscheme
             if theme_manager.apply_theme(choice) then
               -- If successful, save it for persistence
               theme_manager.save_theme(choice)
+              local info = theme_info[choice]
+              if info and info.desc then
+                vim.notify("🎨 Applied theme: " .. choice .. "\n" .. info.desc, vim.log.levels.INFO)
+              else
+                vim.notify("🎨 Applied theme: " .. choice, vim.log.levels.INFO)
+              end
             end
           end
         end)
@@ -999,6 +1130,20 @@ return {
       
       keymap.set("n", "<leader>th", theme_switcher, { desc = "Theme switcher" })
       keymap.set("n", "<leader>tt", theme_switcher, { desc = "Theme switcher" })
+      
+      -- Additional theme keybindings
+      keymap.set("n", "<leader>tl", function()
+        local theme_manager = require("config.theme_enhanced")
+        theme_manager.toggle_theme_type()
+      end, { desc = "Toggle light/dark theme" })
+      
+      keymap.set("n", "<leader>tc", function()
+        local theme_manager = require("config.theme_enhanced")
+        local current = theme_manager.get_current_theme()
+        local info = theme_manager.get_theme_info(current)
+        vim.notify(string.format("Current theme: %s\nType: %s\nFamily: %s\nDescription: %s", 
+          current, info.type, info.family, info.desc), vim.log.levels.INFO)
+      end, { desc = "Show current theme info" })
     end,
   },
 
