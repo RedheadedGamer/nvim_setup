@@ -1236,16 +1236,88 @@ return {
         severity_sort = false,
       })
 
-      -- Completion setup (nvim-cmp)
-      local cmp = require("cmp")
-      local luasnip = require("luasnip")
+      -- Completion setup (nvim-cmp) with failsafe source detection
+      local cmp_ok, cmp = pcall(require, "cmp")
+      if not cmp_ok then
+        vim.notify("⚠️ nvim-cmp failed to load, completion disabled", vim.log.levels.WARN)
+        return
+      end
       
-      require("luasnip.loaders.from_vscode").lazy_load()
+      local luasnip_ok, luasnip = pcall(require, "luasnip")
+      if luasnip_ok then
+        pcall(require("luasnip.loaders.from_vscode").lazy_load)
+      end
+      
+      -- Dynamic completion sources based on availability
+      local function get_completion_sources()
+        local sources = {}
+        
+        -- Check if LSP is available and has active clients
+        local lsp_available = false
+        local cmp_nvim_lsp_ok = pcall(require, "cmp_nvim_lsp")
+        if cmp_nvim_lsp_ok then
+          -- Check if any LSP clients are active (even if none yet, the source can still provide completions)
+          lsp_available = true
+          vim.notify("✅ LSP completion source available", vim.log.levels.INFO)
+        else
+          vim.notify("⚠️ LSP completion source unavailable, using fallbacks", vim.log.levels.WARN)
+        end
+        
+        -- Add LSP source with high priority if available
+        if lsp_available then
+          table.insert(sources, { name = "nvim_lsp", priority = 1000 })
+        end
+        
+        -- Add snippet source if luasnip is available
+        if luasnip_ok then
+          table.insert(sources, { name = "luasnip", priority = 750 })
+        else
+          vim.notify("⚠️ LuaSnip unavailable, snippet completion disabled", vim.log.levels.WARN)
+        end
+        
+        -- Add buffer and path sources (these should always work)
+        local cmp_buffer_ok = pcall(require, "cmp_buffer")
+        if cmp_buffer_ok then
+          table.insert(sources, { name = "buffer", priority = 500 })
+        end
+        
+        local cmp_path_ok = pcall(require, "cmp_path")
+        if cmp_path_ok then
+          table.insert(sources, { name = "path", priority = 250 })
+        end
+        
+        -- Notify about available completion sources
+        local source_names = {}
+        for _, source in ipairs(sources) do
+          table.insert(source_names, source.name)
+        end
+        vim.notify(string.format("🔧 Completion sources: %s", table.concat(source_names, ", ")), vim.log.levels.INFO)
+        
+        return sources
+      end
+      
+      local completion_sources = get_completion_sources()
+      
+      -- Only setup completion if we have at least one source
+      if #completion_sources == 0 then
+        vim.notify("❌ No completion sources available, completion disabled", vim.log.levels.ERROR)
+        return
+      end
       
       cmp.setup({
         snippet = {
           expand = function(args)
-            luasnip.lsp_expand(args.body)
+            if luasnip_ok then
+              luasnip.lsp_expand(args.body)
+            else
+              -- Fallback for when luasnip is not available
+              if vim.snippet and vim.snippet.expand then
+                vim.snippet.expand(args.body)
+              else
+                -- Final fallback: just insert the text
+                vim.api.nvim_put({ args.body }, "c", true, true)
+              end
+            end
           end,
         },
         mapping = cmp.mapping.preset.insert({
@@ -1262,7 +1334,7 @@ return {
           ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_next_item()
-            elseif luasnip.expand_or_jumpable() then
+            elseif luasnip_ok and luasnip.expand_or_jumpable() then
               luasnip.expand_or_jump()
             else
               fallback()
@@ -1271,19 +1343,14 @@ return {
           ["<S-Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_prev_item()
-            elseif luasnip.jumpable(-1) then
+            elseif luasnip_ok and luasnip.jumpable(-1) then
               luasnip.jump(-1)
             else
               fallback()
             end
           end, { "i", "s" }),
         }),
-        sources = {
-          { name = "nvim_lsp" },
-          { name = "luasnip" },
-          { name = "buffer" },
-          { name = "path" },
-        },
+        sources = completion_sources,
         formatting = {
           fields = { "kind", "abbr", "menu" },
           format = function(entry, vim_item)
@@ -1297,6 +1364,56 @@ return {
           end,
         },
       })
+      
+      -- Add dynamic completion source refresh when LSP becomes available
+      -- This ensures completion adapts when LSP servers start after initial setup
+      vim.api.nvim_create_autocmd("LspAttach", {
+        callback = function()
+          -- Refresh completion sources when LSP attaches
+          local current_sources = cmp.get_config().sources or {}
+          local has_lsp_source = false
+          
+          for _, source in ipairs(current_sources) do
+            if source.name == "nvim_lsp" then
+              has_lsp_source = true
+              break
+            end
+          end
+          
+          if not has_lsp_source then
+            -- Add LSP source dynamically
+            local new_sources = { { name = "nvim_lsp", priority = 1000 } }
+            for _, source in ipairs(current_sources) do
+              table.insert(new_sources, source)
+            end
+            
+            cmp.setup({ sources = new_sources })
+            vim.notify("🔄 Completion sources updated: LSP now available", vim.log.levels.INFO)
+          end
+        end,
+      })
+      
+      -- Fallback completion setup for command line
+      local cmp_cmdline_ok = pcall(require, "cmp_cmdline")
+      if cmp_cmdline_ok then
+        -- Command line path completion
+        cmp.setup.cmdline(":", {
+          mapping = cmp.mapping.preset.cmdline(),
+          sources = cmp.config.sources({
+            { name = "path" }
+          }, {
+            { name = "cmdline" }
+          })
+        })
+        
+        -- Command line search completion
+        cmp.setup.cmdline({ "/", "?" }, {
+          mapping = cmp.mapping.preset.cmdline(),
+          sources = {
+            { name = "buffer" }
+          }
+        })
+      end
     end,
   },
 
