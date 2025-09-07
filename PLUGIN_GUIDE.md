@@ -150,7 +150,7 @@ bear -- make
 ```bash
 # In Neovim
 :Mason
-# Install: clangd, cppcheck, codelldb
+# Install: clangd, codelldb  (cppcheck via system package manager)
 ```
 
 #### 4. Build and Debug

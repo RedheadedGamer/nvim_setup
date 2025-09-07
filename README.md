@@ -286,7 +286,7 @@ For detailed instructions on using all plugins, customizing features, and troubl
 - **[cmake-tools.nvim](https://github.com/Civitasv/cmake-tools.nvim)** - Complete CMake integration for project management
 - **[nvim-dap](https://github.com/mfussenegger/nvim-dap)** - Debug Adapter Protocol with codelldb and gdb support
 - **[nvim-dap-ui](https://github.com/rcarriga/nvim-dap-ui)** - Beautiful debugging interface
-- **[nvim-lint](https://github.com/mfussenegger/nvim-lint)** - Static analysis with cppcheck (clang-tidy via clangd)
+- **[nvim-lint](https://github.com/mfussenegger/nvim-lint)** - Static analysis with cppcheck (if installed via system package manager)
 - **[vim-lsp-cxx-highlight](https://github.com/jackguo380/vim-lsp-cxx-highlight)** - Enhanced C/C++ syntax highlighting
 - **[CurtineIncSw.vim](https://github.com/ericcurtin/CurtineIncSw.vim)** - Header/source file switching
 

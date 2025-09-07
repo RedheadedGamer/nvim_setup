@@ -41,7 +41,7 @@ bear -- make          # Generate compile_commands.json
 1. **clangd_extensions.nvim** - Full clangd management with inlay hints
 2. **cmake-tools.nvim** - CMake project management  
 3. **nvim-dap + nvim-dap-ui + nvim-nio** - Professional debugging
-4. **nvim-lint** - Static analysis with cppcheck only (clang-tidy via clangd)
+4. **nvim-lint** - Static analysis with cppcheck (if available, install via system package manager)
 5. **Makefile support** - compile_commands.json generation for any project
 
 ### Enhanced clangd Configuration (via clangd_extensions)
@@ -167,7 +167,7 @@ brew install cmake gdb llvm cppcheck bear ninja
 
 ### Key Tools Explained
 - **clang/clangd**: Main LSP server (auto-installed via Mason)
-- **cppcheck**: Static analysis (only linter used, no clang-tidy duplication)
+- **cppcheck**: Static analysis tool (install via system package manager, not Mason)
 - **bear**: Generates compile_commands.json for Makefile projects  
 - **cmake/ninja**: Build system support
 
@@ -211,7 +211,7 @@ brew install cmake llvm cppcheck bear ninja
 ### In Neovim
 ```
 :Mason
-# Install: clangd, cppcheck, clang-tidy, codelldb
+# Install: clangd, codelldb  (cppcheck must be installed via system package manager)
 ```
 
 ## 🎯 Getting Started Workflow

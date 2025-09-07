@@ -1739,7 +1739,8 @@ return {
       require("mason-tool-installer").setup({
         ensure_installed = {
           "clangd",       -- C/C++ LSP (handled by clangd_extensions)
-          "cppcheck",     -- C/C++ static analysis
+          -- Note: cppcheck must be installed via system package manager
+          -- e.g., sudo pacman -S cppcheck (Arch) or sudo apt install cppcheck (Ubuntu)
         },
         auto_update = false,
         run_on_start = true,
@@ -2492,23 +2493,47 @@ return {
     config = function()
       local lint = require("lint")
       
-      lint.linters_by_ft = {
-        c = { "cppcheck" },
-        cpp = { "cppcheck" },
-      }
+      -- Check if cppcheck is available
+      local function is_cppcheck_available()
+        return vim.fn.executable("cppcheck") == 1
+      end
       
-      -- Auto-lint on save and text changes
-      vim.api.nvim_create_autocmd({ "BufWritePost", "BufEnter", "InsertLeave" }, {
-        pattern = { "*.c", "*.cpp", "*.h", "*.hpp" },
-        callback = function()
+      -- Only configure cppcheck if it's available
+      if is_cppcheck_available() then
+        lint.linters_by_ft = {
+          c = { "cppcheck" },
+          cpp = { "cppcheck" },
+        }
+        
+        -- Auto-lint on save and text changes
+        vim.api.nvim_create_autocmd({ "BufWritePost", "BufEnter", "InsertLeave" }, {
+          pattern = { "*.c", "*.cpp", "*.h", "*.hpp" },
+          callback = function()
+            lint.try_lint()
+          end,
+        })
+        
+        -- Manual lint command
+        vim.keymap.set("n", "<leader>cl", function()
           lint.try_lint()
-        end,
-      })
-      
-      -- Manual lint command
-      vim.keymap.set("n", "<leader>cl", function()
-        lint.try_lint()
-      end, { desc = "Lint C/C++ file" })
+        end, { desc = "Lint C/C++ file" })
+      else
+        -- Show a helpful message about installing cppcheck
+        vim.api.nvim_create_autocmd("FileType", {
+          pattern = { "c", "cpp" },
+          callback = function()
+            vim.notify(
+              "cppcheck not found. Install it for additional static analysis:\n" ..
+              "• Arch Linux: sudo pacman -S cppcheck\n" ..
+              "• Ubuntu: sudo apt install cppcheck\n" ..
+              "• macOS: brew install cppcheck",
+              vim.log.levels.INFO,
+              { title = "C/C++ Static Analysis" }
+            )
+          end,
+          once = true,
+        })
+      end
     end,
   },
 
