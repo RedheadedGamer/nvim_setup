@@ -576,9 +576,17 @@ return {
     priority = 967,
   },
 
+  -- Lush - dependency for apprentice theme
+  {
+    "rktjmp/lush.nvim",
+    lazy = false,
+    priority = 967,
+  },
+
   -- Apprentice-inspired theme (replacement for problematic romainl/Apprentice)
   {
     "adisen99/apprentice.nvim",
+    dependencies = { "rktjmp/lush.nvim" },
     lazy = false,
     priority = 966,
     config = function()
@@ -1625,38 +1633,23 @@ return {
             local actions = require("telescope.actions")
             local state = require("telescope.actions.state")
             
-            -- Track notification for replacement
-            local preview_notification_id = nil
-            
             -- Show current selection in the prompt
             local function update_prompt()
               local selection = state.get_selected_entry()
               if selection then
                 local current_theme = selection.value
-                -- Show notification with current preview theme - use unique title for replacement
-                local notification_opts = {
-                  timeout = 1500,
-                  title = "Theme Preview",
-                }
+                -- Clear all previous theme preview notifications
+                require("notify").dismiss({ silent = true, pending = true })
                 
-                -- If we have a previous notification, try to replace it with error handling
-                if preview_notification_id then
-                  -- Use pcall to safely attempt notification replacement
-                  local ok, result = pcall(function()
-                    notification_opts.replace = preview_notification_id
-                    return vim.notify(string.format("📋 Previewing: %s", current_theme), vim.log.levels.INFO, notification_opts)
-                  end)
-                  
-                  if ok then
-                    preview_notification_id = result
-                  else
-                    -- If replacement fails (notification expired), create new notification
-                    notification_opts.replace = nil
-                    preview_notification_id = vim.notify(string.format("📋 Previewing: %s", current_theme), vim.log.levels.INFO, notification_opts)
-                  end
-                else
-                  preview_notification_id = vim.notify(string.format("📋 Previewing: %s", current_theme), vim.log.levels.INFO, notification_opts)
-                end
+                -- Show new notification for current preview theme
+                vim.notify(
+                  string.format("📋 Previewing: %s", current_theme), 
+                  vim.log.levels.INFO, 
+                  {
+                    timeout = 1500,
+                    title = "Theme Preview",
+                  }
+                )
               end
             end
             
