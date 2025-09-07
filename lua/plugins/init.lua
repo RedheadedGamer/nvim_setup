@@ -1346,7 +1346,7 @@ return {
       keymap.set("n", "<leader>fq", "<cmd>Telescope quickfix<cr>", { desc = "Quickfix" })
       keymap.set("n", "<leader>fl", "<cmd>Telescope loclist<cr>", { desc = "Location List" })
       
-      -- Enhanced theme switcher with preview using telescope colorscheme
+      -- Enhanced theme switcher with preview showing current theme name
       local function theme_switcher()
         local theme_config = require("config.theme")
         
@@ -1357,17 +1357,52 @@ return {
         
         local original_theme = get_current_theme()
         
-        -- Use telescope's built-in colorscheme picker with preview
+        -- Use telescope's built-in colorscheme picker with enhanced feedback
         require("telescope.builtin").colorscheme({
           enable_preview = true,
-          prompt_title = "🎨 Theme Switcher with Preview (ESC to cancel, Enter to apply)",
+          prompt_title = string.format("🎨 Theme Switcher (Original: %s) - Use ↑↓ to preview, Enter to apply, ESC to cancel", original_theme),
           layout_config = {
             width = 0.8,
             height = 0.7,
+            prompt_position = "top",
           },
           attach_mappings = function(prompt_bufnr, map)
             local actions = require("telescope.actions")
             local state = require("telescope.actions.state")
+            
+            -- Show current selection in the prompt
+            local function update_prompt()
+              local selection = state.get_selected_entry()
+              if selection then
+                local current_theme = selection.value
+                -- Show notification with current preview theme
+                vim.notify(string.format("📋 Previewing: %s (Press Enter to apply, ESC to cancel)", current_theme), vim.log.levels.INFO, {
+                  timeout = 1000,
+                  replace = true,
+                })
+              end
+            end
+            
+            -- Update on cursor movement
+            map("i", "<Down>", function()
+              actions.move_selection_next(prompt_bufnr)
+              vim.defer_fn(update_prompt, 100)
+            end)
+            
+            map("i", "<Up>", function()
+              actions.move_selection_previous(prompt_bufnr)
+              vim.defer_fn(update_prompt, 100)
+            end)
+            
+            map("n", "j", function()
+              actions.move_selection_next(prompt_bufnr)
+              vim.defer_fn(update_prompt, 100)
+            end)
+            
+            map("n", "k", function()
+              actions.move_selection_previous(prompt_bufnr)
+              vim.defer_fn(update_prompt, 100)
+            end)
             
             -- Save theme on selection
             actions.select_default:replace(function()
@@ -1385,17 +1420,15 @@ return {
             end)
             
             -- Restore original theme on cancel
-            map("i", "<C-c>", function()
+            local restore_theme = function()
               actions.close(prompt_bufnr)
               theme_config.apply_theme(original_theme)
               vim.notify("🔄 Theme restored to: " .. original_theme, vim.log.levels.INFO)
-            end)
+            end
             
-            map("n", "<Esc>", function()
-              actions.close(prompt_bufnr)
-              theme_config.apply_theme(original_theme)
-              vim.notify("🔄 Theme restored to: " .. original_theme, vim.log.levels.INFO)
-            end)
+            map("i", "<C-c>", restore_theme)
+            map("n", "<Esc>", restore_theme)
+            map("n", "q", restore_theme)
             
             return true
           end,
@@ -1460,7 +1493,22 @@ return {
         keymap.set("n", "gy", vim.lsp.buf.type_definition, vim.tbl_extend("force", opts, { desc = "Go to type definition" }))
         keymap.set("n", "gi", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "Go to implementation" }))
         keymap.set("n", "gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { desc = "Go to references" }))
-        keymap.set("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
+        
+        -- Enhanced hover documentation with single handler to prevent duplicates
+        keymap.set("n", "K", function()
+          -- Clear any existing hover windows first to prevent duplicates
+          for _, win in ipairs(vim.api.nvim_list_wins()) do
+            local buf = vim.api.nvim_win_get_buf(win)
+            if vim.api.nvim_buf_get_option(buf, "buftype") == "nofile" and 
+               vim.api.nvim_buf_get_name(buf):match("hover") then
+              vim.api.nvim_win_close(win, false)
+            end
+          end
+          
+          -- Single hover request to prevent duplicates
+          vim.lsp.buf.hover()
+        end, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
+        
         keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
         keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code action" }))
         keymap.set("n", "<leader>lf", vim.lsp.buf.format, vim.tbl_extend("force", opts, { desc = "Format buffer" }))
@@ -1491,6 +1539,15 @@ return {
         clangd = {
           cmd = { "clangd", "--background-index" },
           filetypes = { "c", "cpp", "objc", "objcpp" },
+          -- Prevent duplicate hover handlers
+          handlers = {
+            ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+              border = "rounded",
+              max_width = 120,
+              max_height = 30,
+              focus_id = "clangd_hover", -- Unique focus ID to prevent duplicates
+            }),
+          },
         },
         jdtls = {
           settings = {
