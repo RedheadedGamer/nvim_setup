@@ -1915,6 +1915,12 @@ return {
           severity = {
             min = vim.diagnostic.severity.HINT,
           },
+          text = {
+            [vim.diagnostic.severity.ERROR] = " ",
+            [vim.diagnostic.severity.WARN] = " ",
+            [vim.diagnostic.severity.HINT] = " ",
+            [vim.diagnostic.severity.INFO] = " "
+          },
         },
         underline = true,
         update_in_insert = false,
@@ -1930,19 +1936,6 @@ return {
           close_events = { "CursorMoved", "CursorMovedI", "BufHidden", "InsertCharPre" },
         },
       })
-
-      -- Enhanced diagnostic signs with better icons
-      local signs = {
-        Error = " ",
-        Warn = " ",
-        Hint = " ",
-        Info = " "
-      }
-      
-      for type, icon in pairs(signs) do
-        local hl = "DiagnosticSign" .. type
-        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-      end
 
       -- Auto-show diagnostics on cursor hold (hover effect)
       vim.api.nvim_create_autocmd("CursorHold", {
