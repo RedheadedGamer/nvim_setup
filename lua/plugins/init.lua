@@ -2408,6 +2408,7 @@ return {
     "mfussenegger/nvim-dap",
     ft = { "c", "cpp", "rust" },
     dependencies = {
+      "nvim-neotest/nvim-nio",
       "rcarriga/nvim-dap-ui",
       "theHamsta/nvim-dap-virtual-text",
       "nvim-telescope/telescope-dap.nvim",
@@ -2565,7 +2566,9 @@ return {
     config = function()
       require("clangd_extensions").setup({
         server = {
-          -- Options passed to clangd
+          -- Don't automatically start clangd - let lspconfig handle it
+          -- This prevents duplication with our lspconfig clangd setup
+          standalone = false,
         },
         extensions = {
           -- Automatically set inlay hints (type hints)
