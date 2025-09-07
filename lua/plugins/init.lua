@@ -218,17 +218,6 @@ return {
   },
 
   {
-    "navarasu/onedark.nvim",
-    lazy = true,
-    config = function()
-      require("onedark").setup({
-        style = "dark",
-        transparent = true,
-      })
-    end,
-  },
-
-  {
     "lunarvim/darkplus.nvim",
     lazy = true,
   },
@@ -262,13 +251,26 @@ return {
     priority = 994,
     config = function()
       require("solarized").setup({
-        transparent = true,
+        transparent = {
+          enabled = true,
+          pmenu = true,
+          normal = true,
+          normalfloat = true,
+          neotree = true,
+          nvimtree = true,
+          whichkey = true,
+          telescope = true,
+          lazy = true,
+        },
         palette = "solarized", -- solarized, selenized
         styles = {
           comments = { italic = true },
           functions = { italic = false },
           variables = { italic = false },
         },
+        highlights = {},
+        colors = {},
+        theme = "neo", -- or "default"
       })
     end,
   },
@@ -455,6 +457,243 @@ return {
     "slugbyte/lackluster.nvim",
     lazy = false, -- Load immediately for theme switcher
     priority = 974,
+  },
+
+  -- ============================================================================
+  -- ADDITIONAL COOL THEMES (20+ more popular and modern themes)
+  -- ============================================================================
+
+  -- Fluoromachine - Modern neon themes
+  {
+    "maxmx03/fluoromachine.nvim",
+    lazy = false,
+    priority = 973,
+    config = function()
+      require("fluoromachine").setup({
+        glow = false,
+        brightness = 0.05,
+        transparent = true,
+      })
+    end,
+  },
+
+  -- Lualine themes for variety
+  {
+    "nvim-lualine/lualine.nvim",
+    lazy = true,
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+  },
+
+  -- Nightfox family - More fox themes
+  {
+    "EdenEast/nightfox.nvim",
+    name = "nightfox-extended",
+    lazy = false,
+    priority = 972,
+    config = function()
+      require("nightfox").setup({
+        options = {
+          transparent = true,
+          terminal_colors = true,
+          inverse = {
+            match_paren = false,
+            visual = false,
+            search = false,
+          },
+        },
+        palettes = {},
+        specs = {},
+        groups = {},
+      })
+    end,
+  },
+
+  -- Doom themes family
+  {
+    "NTBBloodbath/doom-one.nvim",
+    lazy = false,
+    priority = 971,
+    config = function()
+      vim.g.doom_one_cursor_coloring = false
+      vim.g.doom_one_terminal_colors = true
+      vim.g.doom_one_italic_comments = true
+      vim.g.doom_one_enable_treesitter = true
+      vim.g.doom_one_diagnostics_text_color = false
+      vim.g.doom_one_transparent_background = true
+    end,
+  },
+
+  -- Tokyo Night variants
+  {
+    "folke/tokyonight.nvim",
+    name = "tokyonight-extended",
+    lazy = false,
+    priority = 970,
+    config = function()
+      require("tokyonight").setup({
+        style = "storm", -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
+        light_style = "day",
+        transparent = true,
+        terminal_colors = true,
+        styles = {
+          comments = { italic = true },
+          keywords = { italic = true },
+          functions = {},
+          variables = {},
+          sidebars = "transparent",
+          floats = "transparent",
+        },
+        sidebars = { "qf", "help" },
+        day_brightness = 0.3,
+        hide_inactive_statusline = false,
+        dim_inactive = false,
+        lualine_bold = false,
+      })
+    end,
+  },
+
+  -- PaperColor theme
+  {
+    "NLKNguyen/papercolor-theme",
+    lazy = false,
+    priority = 969,
+  },
+
+  -- Codedark theme (VS Code inspired)
+  {
+    "tomasiser/vim-code-dark",
+    lazy = false,
+    priority = 968,
+  },
+
+  -- One themes
+  {
+    "rakr/vim-one",
+    lazy = false,
+    priority = 967,
+  },
+
+  -- Apprentice theme
+  {
+    "romainl/Apprentice",
+    lazy = false,
+    priority = 966,
+  },
+
+  -- Zenburn theme
+  {
+    "jnurmine/Zenburn",
+    lazy = false,
+    priority = 965,
+  },
+
+  -- Base16 alternatives - Arctic themes
+  {
+    "rockerBOO/boo-colorscheme-nvim",
+    lazy = false,
+    priority = 964,
+  },
+
+  -- Rigel theme
+  {
+    "Rigellute/rigel",
+    lazy = false,
+    priority = 963,
+  },
+
+  -- Blue Moon theme
+  {
+    "kyazdani42/blue-moon",
+    lazy = false,
+    priority = 962,
+  },
+
+  -- Horizon theme
+  {
+    "akinsho/horizon.nvim",
+    lazy = false,
+    priority = 961,
+    config = function()
+      vim.g.horizon_italic_comments = true
+      vim.g.horizon_italic_keywords = true
+      vim.g.horizon_italic_functions = false
+      vim.g.horizon_italic_variables = false
+      vim.g.horizon_contrast = true
+      vim.g.horizon_borders = false
+      vim.g.horizon_disable_background = true
+    end,
+  },
+
+  -- Embark theme
+  {
+    "embark-theme/vim",
+    name = "embark",
+    lazy = false,
+    priority = 960,
+  },
+
+  -- Forest Night theme
+  {
+    "sainnhe/forest-night",
+    lazy = false,
+    priority = 959,
+    config = function()
+      vim.g.forest_night_style = "default"
+      vim.g.forest_night_enable_italic = 1
+      vim.g.forest_night_disable_italic_comment = 0
+      vim.g.forest_night_transparent_background = 1
+    end,
+  },
+
+  -- Iceberg theme
+  {
+    "cocopon/iceberg.vim",
+    lazy = false,
+    priority = 958,
+  },
+
+  -- Challenger Deep theme
+  {
+    "challenger-deep-theme/vim",
+    name = "challenger-deep",
+    lazy = false,
+    priority = 957,
+  },
+
+  -- Jellybeans theme
+  {
+    "nanotech/jellybeans.vim",
+    lazy = false,
+    priority = 956,
+  },
+
+  -- Srcery theme
+  {
+    "srcery-colors/srcery-vim",
+    lazy = false,
+    priority = 955,
+  },
+
+  -- PaperColor improved
+  {
+    "NLKNguyen/papercolor-theme",
+    name = "papercolor-improved",
+    lazy = false,
+    priority = 954,
+  },
+
+  -- Miramare theme
+  {
+    "franbach/miramare",
+    lazy = false,
+    priority = 953,
+  },
+
+  -- Artify theme
+  {
+    "RRethy/vim-illuminate", -- This includes some nice themes
+    lazy = false,
+    priority = 952,
   },
 
   -- Essential dependencies
@@ -1384,12 +1623,24 @@ return {
                   title = "Theme Preview",
                 }
                 
-                -- If we have a previous notification, try to replace it
+                -- If we have a previous notification, try to replace it with error handling
                 if preview_notification_id then
-                  notification_opts.replace = preview_notification_id
+                  -- Use pcall to safely attempt notification replacement
+                  local ok, result = pcall(function()
+                    notification_opts.replace = preview_notification_id
+                    return vim.notify(string.format("📋 Previewing: %s", current_theme), vim.log.levels.INFO, notification_opts)
+                  end)
+                  
+                  if ok then
+                    preview_notification_id = result
+                  else
+                    -- If replacement fails (notification expired), create new notification
+                    notification_opts.replace = nil
+                    preview_notification_id = vim.notify(string.format("📋 Previewing: %s", current_theme), vim.log.levels.INFO, notification_opts)
+                  end
+                else
+                  preview_notification_id = vim.notify(string.format("📋 Previewing: %s", current_theme), vim.log.levels.INFO, notification_opts)
                 end
-                
-                preview_notification_id = vim.notify(string.format("📋 Previewing: %s", current_theme), vim.log.levels.INFO, notification_opts)
               end
             end
             
