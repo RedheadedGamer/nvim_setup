@@ -1717,6 +1717,7 @@ return {
     dependencies = {
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
+      "WhoIsSethDaniel/mason-tool-installer.nvim",
       "hrsh7th/nvim-cmp",
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-buffer",
@@ -1734,6 +1735,16 @@ return {
         },
       })
       
+      -- Ensure clangd is installed via Mason for clangd_extensions
+      require("mason-tool-installer").setup({
+        ensure_installed = {
+          "clangd",       -- C/C++ LSP (handled by clangd_extensions)
+          "cppcheck",     -- C/C++ static analysis
+        },
+        auto_update = false,
+        run_on_start = true,
+      })
+      
       require("mason-lspconfig").setup({
         ensure_installed = {
           "lua_ls",
@@ -1742,7 +1753,6 @@ return {
           "html",
           "cssls",
           "jsonls",
-          "clangd",     -- C/C++ LSP
           "jdtls",      -- Java LSP
           "cmake",      -- CMake LSP
           "bashls",     -- Bash LSP (useful for build scripts)
@@ -1810,42 +1820,7 @@ return {
         html = {},
         cssls = {},
         jsonls = {},
-        clangd = {
-          cmd = { 
-            "clangd", 
-            "--background-index",
-            "--clang-tidy",
-            "--header-insertion=iwyu",
-            "--completion-style=detailed",
-            "--function-arg-placeholders",
-            "--fallback-style=llvm",
-          },
-          filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
-          root_dir = function(fname)
-            return require("lspconfig.util").root_pattern(
-              "Makefile",
-              "configure.ac",
-              "configure.in",
-              "config.h.in",
-              "meson.build",
-              "meson_options.txt",
-              "build.ninja"
-            )(fname) or require("lspconfig.util").root_pattern("compile_commands.json", "compile_flags.txt")(
-              fname
-            ) or require("lspconfig.util").find_git_ancestor(fname)
-          end,
-          init_options = {
-            usePlaceholders = true,
-            completeUnimported = true,
-            clangdFileStatus = true,
-          },
-          settings = {
-            clangd = {
-              -- Disable conflicting features that might cause duplicates
-              semanticHighlighting = false,
-            }
-          },
-        },
+
         jdtls = {
           settings = {
             java = {
@@ -2559,25 +2534,67 @@ return {
     end,
   },
 
-  -- Generate compile_commands.json for better LSP support
+  -- Enhanced clangd features and compile_commands.json generation
   {
     "p00f/clangd_extensions.nvim",
     ft = { "c", "cpp" },
+    dependencies = { "neovim/nvim-lspconfig" },
     config = function()
       require("clangd_extensions").setup({
         server = {
-          -- Don't automatically start clangd - let lspconfig handle it
-          -- This prevents duplication with our lspconfig clangd setup
-          standalone = false,
+          -- Let this plugin handle clangd entirely to avoid conflicts
+          cmd = { 
+            "clangd", 
+            "--background-index",
+            "--clang-tidy",
+            "--header-insertion=iwyu",
+            "--completion-style=detailed",
+            "--function-arg-placeholders",
+            "--fallback-style=llvm",
+          },
+          filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
+          root_dir = function(fname)
+            return require("lspconfig.util").root_pattern(
+              "Makefile",
+              "configure.ac", 
+              "configure.in",
+              "config.h.in",
+              "meson.build",
+              "meson_options.txt",
+              "build.ninja"
+            )(fname) or require("lspconfig.util").root_pattern("compile_commands.json", "compile_flags.txt")(
+              fname
+            ) or require("lspconfig.util").find_git_ancestor(fname)
+          end,
+          init_options = {
+            usePlaceholders = true,
+            completeUnimported = true,
+            clangdFileStatus = true,
+          },
+          capabilities = require("cmp_nvim_lsp").default_capabilities(),
+          on_attach = function(client, bufnr)
+            -- Standard LSP keymaps
+            local keymap = vim.keymap
+            local opts = { buffer = bufnr, silent = true }
+            
+            keymap.set("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go to definition" }))
+            keymap.set("n", "gy", vim.lsp.buf.type_definition, vim.tbl_extend("force", opts, { desc = "Go to type definition" }))
+            keymap.set("n", "gi", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "Go to implementation" }))
+            keymap.set("n", "gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { desc = "Find references" }))
+            keymap.set("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
+            keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
+            keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code action" }))
+            keymap.set("n", "<leader>lf", vim.lsp.buf.format, vim.tbl_extend("force", opts, { desc = "Format buffer" }))
+            keymap.set("n", "[d", vim.diagnostic.goto_prev, vim.tbl_extend("force", opts, { desc = "Previous diagnostic" }))
+            keymap.set("n", "]d", vim.diagnostic.goto_next, vim.tbl_extend("force", opts, { desc = "Next diagnostic" }))
+            keymap.set("n", "<leader>ld", vim.diagnostic.open_float, vim.tbl_extend("force", opts, { desc = "Show diagnostic" }))
+          end,
         },
         extensions = {
           -- Automatically set inlay hints (type hints)
           autoSetHints = true,
-          -- These apply to the default ClangdSetInlayHints command
           inlay_hints = {
             inline = vim.fn.has("nvim-0.10") == 1,
-            -- Options other than `highlight' and `priority' only work
-            -- if `inline' is disabled
             only_current_line = false,
             only_current_line_autocmd = "CursorHold",
             show_parameter_hints = true,
@@ -2618,6 +2635,53 @@ return {
       vim.keymap.set("n", "<leader>cA", "<cmd>ClangdAST<cr>", { desc = "Show AST" })
       vim.keymap.set("n", "<leader>cS", "<cmd>ClangdSymbolInfo<cr>", { desc = "Symbol Info" })
       vim.keymap.set("n", "<leader>cM", "<cmd>ClangdMemoryUsage<cr>", { desc = "Memory Usage" })
+    end,
+  },
+  
+  -- Makefile project support - generate compile_commands.json
+  {
+    "mipmip/vim-run-with-neovim",
+    ft = { "c", "cpp" },
+    cmd = { "MakeCompileCommands" },
+    config = function()
+      -- Create a command to generate compile_commands.json for Makefile projects
+      vim.api.nvim_create_user_command("MakeCompileCommands", function()
+        local cwd = vim.fn.getcwd()
+        
+        -- Check if we're in a Makefile-based project
+        if vim.fn.filereadable(cwd .. "/Makefile") == 1 then
+          vim.notify("Generating compile_commands.json for Makefile project...", vim.log.levels.INFO)
+          
+          -- Use bear to generate compile_commands.json if available
+          if vim.fn.executable("bear") == 1 then
+            vim.fn.system("bear -- make clean && bear -- make")
+            if vim.v.shell_error == 0 then
+              vim.notify("compile_commands.json generated successfully!", vim.log.levels.INFO)
+            else
+              vim.notify("Failed to generate with bear. Install bear: pacman -S bear", vim.log.levels.WARN)
+            end
+          else
+            -- Fallback: suggest manual creation
+            vim.notify("Install 'bear' for automatic compile_commands.json generation: sudo pacman -S bear", vim.log.levels.WARN)
+            vim.notify("Then run: bear -- make", vim.log.levels.INFO)
+          end
+        else
+          vim.notify("No Makefile found in current directory", vim.log.levels.WARN)
+        end
+      end, { desc = "Generate compile_commands.json for Makefile projects" })
+      
+      -- Auto-detect Makefile projects and suggest generating compile_commands.json
+      vim.api.nvim_create_autocmd("BufEnter", {
+        pattern = { "*.c", "*.cpp", "*.h", "*.hpp" },
+        callback = function()
+          local cwd = vim.fn.getcwd()
+          if vim.fn.filereadable(cwd .. "/Makefile") == 1 and vim.fn.filereadable(cwd .. "/compile_commands.json") == 0 then
+            vim.defer_fn(function()
+              vim.notify("Makefile project detected. Run :MakeCompileCommands to improve LSP support", vim.log.levels.INFO)
+            end, 2000)
+          end
+        end,
+      })
     end,
   },
 }
