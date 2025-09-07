@@ -2638,50 +2638,5 @@ return {
     end,
   },
   
-  -- Makefile project support - generate compile_commands.json
-  {
-    "mipmip/vim-run-with-neovim",
-    ft = { "c", "cpp" },
-    cmd = { "MakeCompileCommands" },
-    config = function()
-      -- Create a command to generate compile_commands.json for Makefile projects
-      vim.api.nvim_create_user_command("MakeCompileCommands", function()
-        local cwd = vim.fn.getcwd()
-        
-        -- Check if we're in a Makefile-based project
-        if vim.fn.filereadable(cwd .. "/Makefile") == 1 then
-          vim.notify("Generating compile_commands.json for Makefile project...", vim.log.levels.INFO)
-          
-          -- Use bear to generate compile_commands.json if available
-          if vim.fn.executable("bear") == 1 then
-            vim.fn.system("bear -- make clean && bear -- make")
-            if vim.v.shell_error == 0 then
-              vim.notify("compile_commands.json generated successfully!", vim.log.levels.INFO)
-            else
-              vim.notify("Failed to generate with bear. Install bear: pacman -S bear", vim.log.levels.WARN)
-            end
-          else
-            -- Fallback: suggest manual creation
-            vim.notify("Install 'bear' for automatic compile_commands.json generation: sudo pacman -S bear", vim.log.levels.WARN)
-            vim.notify("Then run: bear -- make", vim.log.levels.INFO)
-          end
-        else
-          vim.notify("No Makefile found in current directory", vim.log.levels.WARN)
-        end
-      end, { desc = "Generate compile_commands.json for Makefile projects" })
-      
-      -- Auto-detect Makefile projects and suggest generating compile_commands.json
-      vim.api.nvim_create_autocmd("BufEnter", {
-        pattern = { "*.c", "*.cpp", "*.h", "*.hpp" },
-        callback = function()
-          local cwd = vim.fn.getcwd()
-          if vim.fn.filereadable(cwd .. "/Makefile") == 1 and vim.fn.filereadable(cwd .. "/compile_commands.json") == 0 then
-            vim.defer_fn(function()
-              vim.notify("Makefile project detected. Run :MakeCompileCommands to improve LSP support", vim.log.levels.INFO)
-            end, 2000)
-          end
-        end,
-      })
-    end,
-  },
+
 }
