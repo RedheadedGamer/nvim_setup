@@ -2517,8 +2517,8 @@ return {
       local lint = require("lint")
       
       lint.linters_by_ft = {
-        c = { "cppcheck", "clang-tidy" },
-        cpp = { "cppcheck", "clang-tidy" },
+        c = { "cppcheck" },
+        cpp = { "cppcheck" },
       }
       
       -- Auto-lint on save and text changes

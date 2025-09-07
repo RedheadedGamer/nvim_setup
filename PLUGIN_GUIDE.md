@@ -11,7 +11,7 @@ This configuration provides a complete C/C++ development environment with advanc
 - **Enhanced clangd LSP** with duplicate prevention and advanced features
 - **CMake integration** for project building and management
 - **Advanced debugging** with DAP (Debug Adapter Protocol)
-- **Static analysis** with cppcheck and clang-tidy
+- **Static analysis** with cppcheck and clang-tidy (via clangd)
 - **Header/source switching** and symbol navigation
 - **Inlay hints** and AST viewing
 - **Smart completion** and diagnostics
@@ -98,15 +98,15 @@ Two debuggers are configured:
 
 #### Static Analysis
 Automatic linting with:
-- **cppcheck** - Static analysis tool
-- **clang-tidy** - Clang-based code checker
+- **cppcheck** - Static analysis tool (via nvim-lint)
+- **clang-tidy** - Clang-based code checker (integrated in clangd LSP)
 
 ### 📦 Required Tools for C Development
 
 #### Essential Tools
 ```bash
 # Ubuntu/Debian
-sudo apt install build-essential cmake gdb clang clang-tools cppcheck
+sudo apt install build-essential cmake gdb clang clangd cppcheck
 
 # Arch Linux  
 sudo pacman -S base-devel cmake gdb clang clang-tools cppcheck
@@ -150,7 +150,7 @@ bear -- make
 ```bash
 # In Neovim
 :Mason
-# Install: clangd, cppcheck, clang-tidy, codelldb
+# Install: clangd, cppcheck, codelldb
 ```
 
 #### 4. Build and Debug
@@ -162,6 +162,12 @@ bear -- make
 ```
 
 ### 🔍 Troubleshooting C Development
+
+#### LSP Duplication Prevention
+This configuration prevents LSP diagnostic duplication by:
+- Using clangd's built-in clang-tidy (via `--clang-tidy` flag)
+- Using nvim-lint only for cppcheck static analysis
+- Implementing focus_id handlers to prevent multiple hover/diagnostic windows
 
 #### LSP Not Working
 1. Check clangd installation: `:LspInfo`
@@ -175,9 +181,10 @@ bear -- make
 3. Ensure debug symbols: compile with `-g` flag
 
 #### Linting Issues
-1. Install cppcheck and clang-tidy via Mason
-2. Check file patterns in autocmd
-3. Manual lint: `<leader>cl`
+1. Install cppcheck via Mason or system package manager
+2. clang-tidy is integrated in clangd LSP - no separate installation needed
+3. Check file patterns in autocmd
+4. Manual lint: `<leader>cl`
 
 #### Header/Source Switching Not Working
 1. Ensure proper project structure
