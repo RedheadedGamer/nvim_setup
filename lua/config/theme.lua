@@ -118,8 +118,7 @@ function M.get_available_themes()
     "cyberdream", "vesper", "bamboo", "flexoki", "lackluster",
     -- Additional premium themes for 50+ count
     "onehalf-dark", "onehalf-light", "papercolor-theme", "apprentice",
-    "seoul256", "hybrid", "jellybeans", "molokai", "srcery", "base16-default-dark",
-    "base16-tomorrow-night", "base16-ocean", "base16-eighties", "base16-mocha",
+    "seoul256", "hybrid", "jellybeans", "molokai", "srcery", 
     "iceberg", "falcon", "challenger-deep", "vim-monokai-tasty", "substrata",
     "calvera-dark", "tokyodark", "alduin", "tender-vim", "space-vim-dark",
     "gotham", "zenburn", "railscasts", "badwolf", "lucius"

@@ -442,13 +442,6 @@ return {
     end,
   },
 
-  -- Base16 - Classic terminal themes
-  {
-    "RRethy/base16-nvim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 976,
-  },
-
   -- Flexoki - Modern neutral theme
   {
     "kepano/flexoki-neovim",
@@ -1353,58 +1346,60 @@ return {
       keymap.set("n", "<leader>fq", "<cmd>Telescope quickfix<cr>", { desc = "Quickfix" })
       keymap.set("n", "<leader>fl", "<cmd>Telescope loclist<cr>", { desc = "Location List" })
       
-      -- Custom theme switcher using vim.ui.select (dressing.nvim) - fixes infinite indenting
+      -- Enhanced theme switcher with preview using telescope colorscheme
       local function theme_switcher()
         local theme_config = require("config.theme")
-        local all_themes = theme_config.get_available_themes()
         
         -- Get current theme more reliably
         local function get_current_theme()
           return _G.nvim_current_theme or vim.g.current_theme or vim.g.colors_name or ""
         end
         
-        -- Create selection prompt with better formatting
-        vim.ui.select(all_themes, {
-          prompt = "🎨 Select a theme (current: " .. get_current_theme() .. "):",
-          format_item = function(item)
-            -- Add emoji indicators for theme types
-            local icon = "🎨"
-            if item:match("dark") or item:match("night") or item:match("mocha") or item:match("storm") then
-              icon = "🌙"
-            elseif item:match("light") or item:match("day") or item:match("dawn") or item:match("latte") then
-              icon = "☀️"
-            elseif item:match("gruvbox") or item:match("forest") or item:match("bamboo") then
-              icon = "🌲"
-            elseif item:match("ocean") or item:match("blue") or item:match("ayu") then
-              icon = "🌊"
-            elseif item:match("material") or item:match("modern") or item:match("cyber") then
-              icon = "💎"
-            elseif item:match("tender") or item:match("rose") or item:match("vesper") then
-              icon = "🌸"
-            elseif item:match("space") or item:match("cosmic") or item:match("aurora") then
-              icon = "🌌"
-            end
+        local original_theme = get_current_theme()
+        
+        -- Use telescope's built-in colorscheme picker with preview
+        require("telescope.builtin").colorscheme({
+          enable_preview = true,
+          prompt_title = "🎨 Theme Switcher with Preview (ESC to cancel, Enter to apply)",
+          layout_config = {
+            width = 0.8,
+            height = 0.7,
+          },
+          attach_mappings = function(prompt_bufnr, map)
+            local actions = require("telescope.actions")
+            local state = require("telescope.actions.state")
             
-            -- Show current theme indicator with better visibility
-            local current = get_current_theme()
-            local is_current = (item == current)
-            local indicator = is_current and " ◄ CURRENT" or ""
-            local prefix = is_current and "► " or "  "
+            -- Save theme on selection
+            actions.select_default:replace(function()
+              local selection = state.get_selected_entry()
+              actions.close(prompt_bufnr)
+              if selection then
+                local theme_name = selection.value
+                if theme_config.apply_theme(theme_name) then
+                  theme_config.save_theme(theme_name)
+                  vim.notify("🎨 Theme applied and saved: " .. theme_name, vim.log.levels.INFO)
+                else
+                  vim.notify("❌ Failed to load theme: " .. theme_name, vim.log.levels.ERROR)
+                end
+              end
+            end)
             
-            return prefix .. icon .. " " .. item .. indicator
+            -- Restore original theme on cancel
+            map("i", "<C-c>", function()
+              actions.close(prompt_bufnr)
+              theme_config.apply_theme(original_theme)
+              vim.notify("🔄 Theme restored to: " .. original_theme, vim.log.levels.INFO)
+            end)
+            
+            map("n", "<Esc>", function()
+              actions.close(prompt_bufnr)
+              theme_config.apply_theme(original_theme)
+              vim.notify("🔄 Theme restored to: " .. original_theme, vim.log.levels.INFO)
+            end)
+            
+            return true
           end,
-        }, function(choice)
-          if choice then
-            -- Try to apply the theme using the enhanced theme system
-            if theme_config.apply_theme(choice) then
-              theme_config.save_theme(choice)
-              vim.notify("🎨 Theme switched to: " .. choice, vim.log.levels.INFO)
-            else
-              vim.notify("❌ Failed to load theme: " .. choice, vim.log.levels.ERROR)
-              vim.notify("💡 Try running :Lazy sync to install missing themes", vim.log.levels.INFO)
-            end
-          end
-        end)
+        })
       end
       
       -- Theme switcher keymaps
