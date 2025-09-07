@@ -1802,6 +1802,52 @@ return {
         keymap.set("n", "<leader>ld", vim.diagnostic.open_float, vim.tbl_extend("force", opts, { desc = "Show diagnostic" }))
         keymap.set("n", "<leader>ll", vim.diagnostic.setloclist, vim.tbl_extend("force", opts, { desc = "Diagnostic loclist" }))
         keymap.set("n", "<leader>lq", vim.diagnostic.setqflist, vim.tbl_extend("force", opts, { desc = "Diagnostic quickfix" }))
+        
+        -- Enhanced diagnostic navigation with severity filtering
+        keymap.set("n", "[e", function()
+          vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
+        end, vim.tbl_extend("force", opts, { desc = "Previous error" }))
+        
+        keymap.set("n", "]e", function()
+          vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
+        end, vim.tbl_extend("force", opts, { desc = "Next error" }))
+        
+        keymap.set("n", "[w", function()
+          vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.WARN })
+        end, vim.tbl_extend("force", opts, { desc = "Previous warning" }))
+        
+        keymap.set("n", "]w", function()
+          vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.WARN })
+        end, vim.tbl_extend("force", opts, { desc = "Next warning" }))
+        
+        -- Toggle auto-hover diagnostics
+        keymap.set("n", "<leader>lh", function()
+          local augroup = vim.api.nvim_get_autocmds({ group = "DiagnosticFloat" })
+          if #augroup > 0 then
+            vim.api.nvim_del_augroup_by_name("DiagnosticFloat")
+            vim.notify("Auto-hover diagnostics disabled", vim.log.levels.INFO)
+          else
+            vim.api.nvim_create_autocmd("CursorHold", {
+              group = vim.api.nvim_create_augroup("DiagnosticFloat", { clear = true }),
+              callback = function()
+                local opts_float = {
+                  focusable = false,
+                  close_events = { "CursorMoved", "CursorMovedI", "BufHidden", "InsertCharPre" },
+                  border = "rounded",
+                  source = "always",
+                  prefix = "",
+                  scope = "cursor",
+                }
+                local line_diagnostics = vim.diagnostic.get(0, { lnum = vim.fn.line(".") - 1 })
+                if #line_diagnostics > 0 then
+                  vim.diagnostic.open_float(nil, opts_float)
+                end
+              end
+            })
+            vim.notify("Auto-hover diagnostics enabled", vim.log.levels.INFO)
+          end
+        end, vim.tbl_extend("force", opts, { desc = "Toggle auto-hover diagnostics" }))
+        
         keymap.set("n", "<leader>lr", "<cmd>LspRestart<cr>", vim.tbl_extend("force", opts, { desc = "Restart LSP" }))
         keymap.set("n", "<leader>li", "<cmd>LspInfo<cr>", vim.tbl_extend("force", opts, { desc = "LSP info" }))
       end
@@ -1855,13 +1901,21 @@ return {
         focus_id = "signature_help_handler",
       })
 
-      -- Diagnostic configuration with duplicate prevention
+      -- Enhanced diagnostic configuration with better visibility and hover support
       vim.diagnostic.config({
         virtual_text = {
           source = "always",
           prefix = "●",
+          spacing = 4,
+          severity = {
+            min = vim.diagnostic.severity.HINT,
+          },
         },
-        signs = true,
+        signs = {
+          severity = {
+            min = vim.diagnostic.severity.HINT,
+          },
+        },
         underline = true,
         update_in_insert = false,
         severity_sort = true,
@@ -1870,9 +1924,49 @@ return {
           source = "always",
           header = "",
           prefix = "",
+          focusable = false,
           focus_id = "diagnostic_float", -- Prevents multiple diagnostic floats
+          style = "minimal",
+          close_events = { "CursorMoved", "CursorMovedI", "BufHidden", "InsertCharPre" },
         },
       })
+
+      -- Enhanced diagnostic signs with better icons
+      local signs = {
+        Error = " ",
+        Warn = " ",
+        Hint = " ",
+        Info = " "
+      }
+      
+      for type, icon in pairs(signs) do
+        local hl = "DiagnosticSign" .. type
+        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+      end
+
+      -- Auto-show diagnostics on cursor hold (hover effect)
+      vim.api.nvim_create_autocmd("CursorHold", {
+        group = vim.api.nvim_create_augroup("DiagnosticFloat", { clear = true }),
+        callback = function()
+          -- Only show diagnostic if there are diagnostics on the current line
+          local opts = {
+            focusable = false,
+            close_events = { "CursorMoved", "CursorMovedI", "BufHidden", "InsertCharPre" },
+            border = "rounded",
+            source = "always",
+            prefix = "",
+            scope = "cursor",
+          }
+          
+          local line_diagnostics = vim.diagnostic.get(0, { lnum = vim.fn.line(".") - 1 })
+          if #line_diagnostics > 0 then
+            vim.diagnostic.open_float(nil, opts)
+          end
+        end
+      })
+
+      -- Set shorter updatetime for more responsive hover
+      vim.opt.updatetime = 300
 
       -- Completion setup (nvim-cmp)
       local cmp = require("cmp")

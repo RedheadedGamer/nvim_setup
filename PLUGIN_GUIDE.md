@@ -862,24 +862,48 @@ Sessions are automatically saved on exit if `autowrite = true` is set.
 | `<leader>xL` | `:Trouble loclist toggle` | Location list |
 | `<leader>xQ` | `:Trouble qflist toggle` | Quickfix list |
 
-### Built-in Diagnostics
+### Built-in Diagnostics (Enhanced)
 
-#### Navigation
-- `[d` - Previous diagnostic
-- `]d` - Next diagnostic
-- `<leader>d` - Show diagnostic in floating window
+#### Auto-Hover Feature ✨
+- **Automatic popup display**: Diagnostics automatically appear when hovering over problematic code (300ms delay)
+- **Non-intrusive**: Popups disappear when cursor moves, keeping your workflow smooth
+- **Toggle control**: Use `<leader>lh` to enable/disable auto-hover diagnostics
 
-#### Configuration
+#### Enhanced Navigation
+- `[d` / `]d` - Previous/Next diagnostic (any severity)
+- `[e` / `]e` - Previous/Next **error** only
+- `[w` / `]w` - Previous/Next **warning** only
+- `<leader>ld` - Manually show diagnostic popup
+- `<leader>ll` - Open diagnostics in location list
+- `<leader>lq` - Open diagnostics in quickfix list
+
+#### Visual Improvements
+- **Enhanced icons**: ❌ Errors, ⚠️ Warnings, 💡 Hints, ℹ️ Info
+- **Better borders**: Rounded corners for floating windows
+- **Source display**: Always shows diagnostic source (LSP server, linter, etc.)
+- **Severity sorting**: Most severe issues appear first
+
+#### Auto-Hover Configuration
 ```lua
--- Customize diagnostic display
+-- Auto-hover is enabled by default with these settings:
+vim.opt.updatetime = 300  -- 300ms delay before hover
 vim.diagnostic.config({
-  virtual_text = false,  -- Disable inline diagnostics
-  signs = true,
-  underline = true,
-  update_in_insert = false,
-  severity_sort = true,
+  float = {
+    focusable = false,     -- Don't steal focus
+    border = "rounded",    -- Nice rounded borders
+    source = "always",     -- Show diagnostic source
+  }
 })
 ```
+
+#### Keybindings Summary
+| Key | Command | Description |
+|-----|---------|-------------|
+| `[d` / `]d` | Navigate diagnostics | Any severity |
+| `[e` / `]e` | Navigate errors | Errors only |
+| `[w` / `]w` | Navigate warnings | Warnings only |
+| `<leader>ld` | Show diagnostic | Manual popup |
+| `<leader>lh` | Toggle auto-hover | Enable/disable automatic popups |
 
 ## 🎨 Visual Enhancements
 
