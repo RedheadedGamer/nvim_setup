@@ -1370,16 +1370,26 @@ return {
             local actions = require("telescope.actions")
             local state = require("telescope.actions.state")
             
+            -- Track notification for replacement
+            local preview_notification_id = nil
+            
             -- Show current selection in the prompt
             local function update_prompt()
               local selection = state.get_selected_entry()
               if selection then
                 local current_theme = selection.value
-                -- Show notification with current preview theme
-                vim.notify(string.format("📋 Previewing: %s (Press Enter to apply, ESC to cancel)", current_theme), vim.log.levels.INFO, {
-                  timeout = 1000,
-                  replace = true,
-                })
+                -- Show notification with current preview theme - use unique title for replacement
+                local notification_opts = {
+                  timeout = 1500,
+                  title = "Theme Preview",
+                }
+                
+                -- If we have a previous notification, try to replace it
+                if preview_notification_id then
+                  notification_opts.replace = preview_notification_id
+                end
+                
+                preview_notification_id = vim.notify(string.format("📋 Previewing: %s", current_theme), vim.log.levels.INFO, notification_opts)
               end
             end
             
@@ -1494,18 +1504,29 @@ return {
         keymap.set("n", "gi", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "Go to implementation" }))
         keymap.set("n", "gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { desc = "Go to references" }))
         
-        -- Enhanced hover documentation with single handler to prevent duplicates
+        -- Enhanced hover documentation with duplicate prevention
         keymap.set("n", "K", function()
-          -- Clear any existing hover windows first to prevent duplicates
-          for _, win in ipairs(vim.api.nvim_list_wins()) do
-            local buf = vim.api.nvim_win_get_buf(win)
-            if vim.api.nvim_buf_get_option(buf, "buftype") == "nofile" and 
-               vim.api.nvim_buf_get_name(buf):match("hover") then
-              vim.api.nvim_win_close(win, false)
-            end
+          -- Track active hover window globally to prevent duplicates
+          if vim.g.active_hover_win and vim.api.nvim_win_is_valid(vim.g.active_hover_win) then
+            vim.api.nvim_win_close(vim.g.active_hover_win, false)
+            vim.g.active_hover_win = nil
           end
           
-          -- Single hover request to prevent duplicates
+          -- Create custom hover handler to track window
+          local original_handler = vim.lsp.handlers["textDocument/hover"]
+          vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(function(err, result, ctx, config)
+            local bufnr, winnr = original_handler(err, result, ctx, config)
+            if winnr and vim.api.nvim_win_is_valid(winnr) then
+              vim.g.active_hover_win = winnr
+            end
+            return bufnr, winnr
+          end, {
+            border = "rounded",
+            max_width = 120,
+            max_height = 30,
+          })
+          
+          -- Request hover information
           vim.lsp.buf.hover()
         end, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
         
@@ -1539,15 +1560,6 @@ return {
         clangd = {
           cmd = { "clangd", "--background-index" },
           filetypes = { "c", "cpp", "objc", "objcpp" },
-          -- Prevent duplicate hover handlers
-          handlers = {
-            ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-              border = "rounded",
-              max_width = 120,
-              max_height = 30,
-              focus_id = "clangd_hover", -- Unique focus ID to prevent duplicates
-            }),
-          },
         },
         jdtls = {
           settings = {
