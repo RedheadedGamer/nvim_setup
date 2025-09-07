@@ -2,6 +2,227 @@
 
 This guide provides detailed instructions on how to use all the plugins in this Neovim configuration, including how to enable/disable features and configure them to your preferences.
 
+## 🔬 C/C++ Development Guide
+
+### Overview
+This configuration provides a complete C/C++ development environment with advanced LSP support, debugging, project management, and static analysis.
+
+### Core Features
+- **Enhanced clangd LSP** with duplicate prevention and advanced features
+- **CMake integration** for project building and management
+- **Advanced debugging** with DAP (Debug Adapter Protocol)
+- **Static analysis** with cppcheck and clang-tidy (via clangd)
+- **Header/source switching** and symbol navigation
+- **Inlay hints** and AST viewing
+- **Smart completion** and diagnostics
+
+### 🛠️ C/C++ Specific Keybindings
+
+#### Project Management (CMake)
+| Key | Command | Description |
+|-----|---------|-------------|
+| `<leader>cg` | CMakeGenerate | Generate CMake build files |
+| `<leader>cb` | CMakeBuild | Build the project |
+| `<leader>cr` | CMakeRun | Run the project |
+| `<leader>cd` | CMakeDebug | Debug the project |
+| `<leader>cc` | CMakeClean | Clean build artifacts |
+| `<leader>ct` | CMakeSelectBuildTarget | Select build target |
+| `<leader>cT` | CMakeSelectBuildType | Select build type (Debug/Release) |
+
+#### Debugging (nvim-dap)
+| Key | Command | Description |
+|-----|---------|-------------|
+| `<leader>db` | ToggleBreakpoint | Toggle breakpoint at current line |
+| `<leader>dB` | ConditionalBreakpoint | Set conditional breakpoint |
+| `<leader>dc` | Continue | Continue execution |
+| `<leader>di` | StepInto | Step into function |
+| `<leader>do` | StepOver | Step over function |
+| `<leader>dO` | StepOut | Step out of function |
+| `<leader>dr` | OpenREPL | Open debug REPL |
+| `<leader>du` | ToggleUI | Toggle debug UI |
+| `<leader>dx` | Terminate | Terminate debug session |
+
+#### Code Navigation & Analysis
+| Key | Command | Description |
+|-----|---------|-------------|
+| `<leader>ch` | SwitchHeaderSource | Switch between header and source |
+| `<leader>cI` | ClangdSwitchSourceHeader | Clangd header/source switch |
+| `<leader>cH` | ToggleInlayHints | Toggle inlay hints |
+| `<leader>cA` | ShowAST | Show Abstract Syntax Tree |
+| `<leader>cS` | SymbolInfo | Show symbol information |
+| `<leader>cM` | MemoryUsage | Show clangd memory usage |
+| `<leader>cl` | LintFile | Lint current C/C++ file |
+
+#### LSP Features (Enhanced)
+| Key | Command | Description |
+|-----|---------|-------------|
+| `gd` | GoToDefinition | Go to symbol definition |
+| `gi` | GoToImplementation | Go to implementation |
+| `gr` | GoToReferences | Show all references |
+| `gy` | GoToTypeDefinition | Go to type definition |
+| `K` | HoverDoc | Show hover documentation (no duplicates) |
+| `<leader>rn` | Rename | Rename symbol |
+| `<leader>ca` | CodeAction | Show code actions |
+| `<leader>lf` | Format | Format buffer |
+| `[d` / `]d` | PrevNextDiagnostic | Navigate diagnostics |
+
+### 🔧 Configuration Details
+
+#### Enhanced clangd Configuration
+The clangd LSP is configured with advanced options:
+```lua
+cmd = { 
+  "clangd", 
+  "--background-index",
+  "--clang-tidy",
+  "--header-insertion=iwyu",
+  "--completion-style=detailed",
+  "--function-arg-placeholders",
+  "--fallback-style=llvm",
+}
+```
+
+#### Project Detection
+The configuration automatically detects C/C++ projects by looking for:
+- `Makefile`
+- `CMakeLists.txt`
+- `compile_commands.json`
+- `compile_flags.txt`
+- Git repositories
+- Common build system files
+
+#### Debugging Support
+Two debuggers are configured:
+1. **CodeLLDB** (recommended) - Modern LLVM-based debugger
+2. **GDB** - Traditional GNU debugger
+
+#### Static Analysis
+Automatic linting with:
+- **cppcheck** - Static analysis tool (via nvim-lint)
+- **clang-tidy** - Clang-based code checker (integrated in clangd LSP)
+
+### 📦 Required Tools for C Development
+
+#### Essential Tools
+```bash
+# Ubuntu/Debian
+sudo apt install build-essential cmake gdb clang clangd cppcheck
+
+# Arch Linux  
+sudo pacman -S base-devel cmake gdb clang clang-tools cppcheck
+
+# macOS
+brew install cmake llvm cppcheck
+```
+
+#### Optional but Recommended
+```bash
+# CodeLLDB debugger (via Mason or system package manager)
+# Bear (for compile_commands.json generation)
+# Ninja build system
+sudo apt install bear ninja-build  # Ubuntu
+sudo pacman -S bear ninja          # Arch
+brew install bear ninja            # macOS
+```
+
+### 🚀 Getting Started with C Development
+
+#### 1. Open a C Project
+```bash
+cd /path/to/your/c/project
+nvim .
+```
+
+#### 2. Generate Compilation Database
+For better LSP support, generate `compile_commands.json`:
+
+**With CMake:**
+```bash
+cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .
+```
+
+**With Bear (for Makefiles):**
+```bash
+bear -- make
+```
+
+#### 3. Install LSP and Tools
+```bash
+# In Neovim
+:Mason
+# Install: clangd, codelldb  (cppcheck via system package manager)
+```
+
+#### 4. Build and Debug
+```bash
+<leader>cg  # Generate CMake files
+<leader>cb  # Build project
+<leader>db  # Set breakpoints
+<leader>cd  # Start debugging
+```
+
+### 🔍 Troubleshooting C Development
+
+#### LSP Duplication Prevention
+This configuration prevents LSP diagnostic duplication by:
+- Using clangd's built-in clang-tidy (via `--clang-tidy` flag)
+- Using nvim-lint only for cppcheck static analysis
+- Implementing focus_id handlers to prevent multiple hover/diagnostic windows
+
+#### LSP Not Working
+1. Check clangd installation: `:LspInfo`
+2. Ensure `compile_commands.json` exists
+3. Restart LSP: `<leader>lr`
+4. Check Mason: `:Mason`
+
+#### No Debugging Support
+1. Install codelldb: `:Mason` → search codelldb
+2. Check executable path in DAP config
+3. Ensure debug symbols: compile with `-g` flag
+
+#### Linting Issues
+1. Install cppcheck via Mason or system package manager
+2. clang-tidy is integrated in clangd LSP - no separate installation needed
+3. Check file patterns in autocmd
+4. Manual lint: `<leader>cl`
+
+#### Header/Source Switching Not Working
+1. Ensure proper project structure
+2. Files should be in same or related directories
+3. Common extensions: `.c/.h`, `.cpp/.hpp`, `.cc/.hh`
+
+### 📈 Performance Tips
+
+#### Large Projects
+- Use `compile_commands.json` for faster indexing
+- Enable clangd background indexing (default)
+- Consider disabling semantic highlighting for very large files
+
+#### Memory Usage
+- Monitor clangd memory: `<leader>cM`
+- Adjust max file size for LSP in large codebases
+- Use project-specific .clangd config files
+
+### 🎯 Advanced Features
+
+#### Inlay Hints
+Enable type hints and parameter names:
+```bash
+<leader>cH  # Toggle inlay hints
+```
+
+#### AST Exploration
+View the Abstract Syntax Tree:
+```bash
+<leader>cA  # Show AST for current file/selection
+```
+
+#### Symbol Information
+Get detailed symbol information:
+```bash
+<leader>cS  # Show symbol details
+```
+
 ## 🚀 Quick Start
 
 ### Essential Commands to Know
@@ -1010,3 +1231,226 @@ end
 ---
 
 This guide covers the most common use cases and configurations. For plugin-specific advanced features, refer to their individual documentation using `:help <plugin-name>` or visiting their GitHub repositories.
+
+## 🚀 Advanced C/C++ Development Recommendations
+
+### Performance Optimizations for Large C Projects
+
+#### 1. Incremental Compilation
+Configure clangd for better performance with large codebases:
+```lua
+-- Add to your clangd configuration
+clangd = {
+  cmd = { 
+    "clangd", 
+    "--background-index",
+    "--clang-tidy",
+    "--header-insertion=iwyu",
+    "--completion-style=detailed",
+    "--function-arg-placeholders",
+    "--fallback-style=llvm",
+    "--pch-storage=memory",  -- Store PCH in memory for speed
+    "--index",               -- Enable background indexing
+    "--j=4",                 -- Use 4 threads for indexing
+  },
+}
+```
+
+#### 2. Optimize LSP for Large Files
+```lua
+-- Add to your configuration for better performance
+vim.api.nvim_create_autocmd("BufReadPre", {
+  pattern = "*.{c,cpp,h,hpp}",
+  callback = function()
+    local file_size = vim.fn.getfsize(vim.fn.expand("%"))
+    if file_size > 1024 * 1024 then  -- 1MB threshold
+      vim.notify("Large file detected, disabling some LSP features", vim.log.levels.WARN)
+      vim.b.lsp_enabled = false
+    end
+  end,
+})
+```
+
+#### 3. Project-Specific Configuration
+Create `.clangd` files in your project root:
+```yaml
+# .clangd file for project-specific settings
+CompileFlags:
+  Add: [-std=c++17, -Wall, -Wextra]
+  Remove: [-W*]
+Diagnostics:
+  ClangTidy:
+    Add: [performance-*, readability-*]
+    Remove: [misc-*]
+Index:
+  Background: Build
+  StandardLibrary: Yes
+```
+
+### Essential Additional Plugins for C Development
+
+#### 1. Advanced Project Management
+```lua
+-- Better project detection and management
+{
+  "ahmedkhalf/project.nvim",
+  config = function()
+    require("project_nvim").setup({
+      detection_methods = { "lsp", "pattern" },
+      patterns = { ".git", "Makefile", "CMakeLists.txt", "compile_commands.json" },
+      silent_chdir = true,
+      scope_chdir = 'global',
+    })
+  end
+}
+```
+
+#### 2. Enhanced Build Integration
+```lua
+-- Asynchronous build system
+{
+  "skywind3000/asyncrun.vim",
+  cmd = {"AsyncRun", "AsyncStop"},
+  config = function()
+    vim.g.asyncrun_open = 6  -- Open quickfix window with height 6
+    vim.keymap.set("n", "<leader>bb", ":AsyncRun make<CR>", { desc = "Async Build" })
+    vim.keymap.set("n", "<leader>bc", ":AsyncRun make clean<CR>", { desc = "Async Clean" })
+    vim.keymap.set("n", "<leader>bt", ":AsyncRun make test<CR>", { desc = "Async Test" })
+  end
+}
+```
+
+#### 3. Code Quality Tools
+```lua
+-- Better formatting for C/C++
+{
+  "rhysd/vim-clang-format",
+  ft = {"c", "cpp"},
+  config = function()
+    vim.g["clang_format#style_options"] = {
+      BasedOnStyle = "LLVM",
+      IndentWidth = 4,
+      TabWidth = 4,
+      UseTab = "Always",
+      ColumnLimit = 120,
+    }
+    vim.keymap.set("n", "<leader>cf", ":ClangFormat<CR>", { desc = "Clang Format" })
+  end
+}
+```
+
+#### 4. Enhanced Documentation
+```lua
+-- Doxygen integration
+{
+  "vim-scripts/DoxygenToolkit.vim",
+  ft = {"c", "cpp"},
+  config = function()
+    vim.g.DoxygenToolkit_briefTag_pre = "@brief  "
+    vim.g.DoxygenToolkit_paramTag_pre = "@param "
+    vim.g.DoxygenToolkit_returnTag = "@return   "
+    vim.keymap.set("n", "<leader>dx", ":Dox<CR>", { desc = "Generate Doxygen" })
+  end
+}
+```
+
+### Workflow Enhancements
+
+#### 1. Smart Error Navigation
+```lua
+-- Navigate through compile errors efficiently
+vim.keymap.set("n", "<leader>en", ":cnext<CR>", { desc = "Next Error" })
+vim.keymap.set("n", "<leader>ep", ":cprev<CR>", { desc = "Previous Error" })
+vim.keymap.set("n", "<leader>eo", ":copen<CR>", { desc = "Open Error List" })
+vim.keymap.set("n", "<leader>ec", ":cclose<CR>", { desc = "Close Error List" })
+```
+
+#### 2. Quick Header Guards
+```lua
+-- Auto-generate header guards
+vim.api.nvim_create_autocmd("BufNewFile", {
+  pattern = "*.{h,hpp}",
+  callback = function()
+    local filename = vim.fn.expand("%:t:r"):upper() .. "_H"
+    local guard = string.gsub(filename, "[^%w_]", "_")
+    local lines = {
+      "#ifndef " .. guard,
+      "#define " .. guard,
+      "",
+      "",
+      "",
+      "#endif /* " .. guard .. " */"
+    }
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+    vim.api.nvim_win_set_cursor(0, {4, 0})
+  end,
+})
+```
+
+#### 3. Smart Include Management
+```lua
+-- Auto-sort includes
+vim.api.nvim_create_user_command("SortIncludes", function()
+  vim.cmd([[%s/^\s*#include.*$/\=submatch(0)/]])
+  vim.cmd([[sort /\(["<]\)/]])
+end, {})
+
+vim.keymap.set("n", "<leader>si", ":SortIncludes<CR>", { desc = "Sort Includes" })
+```
+
+### Testing and Debugging Enhancements
+
+#### 1. Unit Testing Integration
+```lua
+-- Google Test integration
+{
+  "vim-test/vim-test",
+  dependencies = {"preservim/vimux"},
+  ft = {"c", "cpp"},
+  config = function()
+    vim.g["test#strategy"] = "vimux"
+    vim.g["test#cpp#gtest#executable"] = "./build/tests"
+    vim.keymap.set("n", "<leader>tn", ":TestNearest<CR>", { desc = "Test Nearest" })
+    vim.keymap.set("n", "<leader>tf", ":TestFile<CR>", { desc = "Test File" })
+    vim.keymap.set("n", "<leader>ts", ":TestSuite<CR>", { desc = "Test Suite" })
+  end
+}
+```
+
+#### 2. Memory Debugging
+```lua
+-- Valgrind integration
+vim.api.nvim_create_user_command("Valgrind", function(opts)
+  local cmd = "AsyncRun valgrind --tool=memcheck --leak-check=full " .. opts.args
+  vim.cmd(cmd)
+end, { nargs = 1, complete = "file" })
+
+vim.keymap.set("n", "<leader>vm", function()
+  local executable = vim.fn.input("Executable: ", "./", "file")
+  vim.cmd("Valgrind " .. executable)
+end, { desc = "Run Valgrind" })
+```
+
+### Recommended Workflow
+
+1. **Project Setup**:
+   ```bash
+   cd your_project
+   cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -Bbuild
+   ln -s build/compile_commands.json .
+   ```
+
+2. **Development Cycle**:
+   - `<leader>cg` → Generate build files
+   - `<leader>cb` → Build project
+   - `<leader>db` → Set breakpoints
+   - `<leader>cd` → Debug session
+   - `<leader>ct` → Run tests
+
+3. **Code Quality**:
+   - `<leader>cl` → Lint code
+   - `<leader>cf` → Format code
+   - `<leader>vm` → Memory check
+   - `<leader>si` → Sort includes
+
+This comprehensive setup provides a professional C/C++ development environment with all the tools needed for modern development practices.

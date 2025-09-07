@@ -1717,6 +1717,7 @@ return {
     dependencies = {
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
+      "WhoIsSethDaniel/mason-tool-installer.nvim",
       "hrsh7th/nvim-cmp",
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-buffer",
@@ -1734,6 +1735,17 @@ return {
         },
       })
       
+      -- Ensure clangd is installed via Mason for clangd_extensions
+      require("mason-tool-installer").setup({
+        ensure_installed = {
+          "clangd",       -- C/C++ LSP (handled by clangd_extensions)
+          -- Note: cppcheck must be installed via system package manager
+          -- e.g., sudo pacman -S cppcheck (Arch) or sudo apt install cppcheck (Ubuntu)
+        },
+        auto_update = false,
+        run_on_start = true,
+      })
+      
       require("mason-lspconfig").setup({
         ensure_installed = {
           "lua_ls",
@@ -1742,8 +1754,9 @@ return {
           "html",
           "cssls",
           "jsonls",
-          "clangd",     -- C/C++ LSP
           "jdtls",      -- Java LSP
+          "cmake",      -- CMake LSP
+          "bashls",     -- Bash LSP (useful for build scripts)
         },
         automatic_installation = true,
       })
@@ -1766,27 +1779,18 @@ return {
         
         -- Enhanced hover documentation with duplicate prevention
         keymap.set("n", "K", function()
-          -- Track active hover window globally to prevent duplicates
-          if vim.g.active_hover_win and vim.api.nvim_win_is_valid(vim.g.active_hover_win) then
-            vim.api.nvim_win_close(vim.g.active_hover_win, false)
-            vim.g.active_hover_win = nil
+          -- Close any existing hover windows to prevent duplicates
+          for _, win in ipairs(vim.api.nvim_list_wins()) do
+            local buf = vim.api.nvim_win_get_buf(win)
+            local ft = vim.api.nvim_buf_get_option(buf, 'filetype')
+            if ft == 'lsp-hover' or 
+               (vim.api.nvim_win_get_config(win).relative ~= '' and 
+                vim.api.nvim_buf_get_name(buf):match('lsp%-hover')) then
+              pcall(vim.api.nvim_win_close, win, false)
+            end
           end
           
-          -- Create custom hover handler to track window
-          local original_handler = vim.lsp.handlers["textDocument/hover"]
-          vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(function(err, result, ctx, config)
-            local bufnr, winnr = original_handler(err, result, ctx, config)
-            if winnr and vim.api.nvim_win_is_valid(winnr) then
-              vim.g.active_hover_win = winnr
-            end
-            return bufnr, winnr
-          end, {
-            border = "rounded",
-            max_width = 120,
-            max_height = 30,
-          })
-          
-          -- Request hover information
+          -- Use standard hover with simple configuration
           vim.lsp.buf.hover()
         end, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
         
@@ -1817,10 +1821,7 @@ return {
         html = {},
         cssls = {},
         jsonls = {},
-        clangd = {
-          cmd = { "clangd", "--background-index" },
-          filetypes = { "c", "cpp", "objc", "objcpp" },
-        },
+
         jdtls = {
           settings = {
             java = {
@@ -1828,6 +1829,10 @@ return {
               contentProvider = { preferred = "fernflower" },
             },
           },
+        },
+        cmake = {},
+        bashls = {
+          filetypes = { "sh", "bash" },
         },
       }
 
@@ -1837,13 +1842,36 @@ return {
         lspconfig[server].setup(config)
       end
 
-      -- Diagnostic configuration
+      -- Configure LSP handlers to prevent duplicates
+      vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+        border = "rounded",
+        max_width = 120,
+        max_height = 30,
+        focus_id = "hover_handler", -- Prevents multiple concurrent hover windows
+      })
+      
+      vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+        border = "rounded",
+        focus_id = "signature_help_handler",
+      })
+
+      -- Diagnostic configuration with duplicate prevention
       vim.diagnostic.config({
-        virtual_text = true,
+        virtual_text = {
+          source = "always",
+          prefix = "●",
+        },
         signs = true,
         underline = true,
         update_in_insert = false,
-        severity_sort = false,
+        severity_sort = true,
+        float = {
+          border = "rounded",
+          source = "always",
+          header = "",
+          prefix = "",
+          focus_id = "diagnostic_float", -- Prevents multiple diagnostic floats
+        },
       })
 
       -- Completion setup (nvim-cmp)
@@ -2313,4 +2341,327 @@ return {
       end, { desc = "Format buffer manually" })
     end,
   },
+
+  -- ========================================
+  -- C/C++ Development Enhancements
+  -- ========================================
+
+  -- CMake integration for C/C++ projects
+  {
+    "Civitasv/cmake-tools.nvim",
+    ft = { "c", "cpp", "cmake" },
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      require("cmake-tools").setup({
+        cmake_command = "cmake",
+        cmake_build_directory = "build",
+        cmake_build_directory_prefix = "cmake_build_", 
+        cmake_generate_options = { "-DCMAKE_EXPORT_COMPILE_COMMANDS=1" },
+        cmake_build_options = {},
+        cmake_console_size = 10,
+        cmake_show_console = "always",
+        cmake_dap_configuration = {
+          name = "cpp",
+          type = "codelldb",
+          request = "launch",
+        },
+      })
+      
+      -- CMake keybindings
+      local keymap = vim.keymap
+      keymap.set("n", "<leader>cg", "<cmd>CMakeGenerate<cr>", { desc = "CMake Generate" })
+      keymap.set("n", "<leader>cb", "<cmd>CMakeBuild<cr>", { desc = "CMake Build" })
+      keymap.set("n", "<leader>cr", "<cmd>CMakeRun<cr>", { desc = "CMake Run" })
+      keymap.set("n", "<leader>cd", "<cmd>CMakeDebug<cr>", { desc = "CMake Debug" })
+      keymap.set("n", "<leader>cc", "<cmd>CMakeClean<cr>", { desc = "CMake Clean" })
+      keymap.set("n", "<leader>ct", "<cmd>CMakeSelectBuildTarget<cr>", { desc = "CMake Select Target" })
+      keymap.set("n", "<leader>cT", "<cmd>CMakeSelectBuildType<cr>", { desc = "CMake Select Build Type" })
+    end,
+  },
+
+  -- Enhanced C/C++ debugging support
+  {
+    "mfussenegger/nvim-dap",
+    ft = { "c", "cpp", "rust" },
+    dependencies = {
+      "nvim-neotest/nvim-nio",
+      "rcarriga/nvim-dap-ui",
+      "theHamsta/nvim-dap-virtual-text",
+      "nvim-telescope/telescope-dap.nvim",
+    },
+    config = function()
+      local dap = require("dap")
+      local dapui = require("dapui")
+      
+      -- Setup DAP UI
+      dapui.setup({
+        layouts = {
+          {
+            elements = {
+              { id = "scopes", size = 0.25 },
+              { id = "breakpoints", size = 0.25 },
+              { id = "stacks", size = 0.25 },
+              { id = "watches", size = 0.25 },
+            },
+            size = 40,
+            position = "left",
+          },
+          {
+            elements = {
+              { id = "repl", size = 0.5 },
+              { id = "console", size = 0.5 },
+            },
+            size = 10,
+            position = "bottom",
+          },
+        },
+      })
+      
+      -- Virtual text
+      require("nvim-dap-virtual-text").setup()
+      
+      -- C/C++ debugger configuration (requires codelldb or gdb)
+      dap.adapters.codelldb = {
+        type = 'server',
+        port = "${port}",
+        executable = {
+          command = 'codelldb',
+          args = {"--port", "${port}"},
+        }
+      }
+      
+      dap.adapters.gdb = {
+        type = "executable",
+        command = "gdb",
+        args = { "-i", "dap" }
+      }
+      
+      dap.configurations.c = {
+        {
+          name = "Launch (CodeLLDB)",
+          type = "codelldb",
+          request = "launch",
+          program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+          end,
+          cwd = '${workspaceFolder}',
+          stopOnEntry = false,
+        },
+        {
+          name = "Launch (GDB)",
+          type = "gdb",
+          request = "launch",
+          program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+          end,
+          cwd = "${workspaceFolder}",
+          stopAtBeginningOfMainSubprogram = false,
+        },
+      }
+      
+      dap.configurations.cpp = dap.configurations.c
+      
+      -- Auto open/close DAP UI
+      dap.listeners.after.event_initialized["dapui_config"] = function()
+        dapui.open()
+      end
+      dap.listeners.before.event_terminated["dapui_config"] = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited["dapui_config"] = function()
+        dapui.close()
+      end
+      
+      -- Debugging keybindings
+      local keymap = vim.keymap
+      keymap.set("n", "<leader>db", dap.toggle_breakpoint, { desc = "Toggle Breakpoint" })
+      keymap.set("n", "<leader>dB", function() dap.set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, { desc = "Conditional Breakpoint" })
+      keymap.set("n", "<leader>dc", dap.continue, { desc = "Continue" })
+      keymap.set("n", "<leader>di", dap.step_into, { desc = "Step Into" })
+      keymap.set("n", "<leader>do", dap.step_over, { desc = "Step Over" })
+      keymap.set("n", "<leader>dO", dap.step_out, { desc = "Step Out" })
+      keymap.set("n", "<leader>dr", dap.repl.open, { desc = "Open REPL" })
+      keymap.set("n", "<leader>du", dapui.toggle, { desc = "Toggle DAP UI" })
+      keymap.set("n", "<leader>dx", dap.terminate, { desc = "Terminate" })
+    end,
+  },
+
+  -- C/C++ static analysis and linting
+  {
+    "mfussenegger/nvim-lint",
+    ft = { "c", "cpp" },
+    config = function()
+      local lint = require("lint")
+      
+      -- Check if cppcheck is available
+      local function is_cppcheck_available()
+        return vim.fn.executable("cppcheck") == 1
+      end
+      
+      -- Only configure cppcheck if it's available
+      if is_cppcheck_available() then
+        lint.linters_by_ft = {
+          c = { "cppcheck" },
+          cpp = { "cppcheck" },
+        }
+        
+        -- Auto-lint on save and text changes
+        vim.api.nvim_create_autocmd({ "BufWritePost", "BufEnter", "InsertLeave" }, {
+          pattern = { "*.c", "*.cpp", "*.h", "*.hpp" },
+          callback = function()
+            lint.try_lint()
+          end,
+        })
+        
+        -- Manual lint command
+        vim.keymap.set("n", "<leader>cl", function()
+          lint.try_lint()
+        end, { desc = "Lint C/C++ file" })
+      else
+        -- Show a helpful message about installing cppcheck
+        vim.api.nvim_create_autocmd("FileType", {
+          pattern = { "c", "cpp" },
+          callback = function()
+            vim.notify(
+              "cppcheck not found. Install it for additional static analysis:\n" ..
+              "• Arch Linux: sudo pacman -S cppcheck\n" ..
+              "• Ubuntu: sudo apt install cppcheck\n" ..
+              "• macOS: brew install cppcheck",
+              vim.log.levels.INFO,
+              { title = "C/C++ Static Analysis" }
+            )
+          end,
+          once = true,
+        })
+      end
+    end,
+  },
+
+  -- Enhanced C/C++ highlighting and navigation
+  {
+    "jackguo380/vim-lsp-cxx-highlight",
+    ft = { "c", "cpp" },
+    config = function()
+      vim.cmd([[
+        hi default LspCxxHlGroupEnumConstant ctermfg=155 guifg=#b5bd68
+        hi default LspCxxHlGroupNamespace ctermfg=170 guifg=#c678dd
+        hi default LspCxxHlGroupMemberVariable ctermfg=204 guifg=#e06c75
+      ]])
+    end,
+  },
+
+  -- Header/Source file switching for C/C++
+  {
+    "ericcurtin/CurtineIncSw.vim",
+    ft = { "c", "cpp" },
+    config = function()
+      vim.keymap.set("n", "<leader>ch", "<cmd>call CurtineIncSw()<cr>", { desc = "Switch Header/Source" })
+    end,
+  },
+
+  -- Enhanced clangd features and compile_commands.json generation
+  {
+    "p00f/clangd_extensions.nvim",
+    ft = { "c", "cpp" },
+    dependencies = { "neovim/nvim-lspconfig" },
+    config = function()
+      require("clangd_extensions").setup({
+        server = {
+          -- Let this plugin handle clangd entirely to avoid conflicts
+          cmd = { 
+            "clangd", 
+            "--background-index",
+            "--clang-tidy",
+            "--header-insertion=iwyu",
+            "--completion-style=detailed",
+            "--function-arg-placeholders",
+            "--fallback-style=llvm",
+          },
+          filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
+          root_dir = function(fname)
+            return require("lspconfig.util").root_pattern(
+              "Makefile",
+              "configure.ac", 
+              "configure.in",
+              "config.h.in",
+              "meson.build",
+              "meson_options.txt",
+              "build.ninja"
+            )(fname) or require("lspconfig.util").root_pattern("compile_commands.json", "compile_flags.txt")(
+              fname
+            ) or require("lspconfig.util").find_git_ancestor(fname)
+          end,
+          init_options = {
+            usePlaceholders = true,
+            completeUnimported = true,
+            clangdFileStatus = true,
+          },
+          capabilities = require("cmp_nvim_lsp").default_capabilities(),
+          on_attach = function(client, bufnr)
+            -- Standard LSP keymaps
+            local keymap = vim.keymap
+            local opts = { buffer = bufnr, silent = true }
+            
+            keymap.set("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go to definition" }))
+            keymap.set("n", "gy", vim.lsp.buf.type_definition, vim.tbl_extend("force", opts, { desc = "Go to type definition" }))
+            keymap.set("n", "gi", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "Go to implementation" }))
+            keymap.set("n", "gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { desc = "Find references" }))
+            keymap.set("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
+            keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
+            keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code action" }))
+            keymap.set("n", "<leader>lf", vim.lsp.buf.format, vim.tbl_extend("force", opts, { desc = "Format buffer" }))
+            keymap.set("n", "[d", vim.diagnostic.goto_prev, vim.tbl_extend("force", opts, { desc = "Previous diagnostic" }))
+            keymap.set("n", "]d", vim.diagnostic.goto_next, vim.tbl_extend("force", opts, { desc = "Next diagnostic" }))
+            keymap.set("n", "<leader>ld", vim.diagnostic.open_float, vim.tbl_extend("force", opts, { desc = "Show diagnostic" }))
+          end,
+        },
+        extensions = {
+          -- Automatically set inlay hints (type hints)
+          autoSetHints = true,
+          inlay_hints = {
+            inline = vim.fn.has("nvim-0.10") == 1,
+            only_current_line = false,
+            only_current_line_autocmd = "CursorHold",
+            show_parameter_hints = true,
+            parameter_hints_prefix = "<- ",
+            other_hints_prefix = "=> ",
+            max_len_align = false,
+            max_len_align_padding = 1,
+            right_align = false,
+            right_align_padding = 7,
+            highlight = "Comment",
+            priority = 100,
+          },
+          ast = {
+            role_icons = {
+              type = "",
+              declaration = "",
+              expression = "",
+              specifier = "",
+              statement = "",
+              ["template argument"] = "",
+            },
+            kind_icons = {
+              Compound = "",
+              Recovery = "",
+              TranslationUnit = "",
+              PackExpansion = "",
+              TemplateTypeParm = "",
+              TemplateTemplateParm = "",
+              TemplateParamObject = "",
+            },
+          },
+        },
+      })
+      
+      -- Clangd extension keybindings
+      vim.keymap.set("n", "<leader>cI", "<cmd>ClangdSwitchSourceHeader<cr>", { desc = "Switch Source/Header" })
+      vim.keymap.set("n", "<leader>cH", "<cmd>ClangdSetInlayHints<cr>", { desc = "Toggle Inlay Hints" })
+      vim.keymap.set("n", "<leader>cA", "<cmd>ClangdAST<cr>", { desc = "Show AST" })
+      vim.keymap.set("n", "<leader>cS", "<cmd>ClangdSymbolInfo<cr>", { desc = "Symbol Info" })
+      vim.keymap.set("n", "<leader>cM", "<cmd>ClangdMemoryUsage<cr>", { desc = "Memory Usage" })
+    end,
+  },
+  
+
 }

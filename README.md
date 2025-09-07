@@ -6,6 +6,7 @@ A modern, feature-rich Neovim configuration written in Lua with **complete mini.
 
 - **Modern Lua Configuration**: Fully migrated from VimScript to Lua for better performance and maintainability
 - **Native LSP Support**: Built-in Language Server Protocol with intelligent code completion, diagnostics, and navigation
+- **🔬 Advanced C/C++ Development**: Complete development environment with enhanced clangd, CMake integration, debugging, and static analysis
 - **Plugin Manager**: Uses [lazy.nvim](https://github.com/folke/lazy.nvim) for fast, lazy-loaded plugin management
 - **Auto-completion**: Powerful completion engine with [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) replacing CoC
 - **Complete Mini.nvim Ecosystem**: All 28 mini.nvim plugins for comprehensive development tools
@@ -33,21 +34,36 @@ A modern, feature-rich Neovim configuration written in Lua with **complete mini.
 - **Node.js** (for LSP servers)
 - **Python** (for Python LSP support)
 - **ripgrep** (for better grep functionality)
+- **🔬 C/C++ Development** (optional but recommended):
+  - **build-essential** or equivalent (gcc, make, etc.)
+  - **cmake** (for CMake projects)
+  - **clang** and **clang-tools** (for enhanced LSP)
+  - **gdb** or **codelldb** (for debugging)
+  - **cppcheck** (for static analysis)
 
 #### Ubuntu/Debian Installation:
 ```bash
 sudo apt update
 sudo apt install neovim git nodejs npm python3 python3-pip ripgrep
+
+# For C/C++ development (recommended)
+sudo apt install build-essential cmake gdb clang clang-tools cppcheck bear ninja-build
 ```
 
 #### Arch Installation:
 ```bash
 sudo pacman -Syu neovim git nodejs npm python3 python3-pip ripgrep
+
+# For C/C++ development (recommended)  
+sudo pacman -S base-devel cmake gdb clang clang-tools cppcheck bear ninja
 ```
 
 #### macOS Installation:
 ```bash
 brew install neovim git node python ripgrep
+
+# For C/C++ development (recommended)
+brew install cmake llvm cppcheck bear ninja
 ```
 
 ### Setup Instructions
@@ -115,12 +131,29 @@ mv init.vim.legacy init.vim
 | `gy` | Normal | Go to type definition |
 | `gi` | Normal | Go to implementation |
 | `gr` | Normal | Go to references |
-| `K` | Normal | Show hover documentation |
+| `K` | Normal | Show hover documentation (no duplicates) |
 | `<leader>rn` | Normal | Rename symbol |
 | `<leader>ca` | Normal | Code actions |
 | `<leader>f` | Normal | Format code |
 | `[d` | Normal | Previous diagnostic |
 | `]d` | Normal | Next diagnostic |
+
+### 🔬 C/C++ Development
+| Key | Mode | Action |
+|-----|------|--------|
+| `<leader>cg` | Normal | CMake Generate |
+| `<leader>cb` | Normal | CMake Build |
+| `<leader>cr` | Normal | CMake Run |
+| `<leader>cd` | Normal | CMake Debug |
+| `<leader>cc` | Normal | CMake Clean |
+| `<leader>ch` | Normal | Switch Header/Source |
+| `<leader>cl` | Normal | Lint C/C++ file |
+| `<leader>db` | Normal | Toggle Breakpoint |
+| `<leader>dc` | Normal | Debug Continue |
+| `<leader>di` | Normal | Debug Step Into |
+| `<leader>do` | Normal | Debug Step Over |
+| `<leader>dO` | Normal | Debug Step Out |
+| `<leader>du` | Normal | Toggle Debug UI |
 
 ### Telescope
 | Key | Mode | Action |
@@ -248,6 +281,15 @@ For detailed instructions on using all plugins, customizing features, and troubl
 - **[nvim-cmp](https://github.com/hrsh7th/nvim-cmp)** - Completion engine
 - **[LuaSnip](https://github.com/L3MON4D3/LuaSnip)** - Snippet engine
 
+### 🔬 C/C++ Development Suite
+- **[clangd_extensions.nvim](https://github.com/p00f/clangd_extensions.nvim)** - Enhanced clangd features with inlay hints and AST viewing
+- **[cmake-tools.nvim](https://github.com/Civitasv/cmake-tools.nvim)** - Complete CMake integration for project management
+- **[nvim-dap](https://github.com/mfussenegger/nvim-dap)** - Debug Adapter Protocol with codelldb and gdb support
+- **[nvim-dap-ui](https://github.com/rcarriga/nvim-dap-ui)** - Beautiful debugging interface
+- **[nvim-lint](https://github.com/mfussenegger/nvim-lint)** - Static analysis with cppcheck (if installed via system package manager)
+- **[vim-lsp-cxx-highlight](https://github.com/jackguo380/vim-lsp-cxx-highlight)** - Enhanced C/C++ syntax highlighting
+- **[CurtineIncSw.vim](https://github.com/ericcurtin/CurtineIncSw.vim)** - Header/source file switching
+
 ### UI & Navigation
 - **[telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)** - Fuzzy finder
 - **[trouble.nvim](https://github.com/folke/trouble.nvim)** - Diagnostics panel
@@ -291,6 +333,103 @@ For detailed instructions on using all plugins, customizing features, and troubl
 - **[edge](https://github.com/sainnhe/edge)** - Edge theme
 
 ## 🎨 Additional Plugin Recommendations
+
+### 🔬 C/C++ Development Enhancements
+
+#### Essential for Large C Projects
+- **[nvim-treesitter-context](https://github.com/nvim-treesitter/nvim-treesitter-context)** - Show current function context at top
+- **[vim-swap](https://github.com/machakann/vim-swap)** - Swap function arguments and more
+- **[nvim-bqf](https://github.com/kevinhwang91/nvim-bqf)** - Better quickfix window for build errors
+- **[compiler.nvim](https://github.com/Zeioth/compiler.nvim)** - Compiler integration with async builds
+- **[overseer.nvim](https://github.com/stevearc/overseer.nvim)** - Task runner for builds and tests
+
+#### Code Quality & Analysis
+- **[nvim-coverage](https://github.com/andythigpen/nvim-coverage)** - Code coverage visualization
+- **[ccc.nvim](https://github.com/uga-rosa/ccc.nvim)** - Color picker and highlighter
+- **[clang-format.nvim](https://github.com/rhysd/vim-clang-format)** - Clang-format integration
+- **[doxygen-toolkit.vim](https://github.com/vim-scripts/DoxygenToolkit.vim)** - Doxygen documentation generator
+
+#### Advanced Debugging & Profiling
+- **[nvim-gdb](https://github.com/sakhnik/nvim-gdb)** - Enhanced GDB integration
+- **[one-small-step-for-vimkind](https://github.com/jbyuki/one-small-step-for-vimkind)** - Lua debugger for config debugging
+- **[nvim-rip-substitute](https://github.com/chrisgrieser/nvim-rip-substitute)** - Better search and replace for refactoring
+
+#### Project Management
+- **[project.nvim](https://github.com/ahmedkhalf/project.nvim)** - Automatic project detection
+- **[workspaces.nvim](https://github.com/natecraddock/workspaces.nvim)** - Workspace management
+- **[neovim-session-manager](https://github.com/Shatur/neovim-session-manager)** - Session persistence
+- **[persistence.nvim](https://github.com/folke/persistence.nvim)** - Session management
+
+#### Performance for Large Codebases
+- **[nvim-navic](https://github.com/SmiteshP/nvim-navic)** - LSP breadcrumbs in statusline
+- **[aerial.nvim](https://github.com/stevearc/aerial.nvim)** - Symbol outline window
+- **[symbols-outline.nvim](https://github.com/simrat39/symbols-outline.nvim)** - Tree-like symbol explorer
+- **[nvim-lsp-file-operations](https://github.com/antosha417/nvim-lsp-file-operations)** - File operations via LSP
+
+### 🚀 Recommended C Development Workflow Improvements
+
+#### 1. Enhanced Build Integration
+```lua
+-- Add to your configuration for better build integration
+{
+  "Zeioth/compiler.nvim",
+  cmd = {"CompilerOpen", "CompilerToggleResults", "CompilerRedo"},
+  dependencies = { "stevearc/overseer.nvim" },
+  opts = {},
+}
+
+{
+  "stevearc/overseer.nvim",
+  commit = "400e762648b70397d0d315e5acaf0ff3597f2d8b",
+  cmd = { "CompilerOpen", "CompilerToggleResults", "CompilerRedo" },
+  opts = {
+    task_list = {
+      direction = "bottom",
+      min_height = 25,
+      max_height = 25,
+      default_detail = 1
+    },
+  },
+}
+```
+
+#### 2. Better Error Navigation
+```lua
+{
+  "kevinhwang91/nvim-bqf",
+  ft = "qf",
+  config = function()
+    require("bqf").setup({
+      auto_enable = true,
+      auto_resize_height = true,
+      preview = {
+        win_height = 12,
+        win_vheight = 12,
+        delay_syntax = 80,
+        border_chars = {"┃", "━", "┏", "┓", "┗", "┛", "┣", "┫", "┳", "┻"}
+      },
+    })
+  end
+}
+```
+
+#### 3. Code Coverage Visualization
+```lua
+{
+  "andythigpen/nvim-coverage",
+  dependencies = "nvim-lua/plenary.nvim",
+  cmd = { "Coverage", "CoverageLoad", "CoverageShow", "CoverageHide", "CoverageToggle" },
+  config = function()
+    require("coverage").setup({
+      commands = true,
+      highlights = {
+        covered = { fg = "#C3E88D" },
+        uncovered = { fg = "#F07178" },
+      },
+    })
+  end,
+}
+```
 
 ### Navigation & File Management
 - **[nvim-tree.lua](https://github.com/nvim-tree/nvim-tree.lua)** - File explorer with git integration

@@ -5,8 +5,9 @@ lazy-lock.json
 .DS_Store
 Thumbs.db
 
-# Test files
+# Test files and directories
 test.*
+test_*/
 *.tmp
 
 # Backup files
