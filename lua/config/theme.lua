@@ -56,6 +56,8 @@ function M.apply_theme(theme_name)
   local ok, _ = pcall(vim.cmd, "colorscheme " .. theme_name)
   if ok then
     vim.g.current_theme = theme_name
+    -- Also store in global variable for easier access
+    _G.nvim_current_theme = theme_name
     return true
   else
     -- Try some common variations
@@ -70,6 +72,7 @@ function M.apply_theme(theme_name)
       local var_ok, _ = pcall(vim.cmd, "colorscheme " .. variation)
       if var_ok then
         vim.g.current_theme = variation
+        _G.nvim_current_theme = variation
         vim.notify("Applied theme variation: " .. variation, vim.log.levels.INFO)
         return true
       end
@@ -156,6 +159,8 @@ function M.init()
       if not M.apply_theme(default_theme) then
         -- If even default fails, try a built-in theme
         M.apply_theme("default")
+        vim.g.current_theme = "default"
+        _G.nvim_current_theme = "default"
       end
     end
   end
@@ -166,6 +171,7 @@ function M.init()
     callback = function(args)
       if args.match and args.match ~= "" then
         vim.g.current_theme = args.match
+        _G.nvim_current_theme = args.match
         -- Optional: Auto-save theme changes (uncomment if desired)
         -- M.save_theme(args.match)
       end

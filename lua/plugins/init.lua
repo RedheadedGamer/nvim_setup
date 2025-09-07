@@ -562,7 +562,22 @@ return {
           "RainbowDelimiterViolet",
           "RainbowDelimiterCyan",
         },
+        blacklist = {}, -- No blacklisted filetypes
       }
+      
+      -- Set up enhanced highlight colors for better visibility
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        group = vim.api.nvim_create_augroup("RainbowDelimitersHighlight", { clear = true }),
+        callback = function()
+          vim.api.nvim_set_hl(0, "RainbowDelimiterRed", { fg = "#E06C75", bold = true })
+          vim.api.nvim_set_hl(0, "RainbowDelimiterYellow", { fg = "#E5C07B", bold = true })
+          vim.api.nvim_set_hl(0, "RainbowDelimiterBlue", { fg = "#61AFEF", bold = true })
+          vim.api.nvim_set_hl(0, "RainbowDelimiterOrange", { fg = "#D19A66", bold = true })
+          vim.api.nvim_set_hl(0, "RainbowDelimiterGreen", { fg = "#98C379", bold = true })
+          vim.api.nvim_set_hl(0, "RainbowDelimiterViolet", { fg = "#C678DD", bold = true })
+          vim.api.nvim_set_hl(0, "RainbowDelimiterCyan", { fg = "#56B6C2", bold = true })
+        end,
+      })
     end,
   },
 
@@ -1142,14 +1157,16 @@ return {
         },
         select = {
           enabled = true,
-          backend = { "telescope", "fzf_lua", "builtin", "nui" },
+          backend = { "telescope", "builtin", "fzf_lua", "nui" },
           trim_prompt = true,
           telescope = require("telescope.themes").get_dropdown({
             winblend = 10,
             layout_config = {
               width = 0.8,
-              height = 0.9, -- Increased height for more themes
+              height = 0.8, -- Reduced from 0.9 to prevent UI splitting
+              prompt_position = "top", -- Ensure prompt is at top
             },
+            sorting_strategy = "ascending", -- Keep items in order
           }),
           -- Enhanced builtin config for better theme switcher experience
           builtin = {
@@ -1165,7 +1182,7 @@ return {
             max_width = { 140, 0.8 },
             min_width = { 40, 0.2 },
             height = nil,
-            max_height = 0.9,
+            max_height = 0.8, -- Reduced from 0.9 to prevent UI splitting
             min_height = { 10, 0.2 },
             mappings = {
               ["<Esc>"] = "Close",
@@ -1175,18 +1192,20 @@ return {
           },
           -- Use telescope for theme selection to handle large lists with proper scrolling
           get_config = function(opts)
-            if opts.prompt and opts.prompt:match("theme") then
+            if opts.prompt and (opts.prompt:match("theme") or opts.prompt:match("🎨")) then
               return {
                 backend = "telescope",
                 telescope = require("telescope.themes").get_dropdown({
                   winblend = 10,
                   layout_config = {
                     width = 0.7,
-                    height = 0.9, -- Use 90% of screen height to show more themes
+                    height = 0.75, -- Reduced height to prevent splitting
                     preview_cutoff = 120,
+                    prompt_position = "top", -- Force prompt at top
                   },
                   -- Enable scrolling and navigation
                   scroll_strategy = "limit",
+                  sorting_strategy = "ascending", -- Keep themes in alphabetical order
                   layout_strategy = "vertical",
                 }),
               }
@@ -1339,9 +1358,14 @@ return {
         local theme_config = require("config.theme")
         local all_themes = theme_config.get_available_themes()
         
+        -- Get current theme more reliably
+        local function get_current_theme()
+          return _G.nvim_current_theme or vim.g.current_theme or vim.g.colors_name or ""
+        end
+        
         -- Create selection prompt with better formatting
         vim.ui.select(all_themes, {
-          prompt = "🎨 Select a theme:",
+          prompt = "🎨 Select a theme (current: " .. get_current_theme() .. "):",
           format_item = function(item)
             -- Add emoji indicators for theme types
             local icon = "🎨"
@@ -1361,11 +1385,13 @@ return {
               icon = "🌌"
             end
             
-            -- Show current theme indicator
-            local current = vim.g.current_theme or ""
-            local indicator = (item == current) and " ← current" or ""
+            -- Show current theme indicator with better visibility
+            local current = get_current_theme()
+            local is_current = (item == current)
+            local indicator = is_current and " ◄ CURRENT" or ""
+            local prefix = is_current and "► " or "  "
             
-            return icon .. " " .. item .. indicator
+            return prefix .. icon .. " " .. item .. indicator
           end,
         }, function(choice)
           if choice then
@@ -1721,7 +1747,7 @@ return {
           -- Navigation
           map('n', ']c', function()
             if vim.wo.diff then
-              vim.cmd.normal({']c', bang = true})
+              vim.cmd.normal(']c')
             else
               gitsigns.nav_hunk('next')
             end
@@ -1729,7 +1755,7 @@ return {
 
           map('n', '[c', function()
             if vim.wo.diff then
-              vim.cmd.normal({'[c', bang = true})
+              vim.cmd.normal('[c')
             else
               gitsigns.nav_hunk('prev')
             end
