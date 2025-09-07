@@ -138,10 +138,13 @@ return {
 
   {
     "sainnhe/everforest",
-    lazy = true,
+    lazy = false, -- Load immediately for theme switcher availability
+    priority = 976, -- Set priority for immediate loading
     config = function()
       vim.g.everforest_background = "medium"
       vim.g.everforest_transparent_background = 1
+      vim.g.everforest_enable_italic = 1
+      vim.g.everforest_disable_italic_comment = 0
     end,
   },
 
@@ -573,11 +576,24 @@ return {
     priority = 967,
   },
 
-  -- Apprentice theme
+  -- Apprentice-inspired theme (replacement for problematic romainl/Apprentice)
   {
-    "romainl/Apprentice",
+    "adisen99/apprentice.nvim",
     lazy = false,
     priority = 966,
+    config = function()
+      require("apprentice").setup({
+        style = "dark", -- "dark" or "light"
+        transparent = true,
+        terminal_colors = true,
+        styles = {
+          comments = { italic = true },
+          keywords = { italic = false },
+          functions = { italic = false },
+          variables = { italic = false },
+        },
+      })
+    end,
   },
 
   -- Zenburn theme

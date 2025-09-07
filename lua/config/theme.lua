@@ -108,7 +108,7 @@ function M.get_available_themes()
     -- Kanagawa variants
     "kanagawa", "kanagawa-wave", "kanagawa-dragon", "kanagawa-lotus",
     -- Popular themes
-    "sonokai", "edge", "everforest", "material",
+    "sonokai", "edge", "everforest", "everforest-dark", "everforest-light", "material",
     "vscode", "github_dark", "github_light", "github_dark_dimmed",
     "darkplus", "aurora",
     -- Premium modern themes  
