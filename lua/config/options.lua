@@ -56,6 +56,9 @@ opt.formatoptions:append("t")     -- auto-wrap text using textwidth
 vim.cmd("filetype plugin indent on")
 vim.cmd("syntax on")
 
+-- Enhanced bracket matching with better visibility (no timeout for instant response)
+vim.cmd("highlight MatchParen cterm=bold ctermbg=yellow ctermfg=black guibg=#FFD700 guifg=#000000 gui=bold")
+
 -- Cursor shape configuration
 vim.cmd([[
   let &t_SI = "\e[5 q"

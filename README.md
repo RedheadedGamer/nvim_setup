@@ -12,12 +12,13 @@ A modern, feature-rich Neovim configuration written in Lua with **complete mini.
 - **170+ Keybinds**: Comprehensive keybind system with which-key integration for discoverability
 - **Optimized Performance**: Streamlined configuration with curated high-quality themes
 - **Smart Movement**: Mini.move integration for moving lines and selections with Alt+hjkl
+- **Enhanced Bracket Matching**: Improved bracket/parenthesis visibility with rainbow colors and smart matching
 - **Advanced Text Objects**: Enhanced editing with mini.ai, mini.surround, and mini.operators
 - **Visual Enhancements**: Smooth animations, minimap, indent guides, and status indicators
 - **Tab-based Indentation**: Configured to use actual tabs (noexpandtab) for consistent formatting
 - **Fuzzy Finding**: Telescope integration for file finding, searching, and more
 - **Syntax Highlighting**: Enhanced syntax highlighting with Treesitter
-- **Multiple Themes**: Several beautiful colorschemes included
+- **Multiple Themes**: 50+ beautiful colorschemes with enhanced theme switcher (fixed infinite indenting issue)
 - **LaTeX Support**: VimTeX integration for LaTeX document editing
 - **Transparent Background**: Configured for transparent terminal backgrounds
 - **Enhanced Transparency**: 80+ UI elements configured for full transparency support  
@@ -208,7 +209,7 @@ For detailed instructions on using all plugins, customizing features, and troubl
 - **[plenary.nvim](https://github.com/nvim-lua/plenary.nvim)** - Lua utility functions
 
 ### Quality of Life (Mini.nvim Collection)
-- **[mini.pairs](https://github.com/echasnovski/mini.pairs)** - Auto-close brackets, quotes, and parentheses
+- **[mini.pairs](https://github.com/echasnovski/mini.pairs)** - Enhanced auto-close brackets, quotes, and parentheses with smart pattern detection
 - **[mini.surround](https://github.com/echasnovski/mini.surround)** - Surround text with brackets, quotes, tags, etc.
 - **[mini.indentscope](https://github.com/echasnovski/mini.indentscope)** - Visualize and operate on indent scope
 - **[mini.move](https://github.com/echasnovski/mini.move)** - Move any selection in any direction
@@ -228,7 +229,7 @@ For detailed instructions on using all plugins, customizing features, and troubl
 - **[mini.sessions](https://github.com/echasnovski/mini.sessions)** - Session management for workspace persistence
 - **[mini.align](https://github.com/echasnovski/mini.align)** - Text alignment with `ga` and `gA`
 - **[mini.bracketed](https://github.com/echasnovski/mini.bracketed)** - Go to next/previous targets (buffers, files, diagnostics, etc.)
-- **[mini.diff](https://github.com/echasnovski/mini.diff)** - Work with diff hunks and git changes
+- **[mini.diff](https://github.com/echasnovski/mini.diff)** - Work with diff hungs and git changes
 - **[mini.extra](https://github.com/echasnovski/mini.extra)** - Extra textobjects and pickers
 - **[mini.fuzzy](https://github.com/echasnovski/mini.fuzzy)** - Fuzzy matching algorithms
 - **[mini.icons](https://github.com/echasnovski/mini.icons)** - Icon provider for various contexts
@@ -237,6 +238,9 @@ For detailed instructions on using all plugins, customizing features, and troubl
 - **[mini.misc](https://github.com/echasnovski/mini.misc)** - Miscellaneous functions (zoom, put, setup, etc.)
 - **[mini.pick](https://github.com/echasnovski/mini.pick)** - Pick anything (alternative to telescope)
 - **[mini.tabline](https://github.com/echasnovski/mini.tabline)** - Tabline with customizable appearance
+
+### Visual Enhancements
+- **[rainbow-delimiters.nvim](https://github.com/HiPhish/rainbow-delimiters.nvim)** - Rainbow colored brackets and parentheses for better code readability
 
 ### LSP & Completion
 - **[nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)** - LSP configurations
@@ -259,17 +263,26 @@ For detailed instructions on using all plugins, customizing features, and troubl
 - **[conform.nvim](https://github.com/stevearc/conform.nvim)** - Code formatting
 - **[vimtex](https://github.com/lervag/vimtex)** - LaTeX support
 
-### Colorschemes & Themes
+### Colorschemes & Themes (38+ Premium Themes)
 - **[onedarkpro.nvim](https://github.com/olimorris/onedarkpro.nvim)** - One Dark theme (default)
-- **[tokyonight.nvim](https://github.com/folke/tokyonight.nvim)** - Tokyo Night theme
+- **[tokyonight.nvim](https://github.com/folke/tokyonight.nvim)** - Tokyo Night theme collection
 - **[gruvbox.nvim](https://github.com/ellisonleao/gruvbox.nvim)** - Gruvbox theme
 - **[dracula.nvim](https://github.com/Mofiqul/dracula.nvim)** - Dracula theme
 - **[nord.nvim](https://github.com/shaunsingh/nord.nvim)** - Nord theme
-- **[everforest](https://github.com/sainnhe/everforest)** - Everforest theme
-- **[catppuccin](https://github.com/catppuccin/nvim)** - Catppuccin theme
+- **[catppuccin](https://github.com/catppuccin/nvim)** - Catppuccin theme collection
 - **[nightfox.nvim](https://github.com/EdenEast/nightfox.nvim)** - Nightfox theme collection
-- **[rose-pine](https://github.com/rose-pine/neovim)** - Rose Pine theme
-- **[kanagawa.nvim](https://github.com/rebelot/kanagawa.nvim)** - Kanagawa theme
+- **[rose-pine](https://github.com/rose-pine/neovim)** - Rose Pine theme collection
+- **[kanagawa.nvim](https://github.com/rebelot/kanagawa.nvim)** - Kanagawa theme collection
+- **[sonokai](https://github.com/sainnhe/sonokai)** - High contrast theme
+- **[edge](https://github.com/sainnhe/edge)** - Clean and elegant theme
+- **[everforest](https://github.com/sainnhe/everforest)** - Green forest theme
+- **[gruvbox-material](https://github.com/sainnhe/gruvbox-material)** - Material Gruvbox
+- **[material.nvim](https://github.com/marko-cerovac/material.nvim)** - Material Design theme
+- **[vscode.nvim](https://github.com/Mofiqul/vscode.nvim)** - VS Code theme
+- **[github-nvim-theme](https://github.com/projekt0n/github-nvim-theme)** - GitHub themes
+- **[onedark.nvim](https://github.com/navarasu/onedark.nvim)** - Alternative One Dark
+- **[darkplus.nvim](https://github.com/lunarvim/darkplus.nvim)** - Dark+ theme
+- **[aurora](https://github.com/ray-x/aurora)** - Aurora theme
 - **[material.nvim](https://github.com/marko-cerovac/material.nvim)** - Material theme
 - **[monokai.nvim](https://github.com/tanvirtin/monokai.nvim)** - Monokai theme
 - **[onedark.nvim](https://github.com/navarasu/onedark.nvim)** - OneDark theme
@@ -370,12 +383,15 @@ Edit `lua/plugins/init.lua` and add your plugin specification:
 
 ### Changing Theme
 
-**Easy Theme Switcher** (New Feature!)
+**Enhanced Theme Switcher** (Completely Redesigned!)
 
-Use the built-in theme switcher for easy theme changing:
-- Press `<leader>th` or `<leader>tt` to open the theme selector
-- Choose from 70+ available themes including dracula, gruvbox, tokyonight, etc.
-- Themes are applied instantly with notification feedback
+Use the enhanced Telescope-based theme switcher:
+- Press `<leader>th` or `<leader>tt` to open the **live preview** theme selector
+- **🔭 Telescope Integration**: No more infinite indenting issues!
+- **📱 Live Preview**: See themes instantly as you browse
+- Choose from **38+ premium themes** including material, sonokai, edge, everforest, and more
+- **⚡ Fuzzy Search**: Quickly find themes by typing part of their name
+- Themes are applied instantly with smooth transitions
 
 **Manual Theme Change**
 
@@ -386,13 +402,22 @@ vim.cmd("colorscheme your_preferred_theme")
 ```
 
 Available themes include:
-- `dracula` - Dracula theme
-- `gruvbox` - Gruvbox theme  
-- `tokyonight`, `tokyonight-night`, `tokyonight-storm`
-- `catppuccin`, `catppuccin-mocha`, `catppuccin-latte`
-- `nord` - Nord theme
-- `rose-pine`, `rose-pine-moon`, `rose-pine-dawn`
-- And many more!
+- `dracula` - Dark vampire theme
+- `gruvbox` - Retro groove theme  
+- `tokyonight`, `tokyonight-night`, `tokyonight-storm`, `tokyonight-day`
+- `catppuccin`, `catppuccin-mocha`, `catppuccin-latte`, `catppuccin-frappe`, `catppuccin-macchiato`
+- `nord` - Arctic blue theme
+- `rose-pine`, `rose-pine-moon`, `rose-pine-dawn`, `rose-pine-main`
+- `kanagawa`, `kanagawa-wave`, `kanagawa-dragon`, `kanagawa-lotus`
+- `sonokai` - High contrast elegant theme
+- `edge` - Clean and sophisticated theme
+- `everforest` - Comfortable green theme
+- `gruvbox-material` - Material Design Gruvbox
+- `material` - Material Design theme variants
+- `vscode` - VS Code theme
+- `github_dark`, `github_light` - GitHub themes
+- `onedark` - Alternative One Dark theme
+- And many more premium themes!
 
 ### Custom Key Mappings
 
@@ -410,9 +435,10 @@ Autoformatting on save has been **disabled by default** to accommodate custom co
 - **Re-enable auto-format**: Uncomment the `format_on_save` section in `lua/plugins/init.lua`
 
 ### 🎨 Enhanced Theme Switcher
-- **Quick access**: `<leader>th` or `<leader>tt` opens theme selector
-- **70+ themes available**: Including dracula, gruvbox, tokyonight, catppuccin, and more
-- **Instant preview**: Themes apply immediately with notification feedback
+- **Telescope Integration**: `<leader>th` or `<leader>tt` opens **live preview** theme selector
+- **38+ premium themes**: Including material, sonokai, edge, everforest, gruvbox-material, and more
+- **Fixed UI Issues**: No more infinite indenting! Smooth navigation with fuzzy search
+- **Live Preview**: See themes instantly as you browse with real-time preview
 
 ### 🔍 Which-Key Integration
 - **Key binding hints**: Press any leader key and wait to see available commands

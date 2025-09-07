@@ -106,3 +106,38 @@ keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Scroll up and center" })
 
 -- Better paste behavior
 keymap.set("v", "p", '"_dP', { desc = "Paste without overwriting register" })
+
+-- Enhanced bracket matching test
+keymap.set("n", "<leader>tb", function()
+  vim.cmd("NoMatchParen")
+  vim.defer_fn(function()
+    vim.cmd("DoMatchParen")
+    vim.notify("Bracket matching reloaded with enhanced highlighting", vim.log.levels.INFO)
+  end, 100)
+end, { desc = "Reload bracket matching" })
+
+-- Create a test buffer with brackets to demonstrate matching
+keymap.set("n", "<leader>tB", function()
+  -- Create a new buffer with bracket examples
+  vim.cmd("enew")
+  local examples = {
+    "-- Bracket matching examples:",
+    "if condition then",
+    "  local table = {",
+    "    key = 'value',",
+    "    nested = {",
+    "      array = [1, 2, 3],",
+    "      func = function(a, b)",
+    "        return (a + b) * 2",
+    "      end",
+    "    }",
+    "  }",
+    "end",
+    "",
+    "-- Move cursor to any bracket to see matching pairs highlighted",
+    "-- Rainbow delimiters show nested levels in different colors",
+  }
+  vim.api.nvim_buf_set_lines(0, 0, -1, false, examples)
+  vim.opt_local.filetype = "lua"
+  vim.notify("Bracket test buffer created! Move cursor to brackets to see highlighting", vim.log.levels.INFO)
+end, { desc = "Create bracket matching test buffer" })

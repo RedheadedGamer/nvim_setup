@@ -19,18 +19,24 @@ return {
   -- Popular theme collection (optimized for transparency)
   {
     "folke/tokyonight.nvim",
-    lazy = true,
+    lazy = false, -- Load immediately for availability
+    priority = 999,
     config = function()
       require("tokyonight").setup({
         style = "night",
         transparent = true,
+        styles = {
+          sidebars = "transparent",
+          floats = "transparent",
+        },
       })
     end,
   },
   
   {
     "ellisonleao/gruvbox.nvim",
-    lazy = true,
+    lazy = false, -- Load immediately for availability
+    priority = 998,
     config = function()
       require("gruvbox").setup({
         transparent_mode = true,
@@ -40,7 +46,14 @@ return {
   
   {
     "Mofiqul/dracula.nvim",
-    lazy = true,
+    lazy = false, -- Load immediately for availability
+    priority = 997,
+    config = function()
+      require("dracula").setup({
+        transparent_bg = true,
+        show_end_of_buffer = false,
+      })
+    end,
   },
   
   {
@@ -56,11 +69,17 @@ return {
   {
     "catppuccin/nvim",
     name = "catppuccin",
-    lazy = true,
+    lazy = false, -- Load immediately for availability
+    priority = 996,
     config = function()
       require("catppuccin").setup({
         flavour = "mocha",
         transparent_background = true,
+        integrations = {
+          telescope = true,
+          nvimtree = true,
+          which_key = true,
+        },
       })
     end,
   },
@@ -96,6 +115,609 @@ return {
         transparent = true,
       })
     end,
+  },
+
+  -- Additional popular themes
+  {
+    "sainnhe/sonokai",
+    lazy = true,
+    config = function()
+      vim.g.sonokai_style = "default"
+      vim.g.sonokai_transparent_background = 1
+    end,
+  },
+
+  {
+    "sainnhe/edge",
+    lazy = true,
+    config = function()
+      vim.g.edge_style = "default"
+      vim.g.edge_transparent_background = 1
+    end,
+  },
+
+  {
+    "sainnhe/everforest",
+    lazy = false, -- Load immediately for theme switcher availability
+    priority = 976, -- Set priority for immediate loading
+    config = function()
+      vim.g.everforest_background = "medium"
+      vim.g.everforest_transparent_background = 1
+      vim.g.everforest_enable_italic = 1
+      vim.g.everforest_disable_italic_comment = 0
+    end,
+  },
+
+  {
+    "sainnhe/gruvbox-material",
+    lazy = true,
+    config = function()
+      vim.g.gruvbox_material_background = "medium"
+      vim.g.gruvbox_material_transparent_background = 1
+    end,
+  },
+
+  {
+    "marko-cerovac/material.nvim",
+    lazy = true,
+    config = function()
+      require("material").setup({
+        contrast = {
+          terminal = false,
+          sidebars = false,
+          floating_windows = false,
+          cursor_line = false,
+          non_current_windows = false,
+          filetypes = {},
+        },
+        styles = {
+          comments = { italic = true },
+          strings = { italic = false },
+          keywords = { italic = false },
+          functions = { italic = false },
+          variables = {},
+          operators = {},
+          types = {},
+        },
+        plugins = {
+          "telescope",
+          "nvim-cmp",
+          "nvim-web-devicons",
+          "mini",
+        },
+        disable = {
+          colored_cursor = false,
+          borders = false,
+          background = true, -- Enable transparency
+          term_colors = false,
+          eob_lines = false,
+        },
+      })
+    end,
+  },
+
+  {
+    "Mofiqul/vscode.nvim",
+    lazy = true,
+    config = function()
+      require("vscode").setup({
+        transparent = true,
+        italic_comments = true,
+        disable_nvimtree_bg = true,
+      })
+    end,
+  },
+
+  {
+    "projekt0n/github-nvim-theme",
+    lazy = true,
+    config = function()
+      require("github-theme").setup({
+        options = {
+          transparent = true,
+        }
+      })
+    end,
+  },
+
+  {
+    "lunarvim/darkplus.nvim",
+    lazy = true,
+  },
+
+  {
+    "ray-x/aurora",
+    lazy = true,
+  },
+
+  -- ============================================================================ 
+  -- ADDITIONAL PREMIUM THEMES (20+ new high-quality themes)
+  -- ============================================================================
+
+  -- Monokai Pro family - Professional themes
+  {
+    "loctvl842/monokai-pro.nvim",
+    lazy = false, -- Load immediately for theme switcher
+    priority = 995,
+    config = function()
+      require("monokai-pro").setup({
+        transparent_background = true,
+        filter = "pro", -- pro, classic, machine, octagon, ristretto, spectrum
+      })
+    end,
+  },
+
+  -- Solarized - Classic and beloved
+  {
+    "maxmx03/solarized.nvim",
+    lazy = false, -- Load immediately for theme switcher
+    priority = 994,
+    config = function()
+      require("solarized").setup({
+        transparent = {
+          enabled = true,
+          pmenu = true,
+          normal = true,
+          normalfloat = true,
+          neotree = true,
+          nvimtree = true,
+          whichkey = true,
+          telescope = true,
+          lazy = true,
+        },
+        palette = "solarized", -- solarized, selenized
+        styles = {
+          comments = { italic = true },
+          functions = { italic = false },
+          variables = { italic = false },
+        },
+        highlights = {},
+        colors = {},
+        theme = "neo", -- or "default"
+      })
+    end,
+  },
+
+  -- Ayu - Elegant minimal themes
+  {
+    "Shatur/neovim-ayu",
+    lazy = false, -- Load immediately for theme switcher
+    priority = 993,
+    config = function()
+      require("ayu").setup({
+        mirage = true,
+        terminal = false,
+        overrides = {},
+      })
+    end,
+  },
+
+  -- Oceanic Next - Beautiful blue theme
+  {
+    "mhartington/oceanic-next",
+    lazy = false, -- Load immediately for theme switcher
+    priority = 992,
+  },
+
+  -- Palenight - Material inspired
+  {
+    "drewtempelmeyer/palenight.vim",
+    lazy = false, -- Load immediately for theme switcher
+    priority = 991,
+  },
+
+  -- Gruvbox Baby - Modern Gruvbox
+  {
+    "luisiacc/gruvbox-baby",
+    lazy = false, -- Load immediately for theme switcher
+    priority = 990,
+    config = function()
+      vim.g.gruvbox_baby_transparent_mode = 1
+      vim.g.gruvbox_baby_function_style = "NONE"
+      vim.g.gruvbox_baby_keyword_style = "italic"
+    end,
+  },
+
+  -- Tender - Gentle purple theme
+  {
+    "jacoborus/tender.vim",
+    lazy = false, -- Load immediately for theme switcher
+    priority = 989,
+  },
+
+  -- Spaceduck - Retro space theme
+  {
+    "pineapplegiant/spaceduck",
+    lazy = false, -- Load immediately for theme switcher
+    priority = 988,
+  },
+
+  -- Deep Space - Cosmic dark theme
+  {
+    "tyrannicaltoucan/vim-deep-space",
+    lazy = false, -- Load immediately for theme switcher
+    priority = 987,
+  },
+
+  -- Moonfly - Dark blue theme
+  {
+    "bluz71/vim-moonfly-colors",
+    name = "moonfly",
+    lazy = false, -- Load immediately for theme switcher
+    priority = 986,
+  },
+
+  -- Nightowl - Dark theme for night owls
+  {
+    "bluz71/vim-nightfly-colors",
+    name = "nightfly",
+    lazy = false, -- Load immediately for theme switcher
+    priority = 985,
+  },
+
+  -- Zephyr - Modern dark theme
+  {
+    "glepnir/zephyr-nvim",
+    lazy = false, -- Load immediately for theme switcher
+    priority = 984,
+  },
+
+  -- Onedark Vivid - Enhanced OneDark
+  {
+    "navarasu/onedark.nvim",
+    name = "onedark-nvim", -- Avoid name conflict
+    lazy = false, -- Load immediately for theme switcher
+    priority = 983,
+    config = function()
+      require("onedark").setup({
+        style = "vivid", -- dark, darker, cool, deep, warm, warmer, vivid
+        transparent = true,
+        code_style = {
+          comments = "italic",
+          keywords = "bold",
+          functions = "bold",
+          strings = "italic",
+          variables = "NONE"
+        },
+      })
+    end,
+  },
+
+  -- Oxocarbon - Modern IBM inspired
+  {
+    "nyoom-engineering/oxocarbon.nvim",
+    lazy = false, -- Load immediately for theme switcher
+    priority = 982,
+  },
+
+  -- Melange - Warm color palette
+  {
+    "savq/melange-nvim",
+    lazy = false, -- Load immediately for theme switcher
+    priority = 981,
+  },
+
+  -- Flow - Minimal and clean
+  {
+    "0xstepit/flow.nvim",
+    lazy = false, -- Load immediately for theme switcher
+    priority = 980,
+    config = function()
+      require("flow").setup({
+        transparent = true,
+        fluo_color = "pink",
+        mode = "normal",
+        aggressive_spell = false,
+      })
+    end,
+  },
+
+  -- Cyberdream - Futuristic theme
+  {
+    "scottmckendry/cyberdream.nvim",
+    lazy = false, -- Load immediately for theme switcher
+    priority = 979,
+    config = function()
+      require("cyberdream").setup({
+        transparent = true,
+        italic_comments = true,
+        hide_fillchars = true,
+        borderless_telescope = true,
+      })
+    end,
+  },
+
+  -- Vesper - Dark purple theme
+  {
+    "datsfilipe/vesper.nvim",
+    lazy = false, -- Load immediately for theme switcher
+    priority = 978,
+  },
+
+  -- Bamboo - Natural green theme
+  {
+    "ribru17/bamboo.nvim",
+    lazy = false, -- Load immediately for theme switcher
+    priority = 977,
+    config = function()
+      require("bamboo").setup({
+        transparent = true,
+        style = "vulgaris", -- vulgaris, multiplex
+      })
+    end,
+  },
+
+  -- Flexoki - Modern neutral theme
+  {
+    "kepano/flexoki-neovim",
+    name = "flexoki",
+    lazy = false, -- Load immediately for theme switcher
+    priority = 975,
+  },
+
+  -- Lackluster - Deliberately muted
+  {
+    "slugbyte/lackluster.nvim",
+    lazy = false, -- Load immediately for theme switcher
+    priority = 974,
+  },
+
+  -- ============================================================================
+  -- ADDITIONAL COOL THEMES (20+ more popular and modern themes)
+  -- ============================================================================
+
+  -- Fluoromachine - Modern neon themes
+  {
+    "maxmx03/fluoromachine.nvim",
+    lazy = false,
+    priority = 973,
+    config = function()
+      require("fluoromachine").setup({
+        glow = false,
+        brightness = 0.05,
+        transparent = true,
+      })
+    end,
+  },
+
+  -- Lualine themes for variety
+  {
+    "nvim-lualine/lualine.nvim",
+    lazy = true,
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+  },
+
+  -- Nightfox family - More fox themes
+  {
+    "EdenEast/nightfox.nvim",
+    name = "nightfox-extended",
+    lazy = false,
+    priority = 972,
+    config = function()
+      require("nightfox").setup({
+        options = {
+          transparent = true,
+          terminal_colors = true,
+          inverse = {
+            match_paren = false,
+            visual = false,
+            search = false,
+          },
+        },
+        palettes = {},
+        specs = {},
+        groups = {},
+      })
+    end,
+  },
+
+  -- Doom themes family
+  {
+    "NTBBloodbath/doom-one.nvim",
+    lazy = false,
+    priority = 971,
+    config = function()
+      vim.g.doom_one_cursor_coloring = false
+      vim.g.doom_one_terminal_colors = true
+      vim.g.doom_one_italic_comments = true
+      vim.g.doom_one_enable_treesitter = true
+      vim.g.doom_one_diagnostics_text_color = false
+      vim.g.doom_one_transparent_background = true
+    end,
+  },
+
+  -- Tokyo Night variants
+  {
+    "folke/tokyonight.nvim",
+    name = "tokyonight-extended",
+    lazy = false,
+    priority = 970,
+    config = function()
+      require("tokyonight").setup({
+        style = "storm", -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
+        light_style = "day",
+        transparent = true,
+        terminal_colors = true,
+        styles = {
+          comments = { italic = true },
+          keywords = { italic = true },
+          functions = {},
+          variables = {},
+          sidebars = "transparent",
+          floats = "transparent",
+        },
+        sidebars = { "qf", "help" },
+        day_brightness = 0.3,
+        hide_inactive_statusline = false,
+        dim_inactive = false,
+        lualine_bold = false,
+      })
+    end,
+  },
+
+  -- PaperColor theme
+  {
+    "NLKNguyen/papercolor-theme",
+    lazy = false,
+    priority = 969,
+  },
+
+  -- Codedark theme (VS Code inspired)
+  {
+    "tomasiser/vim-code-dark",
+    lazy = false,
+    priority = 968,
+  },
+
+  -- One themes
+  {
+    "rakr/vim-one",
+    lazy = false,
+    priority = 967,
+  },
+
+  -- Lush - dependency for apprentice theme
+  {
+    "rktjmp/lush.nvim",
+    lazy = false,
+    priority = 967,
+  },
+
+  -- Apprentice-inspired theme (replacement for problematic romainl/Apprentice)
+  {
+    "adisen99/apprentice.nvim",
+    dependencies = { "rktjmp/lush.nvim" },
+    lazy = false,
+    priority = 966,
+    config = function()
+      require("apprentice").setup({
+        style = "dark", -- "dark" or "light"
+        transparent = true,
+        terminal_colors = true,
+        styles = {
+          comments = { italic = true },
+          keywords = { italic = false },
+          functions = { italic = false },
+          variables = { italic = false },
+        },
+      })
+    end,
+  },
+
+  -- Zenburn theme
+  {
+    "jnurmine/Zenburn",
+    lazy = false,
+    priority = 965,
+  },
+
+  -- Base16 alternatives - Arctic themes
+  {
+    "rockerBOO/boo-colorscheme-nvim",
+    lazy = false,
+    priority = 964,
+  },
+
+  -- Rigel theme
+  {
+    "Rigellute/rigel",
+    lazy = false,
+    priority = 963,
+  },
+
+  -- Blue Moon theme
+  {
+    "kyazdani42/blue-moon",
+    lazy = false,
+    priority = 962,
+  },
+
+  -- Horizon theme
+  {
+    "akinsho/horizon.nvim",
+    lazy = false,
+    priority = 961,
+    config = function()
+      vim.g.horizon_italic_comments = true
+      vim.g.horizon_italic_keywords = true
+      vim.g.horizon_italic_functions = false
+      vim.g.horizon_italic_variables = false
+      vim.g.horizon_contrast = true
+      vim.g.horizon_borders = false
+      vim.g.horizon_disable_background = true
+    end,
+  },
+
+  -- Embark theme
+  {
+    "embark-theme/vim",
+    name = "embark",
+    lazy = false,
+    priority = 960,
+  },
+
+  -- Forest Night theme
+  {
+    "sainnhe/forest-night",
+    lazy = false,
+    priority = 959,
+    config = function()
+      vim.g.forest_night_style = "default"
+      vim.g.forest_night_enable_italic = 1
+      vim.g.forest_night_disable_italic_comment = 0
+      vim.g.forest_night_transparent_background = 1
+    end,
+  },
+
+  -- Iceberg theme
+  {
+    "cocopon/iceberg.vim",
+    lazy = false,
+    priority = 958,
+  },
+
+  -- Challenger Deep theme
+  {
+    "challenger-deep-theme/vim",
+    name = "challenger-deep",
+    lazy = false,
+    priority = 957,
+  },
+
+  -- Jellybeans theme
+  {
+    "nanotech/jellybeans.vim",
+    lazy = false,
+    priority = 956,
+  },
+
+  -- Srcery theme
+  {
+    "srcery-colors/srcery-vim",
+    lazy = false,
+    priority = 955,
+  },
+
+  -- PaperColor improved
+  {
+    "NLKNguyen/papercolor-theme",
+    name = "papercolor-improved",
+    lazy = false,
+    priority = 954,
+  },
+
+  -- Miramare theme
+  {
+    "franbach/miramare",
+    lazy = false,
+    priority = 953,
+  },
+
+  -- Artify theme
+  {
+    "RRethy/vim-illuminate", -- This includes some nice themes
+    lazy = false,
+    priority = 952,
   },
 
   -- Essential dependencies
@@ -144,7 +766,74 @@ return {
     "echasnovski/mini.pairs",
     version = "*",
     config = function()
-      require("mini.pairs").setup()
+      require("mini.pairs").setup({
+        -- In which modes mappings from this `config` should be created
+        modes = { insert = true, command = false, terminal = false },
+        
+        -- Global mappings. Each right hand side should be a pair information, a
+        -- table with at least these fields (see more in help):
+        -- - <action> - one of 'open', 'close', 'closeopen'.
+        -- - <pair> - two character string for pair to be used.
+        -- By default pair is not inserted after `\`, quotes are not recognized by
+        -- `<CR>`, `'` does not insert pair after a letter.
+        mappings = {
+          ["("] = { action = "open", pair = "()", neigh_pattern = "[^\\]." },
+          ["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\]." },
+          ["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\]." },
+          
+          [")"] = { action = "close", pair = "()", neigh_pattern = "[^\\]." },
+          ["]"] = { action = "close", pair = "[]", neigh_pattern = "[^\\]." },
+          ["}"] = { action = "close", pair = "{}", neigh_pattern = "[^\\]." },
+          
+          ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^\\].", register = { cr = false } },
+          ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^%a\\].", register = { cr = false } },
+          ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^\\].", register = { cr = false } },
+        }
+      })
+    end,
+  },
+
+  -- Rainbow brackets for better bracket visibility
+  {
+    "HiPhish/rainbow-delimiters.nvim",
+    event = "VeryLazy",
+    config = function()
+      local rainbow_delimiters = require("rainbow-delimiters")
+      
+      vim.g.rainbow_delimiters = {
+        strategy = {
+          [""] = rainbow_delimiters.strategy["global"],
+          vim = rainbow_delimiters.strategy["local"],
+        },
+        query = {
+          [""] = "rainbow-delimiters",
+          lua = "rainbow-blocks",
+        },
+        highlight = {
+          "RainbowDelimiterRed",
+          "RainbowDelimiterYellow", 
+          "RainbowDelimiterBlue",
+          "RainbowDelimiterOrange",
+          "RainbowDelimiterGreen",
+          "RainbowDelimiterViolet",
+          "RainbowDelimiterCyan",
+        },
+        blacklist = {}, -- No blacklisted filetypes
+      }
+      
+      -- Set up enhanced highlight colors for better visibility
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        group = vim.api.nvim_create_augroup("RainbowDelimitersHighlight", { clear = true }),
+        callback = function()
+          vim.api.nvim_set_hl(0, "RainbowDelimiterRed", { fg = "#E06C75", bold = true })
+          vim.api.nvim_set_hl(0, "RainbowDelimiterYellow", { fg = "#E5C07B", bold = true })
+          vim.api.nvim_set_hl(0, "RainbowDelimiterBlue", { fg = "#61AFEF", bold = true })
+          vim.api.nvim_set_hl(0, "RainbowDelimiterOrange", { fg = "#D19A66", bold = true })
+          vim.api.nvim_set_hl(0, "RainbowDelimiterGreen", { fg = "#98C379", bold = true })
+          vim.api.nvim_set_hl(0, "RainbowDelimiterViolet", { fg = "#C678DD", bold = true })
+          vim.api.nvim_set_hl(0, "RainbowDelimiterCyan", { fg = "#56B6C2", bold = true })
+        end,
+      })
     end,
   },
 
@@ -724,11 +1413,61 @@ return {
         },
         select = {
           enabled = true,
-          backend = { "telescope", "fzf_lua", "fzf", "builtin", "nui" },
+          backend = { "telescope", "builtin", "fzf_lua", "nui" },
           trim_prompt = true,
           telescope = require("telescope.themes").get_dropdown({
             winblend = 10,
+            layout_config = {
+              width = 0.8,
+              height = 0.8, -- Reduced from 0.9 to prevent UI splitting
+              prompt_position = "top", -- Ensure prompt is at top
+            },
+            sorting_strategy = "ascending", -- Keep items in order
           }),
+          -- Enhanced builtin config for better theme switcher experience
+          builtin = {
+            show_numbers = true,
+            border = "rounded",
+            relative = "editor",
+            buf_options = {},
+            win_options = {
+              winblend = 10,
+              winhighlight = "",
+            },
+            width = nil,
+            max_width = { 140, 0.8 },
+            min_width = { 40, 0.2 },
+            height = nil,
+            max_height = 0.8, -- Reduced from 0.9 to prevent UI splitting
+            min_height = { 10, 0.2 },
+            mappings = {
+              ["<Esc>"] = "Close",
+              ["<C-c>"] = "Close",
+              ["<CR>"] = "Confirm",
+            },
+          },
+          -- Use telescope for theme selection to handle large lists with proper scrolling
+          get_config = function(opts)
+            if opts.prompt and (opts.prompt:match("theme") or opts.prompt:match("🎨")) then
+              return {
+                backend = "telescope",
+                telescope = require("telescope.themes").get_dropdown({
+                  winblend = 10,
+                  layout_config = {
+                    width = 0.7,
+                    height = 0.75, -- Reduced height to prevent splitting
+                    preview_cutoff = 120,
+                    prompt_position = "top", -- Force prompt at top
+                  },
+                  -- Enable scrolling and navigation
+                  scroll_strategy = "limit",
+                  sorting_strategy = "ascending", -- Keep themes in alphabetical order
+                  layout_strategy = "vertical",
+                }),
+              }
+            end
+            return {}
+          end,
         },
       })
     end,
@@ -870,63 +1609,103 @@ return {
       keymap.set("n", "<leader>fq", "<cmd>Telescope quickfix<cr>", { desc = "Quickfix" })
       keymap.set("n", "<leader>fl", "<cmd>Telescope loclist<cr>", { desc = "Location List" })
       
-      -- Theme switcher keymap
-      keymap.set("n", "<leader>tt", function() theme_switcher() end, { desc = "Theme Switcher" })
-      
-      -- Optimized theme switcher with curated high-quality themes
+      -- Enhanced theme switcher with preview showing current theme name
       local function theme_switcher()
-        local themes = {
-          -- Primary themes
-          "onedark_dark",
-          "tokyonight",
-          "tokyonight-night",
-          "tokyonight-storm", 
-          "tokyonight-day",
-          "gruvbox",
-          "dracula",
-          "nord",
-          -- Catppuccin variants
-          "catppuccin",
-          "catppuccin-latte",
-          "catppuccin-frappe", 
-          "catppuccin-macchiato",
-          "catppuccin-mocha",
-          -- Nightfox family
-          "nightfox",
-          "nordfox",
-          "dawnfox",
-          "duskfox",
-          "terafox",
-          "carbonfox",
-          -- Rose Pine variants
-          "rose-pine",
-          "rose-pine-main",
-          "rose-pine-moon",
-          "rose-pine-dawn",
-          -- Kanagawa variants
-          "kanagawa",
-          "kanagawa-wave",
-          "kanagawa-dragon",
-          "kanagawa-lotus",
-        }
+        local theme_config = require("config.theme")
         
-        vim.ui.select(themes, {
-          prompt = "Select a theme:",
-          format_item = function(item)
-            return "🎨 " .. item
-          end,
-        }, function(choice)
-          if choice then
-            local theme_manager = require("config.theme")
-            -- Try to apply the colorscheme
-            if theme_manager.apply_theme(choice) then
-              -- If successful, save it for persistence
-              theme_manager.save_theme(choice)
+        -- Get current theme more reliably
+        local function get_current_theme()
+          return _G.nvim_current_theme or vim.g.current_theme or vim.g.colors_name or ""
+        end
+        
+        local original_theme = get_current_theme()
+        
+        -- Use telescope's built-in colorscheme picker with enhanced feedback
+        require("telescope.builtin").colorscheme({
+          enable_preview = true,
+          prompt_title = string.format("🎨 Theme Switcher (Original: %s) - Use ↑↓ to preview, Enter to apply, ESC to cancel", original_theme),
+          layout_config = {
+            width = 0.8,
+            height = 0.7,
+            prompt_position = "top",
+          },
+          attach_mappings = function(prompt_bufnr, map)
+            local actions = require("telescope.actions")
+            local state = require("telescope.actions.state")
+            
+            -- Show current selection in the prompt
+            local function update_prompt()
+              local selection = state.get_selected_entry()
+              if selection then
+                local current_theme = selection.value
+                -- Clear all previous theme preview notifications
+                require("notify").dismiss({ silent = true, pending = true })
+                
+                -- Show new notification for current preview theme
+                vim.notify(
+                  string.format("📋 Previewing: %s", current_theme), 
+                  vim.log.levels.INFO, 
+                  {
+                    timeout = 1500,
+                    title = "Theme Preview",
+                  }
+                )
+              end
             end
-          end
-        end)
+            
+            -- Update on cursor movement
+            map("i", "<Down>", function()
+              actions.move_selection_next(prompt_bufnr)
+              vim.defer_fn(update_prompt, 100)
+            end)
+            
+            map("i", "<Up>", function()
+              actions.move_selection_previous(prompt_bufnr)
+              vim.defer_fn(update_prompt, 100)
+            end)
+            
+            map("n", "j", function()
+              actions.move_selection_next(prompt_bufnr)
+              vim.defer_fn(update_prompt, 100)
+            end)
+            
+            map("n", "k", function()
+              actions.move_selection_previous(prompt_bufnr)
+              vim.defer_fn(update_prompt, 100)
+            end)
+            
+            -- Save theme on selection
+            actions.select_default:replace(function()
+              local selection = state.get_selected_entry()
+              actions.close(prompt_bufnr)
+              if selection then
+                local theme_name = selection.value
+                if theme_config.apply_theme(theme_name) then
+                  theme_config.save_theme(theme_name)
+                  vim.notify("🎨 Theme applied and saved: " .. theme_name, vim.log.levels.INFO)
+                else
+                  vim.notify("❌ Failed to load theme: " .. theme_name, vim.log.levels.ERROR)
+                end
+              end
+            end)
+            
+            -- Restore original theme on cancel
+            local restore_theme = function()
+              actions.close(prompt_bufnr)
+              theme_config.apply_theme(original_theme)
+              vim.notify("🔄 Theme restored to: " .. original_theme, vim.log.levels.INFO)
+            end
+            
+            map("i", "<C-c>", restore_theme)
+            map("n", "<Esc>", restore_theme)
+            map("n", "q", restore_theme)
+            
+            return true
+          end,
+        })
       end
       
+      -- Theme switcher keymaps
       keymap.set("n", "<leader>th", theme_switcher, { desc = "Theme switcher" })
       keymap.set("n", "<leader>tt", theme_switcher, { desc = "Theme switcher" })
     end,
@@ -984,7 +1763,33 @@ return {
         keymap.set("n", "gy", vim.lsp.buf.type_definition, vim.tbl_extend("force", opts, { desc = "Go to type definition" }))
         keymap.set("n", "gi", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "Go to implementation" }))
         keymap.set("n", "gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { desc = "Go to references" }))
-        keymap.set("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
+        
+        -- Enhanced hover documentation with duplicate prevention
+        keymap.set("n", "K", function()
+          -- Track active hover window globally to prevent duplicates
+          if vim.g.active_hover_win and vim.api.nvim_win_is_valid(vim.g.active_hover_win) then
+            vim.api.nvim_win_close(vim.g.active_hover_win, false)
+            vim.g.active_hover_win = nil
+          end
+          
+          -- Create custom hover handler to track window
+          local original_handler = vim.lsp.handlers["textDocument/hover"]
+          vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(function(err, result, ctx, config)
+            local bufnr, winnr = original_handler(err, result, ctx, config)
+            if winnr and vim.api.nvim_win_is_valid(winnr) then
+              vim.g.active_hover_win = winnr
+            end
+            return bufnr, winnr
+          end, {
+            border = "rounded",
+            max_width = 120,
+            max_height = 30,
+          })
+          
+          -- Request hover information
+          vim.lsp.buf.hover()
+        end, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
+        
         keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
         keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code action" }))
         keymap.set("n", "<leader>lf", vim.lsp.buf.format, vim.tbl_extend("force", opts, { desc = "Format buffer" }))
@@ -1266,7 +2071,7 @@ return {
           -- Navigation
           map('n', ']c', function()
             if vim.wo.diff then
-              vim.cmd.normal({']c', bang = true})
+              vim.cmd.normal(']c')
             else
               gitsigns.nav_hunk('next')
             end
@@ -1274,7 +2079,7 @@ return {
 
           map('n', '[c', function()
             if vim.wo.diff then
-              vim.cmd.normal({'[c', bang = true})
+              vim.cmd.normal('[c')
             else
               gitsigns.nav_hunk('prev')
             end
