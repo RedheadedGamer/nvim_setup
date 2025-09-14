@@ -731,13 +731,22 @@ return {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     config = function()
-      require("nvim-treesitter.configs").setup({
+      -- Check if tree-sitter CLI is available
+      local has_cli = vim.fn.executable("tree-sitter") == 1
+      
+      local ok, treesitter = pcall(require, "nvim-treesitter.configs")
+      if not ok then
+        vim.notify("nvim-treesitter not found, skipping configuration", vim.log.levels.WARN)
+        return
+      end
+      
+      treesitter.setup({
         ensure_installed = {
           "lua", "python", "javascript", "typescript", "html", "css", 
           "json", "yaml", "markdown", "bash", "vim", "vimdoc", "c", "java"
         },
         sync_install = false,
-        auto_install = true,
+        auto_install = has_cli, -- Only enable auto_install if CLI is available
         highlight = {
           enable = true,
           additional_vim_regex_highlighting = false,
@@ -746,6 +755,11 @@ return {
           enable = true,
         },
       })
+      
+      -- Notify user about CLI status
+      if not has_cli then
+        vim.notify("tree-sitter CLI not found. Auto-install disabled. Install with: npm install -g tree-sitter-cli", vim.log.levels.INFO)
+      end
     end,
   },
 

@@ -814,6 +814,14 @@ A comprehensive collection of all the best mini plugins for maximum productivity
 2. **Plugins not loading**: Run `:Lazy sync` to update plugins
 3. **Telescope not finding files**: Ensure `ripgrep` is installed
 4. **Formatting not working**: Install formatters via Mason or your system package manager
+5. **Tree-sitter CLI not found error**: 
+   - **Quick fix**: The configuration automatically handles this - restart Neovim
+   - **Full functionality**: Run `./install_treesitter_cli.sh` or install manually:
+     ```bash
+     npm install -g tree-sitter-cli
+     # OR
+     cargo install tree-sitter-cli
+     ```
 
 ### Health Check
 

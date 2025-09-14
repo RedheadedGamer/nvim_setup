@@ -1145,6 +1145,23 @@ pip install neovim
 3. Restart Neovim
 4. Run `:checkhealth lspconfig`
 
+#### Tree-sitter CLI Not Found
+**Issue**: `tree-sitter CLI not found: 'tree-sitter' is not executable!`
+
+**Solution**: This configuration automatically detects if the tree-sitter CLI is available and adjusts accordingly. If you want full tree-sitter functionality:
+
+```bash
+# Install tree-sitter CLI globally via npm
+npm install -g tree-sitter-cli
+
+# Or install via cargo (Rust)
+cargo install tree-sitter-cli
+
+# Restart Neovim after installation
+```
+
+**Note**: The CLI is only needed for automatic parser installation. Basic syntax highlighting works without it.
+
 ### Performance Issues
 If Neovim feels slow, try:
 1. `:checkhealth` to identify problematic plugins
