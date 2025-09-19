@@ -210,12 +210,49 @@ return {
 
   {
     "projekt0n/github-nvim-theme",
-    lazy = true,
+    lazy = false, -- Load immediately for theme availability
+    priority = 995,
     config = function()
       require("github-theme").setup({
         options = {
           transparent = true,
-        }
+          terminal_colors = true,
+          dim_inactive = false,
+          styles = {
+            comments = "italic",
+            conditionals = "NONE",
+            constants = "NONE",
+            functions = "NONE",
+            keywords = "NONE",
+            numbers = "NONE",
+            operators = "NONE",
+            strings = "NONE",
+            types = "NONE",
+            variables = "NONE",
+          },
+          inverse = {
+            match_paren = false,
+            visual = false,
+            search = false,
+          },
+        },
+        palettes = {},
+        specs = {},
+        groups = {
+          -- Enhanced transparency support
+          all = {
+            Normal = { bg = "NONE" },
+            NormalFloat = { bg = "NONE" },
+            FloatBorder = { bg = "NONE" },
+            Pmenu = { bg = "NONE" },
+            PmenuSel = { bg = "NONE" },
+            TelescopeNormal = { bg = "NONE" },
+            TelescopeBorder = { bg = "NONE" },
+            TelescopePromptNormal = { bg = "NONE" },
+            TelescopeResultsNormal = { bg = "NONE" },
+            TelescopePreviewNormal = { bg = "NONE" },
+          },
+        },
       })
     end,
   },

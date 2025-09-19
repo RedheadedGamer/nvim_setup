@@ -48,6 +48,42 @@ keymap.set("n", "<leader>tr", function()
   vim.opt.relativenumber = not vim.opt.relativenumber:get()
 end, { desc = "Toggle relative numbers" })
 
+-- Quick theme access (additional shortcut)
+keymap.set("n", "<leader>ts", "<cmd>Telescope colorscheme<cr>", { desc = "Quick theme selector" })
+keymap.set("n", "<leader>tg", function()
+  require("config.theme").cycle_github_themes()
+end, { desc = "Cycle through GitHub themes" })
+
+-- Buffer navigation improvements
+keymap.set("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
+keymap.set("n", "<S-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })
+keymap.set("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Delete buffer" })
+keymap.set("n", "<leader>bD", "<cmd>%bdelete|edit#|bdelete#<cr>", { desc = "Delete all buffers except current" })
+
+-- Quick save/quit shortcuts
+keymap.set("n", "<C-s>", "<cmd>w<cr>", { desc = "Quick save" })
+keymap.set("i", "<C-s>", "<Esc><cmd>w<cr>", { desc = "Quick save from insert mode" })
+
+-- Better line movement in insert mode
+keymap.set("i", "<C-h>", "<Left>", { desc = "Move left in insert mode" })
+keymap.set("i", "<C-l>", "<Right>", { desc = "Move right in insert mode" })
+keymap.set("i", "<C-j>", "<Down>", { desc = "Move down in insert mode" })
+keymap.set("i", "<C-k>", "<Up>", { desc = "Move up in insert mode" })
+
+-- Quick line duplication
+keymap.set("n", "<leader>ld", "yyp", { desc = "Duplicate line" })
+keymap.set("v", "<leader>ld", "y`>p", { desc = "Duplicate selection" })
+
+-- Center screen after search
+keymap.set("n", "n", "nzzzv", { desc = "Next search result (centered)" })
+keymap.set("n", "N", "Nzzzv", { desc = "Previous search result (centered)" })
+
+-- Improved undo break points
+keymap.set("i", ",", ",<c-g>u", { desc = "Better undo break point" })
+keymap.set("i", ".", ".<c-g>u", { desc = "Better undo break point" })
+keymap.set("i", "!", "!<c-g>u", { desc = "Better undo break point" })
+keymap.set("i", "?", "?<c-g>u", { desc = "Better undo break point" })
+
 -- Split management
 keymap.set("n", "<leader>wv", "<cmd>vsplit<cr>", { desc = "Vertical split" })
 keymap.set("n", "<leader>wh", "<cmd>split<cr>", { desc = "Horizontal split" })

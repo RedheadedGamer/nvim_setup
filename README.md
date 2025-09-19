@@ -305,7 +305,7 @@ For detailed instructions on using all plugins, customizing features, and troubl
 - **[conform.nvim](https://github.com/stevearc/conform.nvim)** - Code formatting
 - **[vimtex](https://github.com/lervag/vimtex)** - LaTeX support
 
-### Colorschemes & Themes (38+ Premium Themes)
+### Colorschemes & Themes (45+ Premium Themes)
 - **[onedarkpro.nvim](https://github.com/olimorris/onedarkpro.nvim)** - One Dark theme (default)
 - **[tokyonight.nvim](https://github.com/folke/tokyonight.nvim)** - Tokyo Night theme collection
 - **[gruvbox.nvim](https://github.com/ellisonleao/gruvbox.nvim)** - Gruvbox theme
@@ -321,14 +321,14 @@ For detailed instructions on using all plugins, customizing features, and troubl
 - **[gruvbox-material](https://github.com/sainnhe/gruvbox-material)** - Material Gruvbox
 - **[material.nvim](https://github.com/marko-cerovac/material.nvim)** - Material Design theme
 - **[vscode.nvim](https://github.com/Mofiqul/vscode.nvim)** - VS Code theme
-- **[github-nvim-theme](https://github.com/projekt0n/github-nvim-theme)** - GitHub themes
+- **[github-nvim-theme](https://github.com/projekt0n/github-nvim-theme)** - Enhanced GitHub themes collection (11 variants with accessibility support)
 - **[onedark.nvim](https://github.com/navarasu/onedark.nvim)** - Alternative One Dark
 - **[darkplus.nvim](https://github.com/lunarvim/darkplus.nvim)** - Dark+ theme
 - **[aurora](https://github.com/ray-x/aurora)** - Aurora theme
 - **[material.nvim](https://github.com/marko-cerovac/material.nvim)** - Material theme
 - **[monokai.nvim](https://github.com/tanvirtin/monokai.nvim)** - Monokai theme
 - **[onedark.nvim](https://github.com/navarasu/onedark.nvim)** - OneDark theme
-- **[github-nvim-theme](https://github.com/projekt0n/github-nvim-theme)** - GitHub theme
+- **[github-nvim-theme](https://github.com/projekt0n/github-nvim-theme)** - Enhanced GitHub themes collection (11 variants)
 - **[sonokai](https://github.com/sainnhe/sonokai)** - Sonokai theme
 - **[edge](https://github.com/sainnhe/edge)** - Edge theme
 
@@ -528,7 +528,7 @@ Use the enhanced Telescope-based theme switcher:
 - Press `<leader>th` or `<leader>tt` to open the **live preview** theme selector
 - **🔭 Telescope Integration**: No more infinite indenting issues!
 - **📱 Live Preview**: See themes instantly as you browse
-- Choose from **38+ premium themes** including material, sonokai, edge, everforest, and more
+- Choose from **45+ premium themes** including material, sonokai, edge, everforest, enhanced GitHub collection, and more
 - **⚡ Fuzzy Search**: Quickly find themes by typing part of their name
 - Themes are applied instantly with smooth transitions
 
@@ -554,9 +554,26 @@ Available themes include:
 - `gruvbox-material` - Material Design Gruvbox
 - `material` - Material Design theme variants
 - `vscode` - VS Code theme
-- `github_dark`, `github_light` - GitHub themes
+- **Enhanced GitHub Themes Collection**:
+  - `github_dark` - GitHub's dark theme
+  - `github_light` - GitHub's light theme  
+  - `github_dark_dimmed` - Dimmed dark variant
+  - `github_dark_high_contrast` - High contrast dark
+  - `github_light_high_contrast` - High contrast light
+  - `github_dark_colorblind` - Colorblind-friendly dark
+  - `github_light_colorblind` - Colorblind-friendly light
+  - `github_dark_tritanopia` - Tritanopia-optimized dark
+  - `github_light_tritanopia` - Tritanopia-optimized light
+  - `github_dark_default` - GitHub default dark
+  - `github_light_default` - GitHub default light
 - `onedark` - Alternative One Dark theme
 - And many more premium themes!
+
+**New Quick Theme Selector**: Use `<leader>ts` for instant theme switching!
+
+**GitHub Theme Cycler**: Use `<leader>tg` to cycle through all 11 GitHub theme variants!
+
+For detailed information about all GitHub theme variants, see **[GitHub Themes Guide](GITHUB_THEMES.md)**.
 
 ### Custom Key Mappings
 

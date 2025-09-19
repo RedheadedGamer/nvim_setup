@@ -40,13 +40,52 @@ opt.encoding = "utf-8"            -- always use utf-8
 opt.swapfile = false              -- disable creating swap file
 opt.backup = false                -- avoid backup files
 opt.writebackup = false           -- avoid backup files
-opt.backupdir = vim.fn.expand("~/.cache/vim") -- directory to store backup files
+local backup_dir = vim.fn.expand("~/.cache/vim")
+opt.backupdir = backup_dir        -- directory to store backup files
+-- Create backup directory if it doesn't exist (just in case backup gets enabled)
+if vim.fn.isdirectory(backup_dir) == 0 then
+  vim.fn.mkdir(backup_dir, "p")
+end
 
 -- Performance and UX
 opt.ttyfast = true                -- speed up scrolling in Vim
 opt.updatetime = 300              -- faster updatetime for better UX
 opt.spell = true                  -- enable spell check
 opt.signcolumn = "yes"            -- always show signcolumn for diagnostics
+opt.scrolloff = 8                 -- keep 8 lines visible when scrolling
+opt.sidescrolloff = 8             -- keep 8 columns visible when scrolling horizontally
+opt.cmdheight = 1                 -- command line height
+opt.pumheight = 10                -- popup menu height
+opt.conceallevel = 0              -- show concealed text
+opt.fileencoding = "utf-8"        -- file encoding
+opt.timeoutlen = 1000             -- time to wait for mapped sequence to complete
+opt.ttimeoutlen = 0               -- time to wait for key code sequence to complete
+opt.splitbelow = true             -- force horizontal splits below current window
+opt.splitright = true             -- force vertical splits right of current window
+opt.wrap = false                  -- disable line wrapping by default
+opt.linebreak = true              -- break lines at word boundaries when wrap is enabled
+
+-- Better completion
+opt.completeopt = { "menuone", "noselect" } -- completion options
+opt.shortmess:append("c")         -- avoid showing completion messages
+
+-- Undo settings
+opt.undofile = true               -- enable persistent undo
+local undo_dir = vim.fn.expand("~/.cache/nvim/undo")
+opt.undodir = undo_dir           -- undo directory
+-- Create undo directory if it doesn't exist
+if vim.fn.isdirectory(undo_dir) == 0 then
+  vim.fn.mkdir(undo_dir, "p")
+end
+
+-- Search improvements
+opt.smartcase = true              -- smart case sensitivity (override ignorecase when uppercase present)
+
+-- Folding improvements (better defaults)
+opt.foldmethod = "expr"           -- use expression for folding
+opt.foldexpr = "nvim_treesitter#foldexpr()" -- use treesitter for folding
+opt.foldlevel = 99                -- open all folds by default
+opt.foldlevelstart = 99           -- open all folds when opening files
 
 -- Text formatting
 opt.textwidth = 80                -- set text width to 80 characters
