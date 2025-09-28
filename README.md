@@ -278,6 +278,9 @@ For detailed instructions on using all plugins, customizing features, and troubl
 ### LSP & Completion
 - **[nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)** - LSP configurations
 - **[mason.nvim](https://github.com/williamboman/mason.nvim)** - LSP server management
+- **[mason-lspconfig.nvim](https://github.com/williamboman/mason-lspconfig.nvim)** - Mason-LSP integration
+- **[mason-tool-installer.nvim](https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim)** - Automatic tool installation
+- **[mason-nvim-dap.nvim](https://github.com/jay-babu/mason-nvim-dap.nvim)** - Mason-DAP integration for debuggers
 - **[nvim-cmp](https://github.com/hrsh7th/nvim-cmp)** - Completion engine
 - **[LuaSnip](https://github.com/L3MON4D3/LuaSnip)** - Snippet engine
 
@@ -502,6 +505,62 @@ For detailed instructions on using all plugins, customizing features, and troubl
 - **[startuptime.vim](https://github.com/dstein64/vim-startuptime)** - Startup time profiler
 - **[vim-dadbod](https://github.com/tpope/vim-dadbod)** - Database interface
 - **[toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim)** - Terminal management
+
+## 🔧 Enhanced Mason LSP Configuration
+
+This configuration includes a comprehensive Mason setup that automatically installs and manages:
+
+### 📦 Automatically Installed Tools
+
+**LSP Servers:**
+- `lua_ls` - Lua language server
+- `pyright` - Python language server  
+- `ts_ls` - TypeScript/JavaScript server
+- `html`, `cssls`, `jsonls` - Web development servers
+- `clangd` - C/C++ language server
+- `jdtls` - Java language server
+- `cmake` - CMake language server
+- `bashls` - Bash/shell script server
+- `marksman` - Markdown language server
+
+**Formatters:**
+- `stylua` - Lua code formatter
+- `black`, `isort` - Python formatting and import sorting
+- `prettier` - Universal web formatter (JS/TS/HTML/CSS/JSON/YAML)
+- `clang-format` - C/C++ code formatter
+- `shfmt` - Shell script formatter
+
+**Linters:**
+- `pylint` - Python code analysis
+- `eslint_d` - Fast JavaScript/TypeScript linting
+- `cpplint` - C++ style checker
+- `markdownlint` - Markdown linting
+- `shellcheck` - Shell script analysis
+
+**Debuggers:**
+- `codelldb` - C/C++/Rust debugger
+- `debugpy` - Python debugger
+- `js-debug-adapter` - JavaScript/TypeScript debugger
+
+### ⚡ Enhanced Features
+
+- **Smart Tool Detection**: Automatically detects tools in both system PATH and Mason installation directory
+- **Auto-formatting**: Configurable format-on-save with toggle (`<leader>tf`)
+- **Enhanced Linting**: Multi-language linting with Mason integration
+- **DAP Integration**: Automatic debugger setup through mason-nvim-dap
+- **Tool Information**: View available formatters and linters (`<leader>fi`, `<leader>li`)
+
+### 🎯 Key Mappings for Mason Tools
+
+| Key | Action | Description |
+|-----|--------|-------------|
+| `<leader>fm` | Format Buffer | Manual formatting |
+| `<leader>tf` | Toggle Auto-format | Enable/disable format-on-save |
+| `<leader>fi` | Formatter Info | Show available formatters |
+| `<leader>ll` | Lint File | Manual linting |
+| `<leader>li` | Linter Info | Show available linters |
+
+Access Mason manager with `:Mason` to install/update tools manually.
 
 ## 🛠️ Customization
 
