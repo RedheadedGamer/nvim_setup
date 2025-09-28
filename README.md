@@ -155,6 +155,15 @@ mv init.vim.legacy init.vim
 | `<leader>dO` | Normal | Debug Step Out |
 | `<leader>du` | Normal | Toggle Debug UI |
 
+### ⚙️ Assembly Language Development
+| Key | Mode | Action |
+|-----|------|--------|
+| `<leader>ac` | Normal | Comment assembly line |
+| `<leader>au` | Normal | Uncomment assembly line |
+| `K` | Normal | Hover documentation (assembly) |
+| `gd` | Normal | Go to definition (labels/macros) |
+| `gr` | Normal | Find references (assembly) |
+
 ### Telescope
 | Key | Mode | Action |
 |-----|------|--------|
@@ -292,6 +301,23 @@ For detailed instructions on using all plugins, customizing features, and troubl
 - **[nvim-lint](https://github.com/mfussenegger/nvim-lint)** - Static analysis with cppcheck (if installed via system package manager)
 - **[vim-lsp-cxx-highlight](https://github.com/jackguo380/vim-lsp-cxx-highlight)** - Enhanced C/C++ syntax highlighting
 - **[CurtineIncSw.vim](https://github.com/ericcurtin/CurtineIncSw.vim)** - Header/source file switching
+
+### ⚙️ Assembly Language Development
+- **[asm-lsp](https://github.com/bergercookie/asm-lsp)** - Assembly Language Server Protocol support
+- **Enhanced NASM support** - Optimized for Intel IA32 instruction set
+- **Automatic filetype detection** - `.asm`, `.s`, `.S`, `.nasm`, `.inc` files
+- **Assembly-specific settings** - Proper indentation and commenting for assembly
+- **Syntax highlighting** - Treesitter-based highlighting for assembly code
+- **LSP features** - IntelliSense, hover documentation, and error diagnostics
+- **Project integration** - Works with Makefiles and build systems
+
+**Assembly-specific features:**
+- NASM/Intel syntax configuration
+- Intel IA32 instruction set support  
+- Automatic tab-based indentation (assembly convention)
+- Assembly comment style (`;` comments)
+- Quick comment/uncomment keymaps (`<leader>ac`, `<leader>au`)
+- Filetype-specific configuration for `.nasm` and `.asm` files
 
 ### UI & Navigation
 - **[telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)** - Fuzzy finder
@@ -522,6 +548,7 @@ This configuration includes a comprehensive Mason setup that automatically insta
 - `cmake` - CMake language server
 - `bashls` - Bash/shell script server
 - `marksman` - Markdown language server
+- `asm_lsp` - Assembly language server (NASM/GAS/MASM/TASM)
 
 **Formatters:**
 - `stylua` - Lua code formatter
@@ -529,6 +556,7 @@ This configuration includes a comprehensive Mason setup that automatically insta
 - `prettier` - Universal web formatter (JS/TS/HTML/CSS/JSON/YAML)
 - `clang-format` - C/C++ code formatter
 - `shfmt` - Shell script formatter
+- `asmfmt` - Assembly code formatter (if available)
 
 **Linters:**
 - `pylint` - Python code analysis

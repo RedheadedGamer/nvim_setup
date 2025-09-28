@@ -771,7 +771,7 @@ return {
       require("nvim-treesitter.configs").setup({
         ensure_installed = {
           "lua", "python", "javascript", "typescript", "html", "css", 
-          "json", "yaml", "markdown", "bash", "vim", "vimdoc", "c", "java"
+          "json", "yaml", "markdown", "bash", "vim", "vimdoc", "c", "java", "asm"
         },
         sync_install = false,
         auto_install = true,
@@ -1790,6 +1790,7 @@ return {
           "html",         -- HTML LSP
           "cssls",        -- CSS LSP
           "jsonls",       -- JSON LSP
+          "asm_lsp",      -- Assembly LSP server for NASM/GAS/MASM/TASM
           
           -- Formatters
           "stylua",       -- Lua formatter
@@ -1797,6 +1798,7 @@ return {
           "isort",        -- Python import sorter
           "prettier",     -- JS/TS/HTML/CSS formatter
           "clang-format", -- C/C++ formatter
+          "asmfmt",       -- Assembly formatter (if available)
           
           -- Linters
           "pylint",       -- Python linter
@@ -1831,6 +1833,7 @@ return {
           "cmake",      -- CMake LSP
           "bashls",     -- Bash LSP (useful for build scripts)
           "marksman",   -- Markdown LSP
+          "asm_lsp",    -- Assembly LSP server (NASM/GAS/MASM/TASM)
         },
         automatic_installation = true,
       })
@@ -1984,6 +1987,32 @@ return {
         cmake = {},
         bashls = {
           filetypes = { "sh", "bash" },
+        },
+        -- Assembly Language Server (supports NASM, GAS, MASM, TASM)
+        asm_lsp = {
+          filetypes = { "asm", "s", "S", "nasm" },
+          settings = {
+            asm = {
+              -- Configure for NASM and Intel x86/IA32 syntax
+              dialect = "nasm",     -- Specify NASM dialect
+              syntax = "intel",     -- Intel syntax (vs AT&T)
+              arch = "x86",         -- x86/IA32 architecture
+              -- Additional options for better IntelliSense
+              case_insensitive_instructions = true,
+              case_insensitive_registers = true,
+              case_insensitive_directives = true,
+            },
+          },
+          root_dir = function(fname)
+            -- Look for common assembly project indicators
+            return require("lspconfig.util").root_pattern(
+              "Makefile",
+              "makefile", 
+              "*.nasm",
+              "*.asm",
+              ".git"
+            )(fname) or require("lspconfig.util").find_git_ancestor(fname) or vim.fn.getcwd()
+          end,
         },
       }
 
@@ -2556,6 +2585,13 @@ return {
       if is_formatter_available("gofmt") then
         formatters_by_ft.go = { "gofmt" }
       end
+      
+      -- Assembly formatting
+      if is_formatter_available("asmfmt") then
+        formatters_by_ft.asm = { "asmfmt" }
+        formatters_by_ft.nasm = { "asmfmt" }
+        formatters_by_ft.s = { "asmfmt" }
+      end
 
       require("conform").setup({
         formatters_by_ft = formatters_by_ft,
@@ -2826,6 +2862,9 @@ return {
         linters_by_ft.yaml = { "yamllint" }
         linters_by_ft.yml = { "yamllint" }
       end
+      
+      -- Assembly linting (Note: Most assembly linting is done by assemblers like NASM)
+      -- The asm_lsp provides diagnostic information for assembly files
 
       lint.linters_by_ft = linters_by_ft
       
