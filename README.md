@@ -312,6 +312,7 @@ For detailed instructions on using all plugins, customizing features, and troubl
 - **Syntax highlighting** - Treesitter-based highlighting for assembly code
 - **LSP features** - IntelliSense, hover documentation, and error diagnostics
 - **Project integration** - Works with Makefiles and build systems
+- **Configuration file** - Includes `.asm-lsp.toml` for NASM and IA32 settings
 
 **Assembly-specific features:**
 - NASM assembler configuration (`assembler = "nasm"`)
@@ -321,6 +322,9 @@ For detailed instructions on using all plugins, customizing features, and troubl
 - Assembly comment style (`;` comments)
 - Quick comment/uncomment keymaps (`<leader>ac`, `<leader>au`)
 - Filetype-specific configuration for `.nasm` and `.asm` files
+
+**Configuration file (`.asm-lsp.toml`):**
+Copy the included `.asm-lsp.toml` to your project root or home directory (`~/.asm-lsp.toml`) to customize asm-lsp behavior. The default configuration is optimized for NASM with Intel x86 (IA32) architecture.
 
 ### UI & Navigation
 - **[telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)** - Fuzzy finder
