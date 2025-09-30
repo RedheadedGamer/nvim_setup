@@ -29,7 +29,7 @@ A modern, feature-rich Neovim configuration written in Lua with **complete mini.
 
 ### Prerequisites
 
-- **Neovim >= 0.9.0**
+- **Neovim >= 0.11.0** (for vim.lsp.config API support)
 - **Git**
 - **Node.js** (for LSP servers)
 - **Python** (for Python LSP support)
@@ -285,13 +285,15 @@ For detailed instructions on using all plugins, customizing features, and troubl
 - **[rainbow-delimiters.nvim](https://github.com/HiPhish/rainbow-delimiters.nvim)** - Rainbow colored brackets and parentheses for better code readability
 
 ### LSP & Completion
-- **[nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)** - LSP configurations
+- **[nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)** - LSP configurations (migrated to vim.lsp.config API for Neovim 0.11+)
 - **[mason.nvim](https://github.com/williamboman/mason.nvim)** - LSP server management
 - **[mason-lspconfig.nvim](https://github.com/williamboman/mason-lspconfig.nvim)** - Mason-LSP integration
 - **[mason-tool-installer.nvim](https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim)** - Automatic tool installation
 - **[mason-nvim-dap.nvim](https://github.com/jay-babu/mason-nvim-dap.nvim)** - Mason-DAP integration for debuggers
 - **[nvim-cmp](https://github.com/hrsh7th/nvim-cmp)** - Completion engine
 - **[LuaSnip](https://github.com/L3MON4D3/LuaSnip)** - Snippet engine
+
+**Note**: This configuration uses the new `vim.lsp.config` API introduced in Neovim 0.11, replacing the deprecated `require('lspconfig')` pattern.
 
 ### 🔬 C/C++ Development Suite
 - **[clangd_extensions.nvim](https://github.com/p00f/clangd_extensions.nvim)** - Enhanced clangd features with inlay hints and AST viewing

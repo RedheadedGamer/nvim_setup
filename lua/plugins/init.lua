@@ -1869,8 +1869,7 @@ return {
         },
       })
 
-      -- LSP settings
-      local lspconfig = require("lspconfig")
+      -- LSP settings using new vim.lsp.config API (nvim 0.11+)
       local cmp_nvim_lsp = require("cmp_nvim_lsp")
       
       local capabilities = cmp_nvim_lsp.default_capabilities()
@@ -2005,21 +2004,46 @@ return {
           },
           root_dir = function(fname)
             -- Look for common assembly project indicators
-            return require("lspconfig.util").root_pattern(
+            local util = vim.fs
+            return util.root(0, {
               "Makefile",
               "makefile", 
               "*.nasm",
               "*.asm",
               ".git"
-            )(fname) or require("lspconfig.util").find_git_ancestor(fname) or vim.fn.getcwd()
+            }) or vim.fn.getcwd()
           end,
         },
       }
 
+      -- Configure LSP servers using new vim.lsp.config API (nvim 0.11+)
       for server, config in pairs(servers) do
         config.capabilities = capabilities
         config.on_attach = on_attach
-        lspconfig[server].setup(config)
+        
+        -- Use new vim.lsp.config API
+        vim.lsp.config[server] = config
+        
+        -- Enable the server for appropriate filetypes
+        if config.filetypes then
+          for _, ft in ipairs(config.filetypes) do
+            vim.api.nvim_create_autocmd("FileType", {
+              pattern = ft,
+              callback = function()
+                vim.lsp.enable(server)
+              end,
+            })
+          end
+        else
+          -- Auto-enable for default filetypes
+          vim.api.nvim_create_autocmd("FileType", {
+            pattern = "*",
+            once = true,
+            callback = function()
+              vim.lsp.enable(server)
+            end,
+          })
+        end
       end
 
       -- Configure LSP handlers to prevent duplicates
@@ -2953,17 +2977,20 @@ return {
           },
           filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
           root_dir = function(fname)
-            return require("lspconfig.util").root_pattern(
+            -- Use vim.fs for root directory detection (nvim 0.11+)
+            local util = vim.fs
+            return util.root(0, {
               "Makefile",
               "configure.ac", 
               "configure.in",
               "config.h.in",
               "meson.build",
               "meson_options.txt",
-              "build.ninja"
-            )(fname) or require("lspconfig.util").root_pattern("compile_commands.json", "compile_flags.txt")(
-              fname
-            ) or require("lspconfig.util").find_git_ancestor(fname)
+              "build.ninja",
+              "compile_commands.json",
+              "compile_flags.txt",
+              ".git"
+            }) or vim.fn.getcwd()
           end,
           init_options = {
             usePlaceholders = true,
