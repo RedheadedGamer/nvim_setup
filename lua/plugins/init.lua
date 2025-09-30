@@ -2003,11 +2003,18 @@ return {
           },
           root_dir = function(fname)
             -- Look for common assembly project indicators
-            return vim.fs.dirname(vim.fs.find({
+            -- Get directory of the file if fname is a file path
+            local start_path = vim.fn.fnamemodify(fname, ":p:h")
+            local found = vim.fs.find({
               "Makefile",
               "makefile", 
               ".git"
-            }, { upward = true, path = fname })[1]) or vim.fn.getcwd()
+            }, { upward = true, path = start_path })
+            
+            if found and found[1] then
+              return vim.fs.dirname(found[1])
+            end
+            return vim.fn.getcwd()
           end,
         },
       }
@@ -2999,7 +3006,9 @@ return {
           filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
           root_dir = function(fname)
             -- Use vim.fs.find for root directory detection (nvim 0.11+)
-            return vim.fs.dirname(vim.fs.find({
+            -- Get directory of the file if fname is a file path
+            local start_path = vim.fn.fnamemodify(fname, ":p:h")
+            local found = vim.fs.find({
               "Makefile",
               "configure.ac", 
               "configure.in",
@@ -3010,7 +3019,12 @@ return {
               "compile_commands.json",
               "compile_flags.txt",
               ".git"
-            }, { upward = true, path = fname })[1]) or vim.fn.getcwd()
+            }, { upward = true, path = start_path })
+            
+            if found and found[1] then
+              return vim.fs.dirname(found[1])
+            end
+            return vim.fn.getcwd()
           end,
           init_options = {
             usePlaceholders = true,
