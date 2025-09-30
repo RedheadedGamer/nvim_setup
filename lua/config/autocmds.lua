@@ -80,7 +80,7 @@ autocmd("FileType", {
     keymap.set("n", "<leader>au", "^2x", vim.tbl_extend("force", opts, { desc = "Uncomment line" }))
     
     -- Show assembly-specific information
-    vim.notify("Assembly mode: NASM/Intel IA32 syntax configured", vim.log.levels.INFO)
+    vim.notify("Assembly mode: NASM assembler with x86 (IA32) instruction set configured", vim.log.levels.INFO)
   end,
 })
 

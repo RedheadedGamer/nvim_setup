@@ -1991,11 +1991,10 @@ return {
         asm_lsp = {
           filetypes = { "asm", "s", "S", "nasm" },
           settings = {
-            asm = {
-              -- Configure for NASM and Intel x86/IA32 syntax
-              dialect = "nasm",     -- Specify NASM dialect
-              syntax = "intel",     -- Intel syntax (vs AT&T)
-              arch = "x86",         -- x86/IA32 architecture
+            asm_lsp = {
+              -- Configure for NASM and Intel x86 (IA32) syntax
+              assembler = "nasm",           -- NASM assembler
+              instruction_set = "x86",      -- x86/IA32 instruction set (32-bit)
               -- Additional options for better IntelliSense
               case_insensitive_instructions = true,
               case_insensitive_registers = true,

@@ -306,7 +306,7 @@ For detailed instructions on using all plugins, customizing features, and troubl
 
 ### ⚙️ Assembly Language Development
 - **[asm-lsp](https://github.com/bergercookie/asm-lsp)** - Assembly Language Server Protocol support
-- **Enhanced NASM support** - Optimized for Intel IA32 instruction set
+- **Enhanced NASM support** - Optimized for Intel x86 (IA32) instruction set
 - **Automatic filetype detection** - `.asm`, `.s`, `.S`, `.nasm`, `.inc` files
 - **Assembly-specific settings** - Proper indentation and commenting for assembly
 - **Syntax highlighting** - Treesitter-based highlighting for assembly code
@@ -314,8 +314,9 @@ For detailed instructions on using all plugins, customizing features, and troubl
 - **Project integration** - Works with Makefiles and build systems
 
 **Assembly-specific features:**
-- NASM/Intel syntax configuration
-- Intel IA32 instruction set support  
+- NASM assembler configuration (`assembler = "nasm"`)
+- x86/IA32 instruction set support (`instruction_set = "x86"`)
+- Case-insensitive instructions, registers, and directives
 - Automatic tab-based indentation (assembly convention)
 - Assembly comment style (`;` comments)
 - Quick comment/uncomment keymaps (`<leader>ac`, `<leader>au`)
