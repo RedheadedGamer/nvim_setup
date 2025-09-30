@@ -2003,14 +2003,11 @@ return {
           },
           root_dir = function(fname)
             -- Look for common assembly project indicators
-            local util = vim.fs
-            return util.root(0, {
+            return vim.fs.dirname(vim.fs.find({
               "Makefile",
               "makefile", 
-              "*.nasm",
-              "*.asm",
               ".git"
-            }) or vim.fn.getcwd()
+            }, { upward = true, path = fname })[1]) or vim.fn.getcwd()
           end,
         },
       }
@@ -2023,13 +2020,31 @@ return {
         -- Use new vim.lsp.config API
         vim.lsp.config[server] = config
         
-        -- Enable the server for appropriate filetypes
+        -- Enable the server for appropriate filetypes using vim.lsp.start
         if config.filetypes then
           for _, ft in ipairs(config.filetypes) do
             vim.api.nvim_create_autocmd("FileType", {
               pattern = ft,
-              callback = function()
-                vim.lsp.enable(server)
+              callback = function(args)
+                -- Start the LSP server with proper configuration
+                local root_dir = nil
+                if config.root_dir then
+                  root_dir = config.root_dir(vim.api.nvim_buf_get_name(args.buf))
+                else
+                  -- Default to current directory
+                  root_dir = vim.fn.getcwd()
+                end
+                
+                vim.lsp.start({
+                  name = server,
+                  cmd = config.cmd or { server },
+                  root_dir = root_dir,
+                  settings = config.settings,
+                  capabilities = config.capabilities,
+                  on_attach = config.on_attach,
+                  filetypes = config.filetypes,
+                  init_options = config.init_options,
+                })
               end,
             })
           end
@@ -2038,8 +2053,15 @@ return {
           vim.api.nvim_create_autocmd("FileType", {
             pattern = "*",
             once = true,
-            callback = function()
-              vim.lsp.enable(server)
+            callback = function(args)
+              vim.lsp.start({
+                name = server,
+                cmd = config.cmd or { server },
+                root_dir = vim.fn.getcwd(),
+                settings = config.settings,
+                capabilities = config.capabilities,
+                on_attach = config.on_attach,
+              })
             end,
           })
         end
@@ -2976,9 +2998,8 @@ return {
           },
           filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
           root_dir = function(fname)
-            -- Use vim.fs for root directory detection (nvim 0.11+)
-            local util = vim.fs
-            return util.root(0, {
+            -- Use vim.fs.find for root directory detection (nvim 0.11+)
+            return vim.fs.dirname(vim.fs.find({
               "Makefile",
               "configure.ac", 
               "configure.in",
@@ -2989,7 +3010,7 @@ return {
               "compile_commands.json",
               "compile_flags.txt",
               ".git"
-            }) or vim.fn.getcwd()
+            }, { upward = true, path = fname })[1]) or vim.fn.getcwd()
           end,
           init_options = {
             usePlaceholders = true,
