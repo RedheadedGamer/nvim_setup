@@ -1989,6 +1989,7 @@ return {
         },
         -- Assembly Language Server (supports NASM, GAS, MASM, TASM)
         asm_lsp = {
+          cmd = { "asm-lsp" },  -- Executable name with hyphen
           filetypes = { "asm", "s", "S", "nasm" },
           settings = {
             asm_lsp = {
