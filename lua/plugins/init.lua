@@ -1989,7 +1989,11 @@ return {
         },
         -- Assembly Language Server (supports NASM, GAS, MASM, TASM)
         asm_lsp = {
-          cmd = { "asm-lsp" },  -- Executable name with hyphen
+          cmd = { 
+            "asm-lsp",
+            "--config",
+            vim.fn.expand("~/.asm-lsp.toml")  -- Use config from home directory
+          },
           filetypes = { "asm", "s", "S", "nasm" },
           settings = {
             asm_lsp = {

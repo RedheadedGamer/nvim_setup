@@ -324,7 +324,15 @@ For detailed instructions on using all plugins, customizing features, and troubl
 - Filetype-specific configuration for `.nasm` and `.asm` files
 
 **Configuration file (`.asm-lsp.toml`):**
-Copy the included `.asm-lsp.toml` to your project root or home directory (`~/.asm-lsp.toml`) to customize asm-lsp behavior. The default configuration is optimized for NASM with Intel x86 (IA32) architecture.
+The configuration automatically uses `~/.asm-lsp.toml` from your home directory. Copy the included `.asm-lsp.toml` to `~/.asm-lsp.toml` to customize asm-lsp behavior. The default configuration is optimized for NASM with Intel x86 (IA32) architecture.
+
+**Setup:**
+```bash
+# Copy the config file to your home directory
+cp .asm-lsp.toml ~/.asm-lsp.toml
+```
+
+The LSP is configured to always use this file, so you don't need to place it in each project directory.
 
 ### UI & Navigation
 - **[telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)** - Fuzzy finder
