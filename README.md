@@ -573,7 +573,7 @@ This configuration includes a comprehensive Mason setup that automatically insta
 ### ⚡ Enhanced Features
 
 - **Smart Tool Detection**: Automatically detects tools in both system PATH and Mason installation directory
-- **Auto-formatting**: Configurable format-on-save with toggle (`<leader>tf`)
+- **Manual Formatting**: On-demand formatting with comprehensive formatter support (auto-formatting disabled)
 - **Enhanced Linting**: Multi-language linting with Mason integration
 - **DAP Integration**: Automatic debugger setup through mason-nvim-dap
 - **Tool Information**: View available formatters and linters (`<leader>fi`, `<leader>li`)
@@ -583,7 +583,7 @@ This configuration includes a comprehensive Mason setup that automatically insta
 | Key | Action | Description |
 |-----|--------|-------------|
 | `<leader>fm` | Format Buffer | Manual formatting |
-| `<leader>tf` | Toggle Auto-format | Enable/disable format-on-save |
+| `<leader>tf` | Auto-format Status | Show auto-formatting status (permanently disabled) |
 | `<leader>fi` | Formatter Info | Show available formatters |
 | `<leader>ll` | Lint File | Manual linting |
 | `<leader>li` | Linter Info | Show available linters |
@@ -672,10 +672,11 @@ keymap.set("n", "<leader>custom", "<cmd>YourCommand<cr>", { desc = "Custom actio
 
 ## ✨ New Features & Quality of Life Improvements
 
-### 🔧 Autoformatting Control
-Autoformatting on save has been **disabled by default** to accommodate custom coding standards:
-- **Manual formatting**: Use `<leader>fm` to format the current buffer manually
-- **Re-enable auto-format**: Uncomment the `format_on_save` section in `lua/plugins/init.lua`
+### 🔧 Manual Formatting Control
+Auto-formatting on save has been **permanently disabled** to prevent automatic file changes:
+- **Manual formatting only**: Use `<leader>fm` to format the current buffer when needed
+- **Show recommendations**: Formatters can show recommended changes but won't automatically apply them
+- **No automatic changes**: Files will never be modified automatically on save
 
 ### 🎨 Enhanced Theme Switcher
 - **Telescope Integration**: `<leader>th` or `<leader>tt` opens **live preview** theme selector

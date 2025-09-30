@@ -2505,11 +2505,15 @@ return {
     end,
   },
 
-  -- Enhanced formatting with Mason integration
+  -- Enhanced formatting with Mason integration (manual only)
   {
     "stevearc/conform.nvim",
-    event = { "BufWritePre" },
     cmd = { "ConformInfo" },
+    keys = {
+      { "<leader>fm", desc = "Format buffer manually" },
+      { "<leader>fi", desc = "Formatter info" },
+      { "<leader>tf", desc = "Auto-formatting status (disabled)" },
+    },
     config = function()
       -- Helper function to check if a formatter is available (checks Mason install dir too)
       local function is_formatter_available(formatter)
@@ -2595,14 +2599,9 @@ return {
 
       require("conform").setup({
         formatters_by_ft = formatters_by_ft,
-        -- Enhanced format options
-        format_on_save = function(bufnr)
-          -- Disable with a global or buffer-local variable
-          if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
-            return
-          end
-          return { timeout_ms = 1000, lsp_fallback = true }
-        end,
+        -- Auto-formatting disabled by user request - no files change automatically
+        -- Manual formatting available via <leader>fm
+        -- format_on_save = nil, -- Completely disabled
         formatters = {
           -- Custom formatter configurations
           stylua = {
@@ -2622,16 +2621,10 @@ return {
         require("conform").format({ lsp_fallback = true })
       end, { desc = "Format buffer manually" })
       
-      -- Toggle auto-formatting
+      -- Auto-formatting permanently disabled - show status
       vim.keymap.set("n", "<leader>tf", function()
-        if vim.g.disable_autoformat then
-          vim.g.disable_autoformat = false
-          vim.notify("Auto-formatting enabled", vim.log.levels.INFO)
-        else
-          vim.g.disable_autoformat = true
-          vim.notify("Auto-formatting disabled", vim.log.levels.INFO)
-        end
-      end, { desc = "Toggle auto-formatting" })
+        vim.notify("Auto-formatting is permanently disabled. Use <leader>fm for manual formatting.", vim.log.levels.INFO)
+      end, { desc = "Auto-formatting status (disabled)" })
       
       -- Show formatter info
       vim.keymap.set("n", "<leader>fi", "<cmd>ConformInfo<cr>", { desc = "Formatter info" })
