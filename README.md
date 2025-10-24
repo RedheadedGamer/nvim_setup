@@ -2,6 +2,8 @@
 
 A modern, feature-rich Neovim configuration written in Lua with **complete mini.nvim ecosystem integration** (28 plugins), LSP support, auto-completion, and optimized performance for enhanced development experience.
 
+> **⚡ New to this config?** Start here: [QUICKSTART.md](QUICKSTART.md) - Get up and running in 5 minutes!
+
 ## ✨ Features
 
 - **Modern Lua Configuration**: Fully migrated from VimScript to Lua for better performance and maintainability
