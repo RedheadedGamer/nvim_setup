@@ -41,8 +41,13 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- Check for minimal setup and load appropriate plugins
+local config_path = vim.fn.stdpath("config")
+local is_minimal = vim.fn.filereadable(config_path .. "/.minimal_setup") == 1
+local plugins_module = is_minimal and "plugins.minimal" or "plugins"
+
 -- Load plugins
-require("lazy").setup(require("plugins"), {
+require("lazy").setup(require(plugins_module), {
   git = {
     -- Use HTTPS with environment variables to prevent authentication prompts
     url_format = "https://github.com/%s.git",
