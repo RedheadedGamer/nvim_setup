@@ -28,6 +28,8 @@ A modern, feature-rich Neovim configuration written in Lua with **complete mini.
 ## 🚀 Installation
 
 > **📖 For detailed installation instructions, troubleshooting, and switching between setups, see [INSTALL.md](INSTALL.md)**
+> 
+> **📊 For a detailed comparison of Full vs Minimal setups, see [SETUP_COMPARISON.md](SETUP_COMPARISON.md)**
 
 This configuration offers **two installation modes** to suit different needs:
 
