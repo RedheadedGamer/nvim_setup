@@ -2,6 +2,8 @@
 
 A modern, feature-rich Neovim configuration written in Lua with **complete mini.nvim ecosystem integration** (28 plugins), LSP support, auto-completion, and optimized performance for enhanced development experience.
 
+> **⚡ New to this config?** Start here: [QUICKSTART.md](QUICKSTART.md) - Get up and running in 5 minutes!
+
 ## ✨ Features
 
 - **Modern Lua Configuration**: Fully migrated from VimScript to Lua for better performance and maintainability
@@ -27,48 +29,75 @@ A modern, feature-rich Neovim configuration written in Lua with **complete mini.
 
 ## 🚀 Installation
 
-### Prerequisites
+> **📖 For detailed installation instructions, troubleshooting, and switching between setups, see [INSTALL.md](INSTALL.md)**
+> 
+> **📊 For a detailed comparison of Full vs Minimal setups, see [SETUP_COMPARISON.md](SETUP_COMPARISON.md)**
 
-- **Neovim >= 0.11.0** (for vim.lsp.config API support)
-- **Git**
-- **Node.js** (for LSP servers)
-- **Python** (for Python LSP support)
-- **ripgrep** (for better grep functionality)
-- **🔬 C/C++ Development** (optional but recommended):
-  - **build-essential** or equivalent (gcc, make, etc.)
-  - **cmake** (for CMake projects)
-  - **clang** and **clang-tools** (for enhanced LSP)
-  - **gdb** or **codelldb** (for debugging)
-  - **cppcheck** (for static analysis)
+This configuration offers **two installation modes** to suit different needs:
 
-#### Ubuntu/Debian Installation:
+### Installation Modes
+
+#### 🎯 **Full Setup** (Recommended for Development)
+Complete IDE experience with:
+- ✅ LSP support with Mason
+- ✅ Auto-completion with nvim-cmp  
+- ✅ Linters and formatters
+- ✅ C/C++ development tools
+- ✅ 50+ themes
+- ✅ All mini.nvim plugins (28 plugins)
+
+#### ⚡ **Minimal Setup** (Lightweight)
+Fast and efficient configuration with:
+- ✅ Essential editing features
+- ✅ Syntax highlighting with Treesitter
+- ✅ Core mini.nvim plugins
+- ✅ 5 popular themes
+- ✅ File finding with Telescope
+- ❌ No LSP, Mason, or C/C++ tools
+- 🚀 Faster startup time
+
+### Quick Installation (Recommended)
+
+Use the automated install script:
+
 ```bash
-sudo apt update
-sudo apt install neovim git nodejs npm python3 python3-pip ripgrep
+# Download and run the installer
+curl -fsSL https://raw.githubusercontent.com/RedheadedGamer/nvim_setup/main/install.sh | bash
 
-# For C/C++ development (recommended)
-sudo apt install build-essential cmake gdb clang clang-tools cppcheck bear ninja-build
+# Or clone first, then run
+git clone https://github.com/RedheadedGamer/nvim_setup.git /tmp/nvim_setup_tmp
+cd /tmp/nvim_setup_tmp
+chmod +x install.sh
+./install.sh
 ```
 
-#### Arch Installation:
-```bash
-sudo pacman -Syu neovim git nodejs npm python3 python3-pip ripgrep
+The installer will:
+1. Prompt you to choose between Full or Minimal setup
+2. Backup your existing configuration (if any)
+3. Clone the repository to `~/.config/nvim`
+4. Configure the setup based on your choice
+5. Provide next steps
 
-# For C/C++ development (recommended)  
-sudo pacman -S base-devel cmake gdb clang clang-tools cppcheck bear ninja
+### Installation Options
+
+```bash
+# Full setup (with LSP, Mason, linters)
+./install.sh --full
+
+# Minimal setup (without LSP features)
+./install.sh --minimal
+
+# Interactive mode (will prompt for choice)
+./install.sh
 ```
 
-#### macOS Installation:
-```bash
-brew install neovim git node python ripgrep
+### Manual Installation
 
-# For C/C++ development (recommended)
-brew install cmake llvm cppcheck bear ninja
-```
+If you prefer to install manually:
 
-### Setup Instructions
+#### For Full Setup:
 
-1. **Backup existing configuration** (if any):
+1. **Backup existing configuration**:
    ```bash
    mv ~/.config/nvim ~/.config/nvim.backup
    ```
@@ -82,13 +111,103 @@ brew install cmake llvm cppcheck bear ninja
    ```bash
    nvim
    ```
-   
-   The configuration will automatically:
-   - Install the lazy.nvim plugin manager
-   - Download and install all plugins
-   - Set up LSP servers through Mason
 
-4. **Wait for installation to complete**, then restart Neovim.
+#### For Minimal Setup:
+
+1. **Backup and clone** (same as above)
+
+2. **Create minimal setup marker**:
+   ```bash
+   touch ~/.config/nvim/.minimal_setup
+   ```
+
+3. **Start Neovim**:
+   ```bash
+   nvim
+   ```
+
+### Prerequisites
+
+#### Basic Requirements (Both Setups):
+- **Neovim >= 0.11.0** (for vim.lsp.config API support)
+- **Git**
+
+#### Additional for Full Setup:
+- **Node.js** (for LSP servers)
+- **Python** (for Python LSP support)
+- **ripgrep** (for better grep functionality)
+- **🔬 C/C++ Development** (optional):
+  - **build-essential** or equivalent (gcc, make, etc.)
+  - **cmake** (for CMake projects)
+  - **clang** and **clang-tools** (for enhanced LSP)
+  - **gdb** or **codelldb** (for debugging)
+  - **cppcheck** (for static analysis)
+
+#### System Package Installation:
+
+**Ubuntu/Debian:**
+```bash
+# Basic (for both setups)
+sudo apt update
+sudo apt install neovim git
+
+# Full setup additional packages
+sudo apt install nodejs npm python3 python3-pip ripgrep
+
+# C/C++ development (optional for full setup)
+sudo apt install build-essential cmake gdb clang clang-tools cppcheck bear ninja-build
+```
+
+**Arch Linux:**
+```bash
+# Basic (for both setups)
+sudo pacman -Syu neovim git
+
+# Full setup additional packages
+sudo pacman -S nodejs npm python python-pip ripgrep
+
+# C/C++ development (optional for full setup)
+sudo pacman -S base-devel cmake gdb clang cppcheck bear ninja
+```
+
+**macOS:**
+```bash
+# Basic (for both setups)
+brew install neovim git
+
+# Full setup additional packages
+brew install node python ripgrep
+
+# C/C++ development (optional for full setup)
+brew install cmake llvm cppcheck bear ninja
+```
+
+### Post-Installation
+
+After installation:
+
+1. **Start Neovim** - The configuration will automatically install plugins
+2. **Wait for completion** - Let lazy.nvim finish downloading all plugins
+3. **Restart Neovim** - For best results
+4. **Check health** (optional): Run `:checkhealth` to verify setup
+
+### Switching Between Setups
+
+You can easily switch between Full and Minimal setups:
+
+**Switch to Minimal:**
+```bash
+touch ~/.config/nvim/.minimal_setup
+# Then restart Neovim and run :Lazy sync
+```
+
+**Switch to Full:**
+```bash
+rm ~/.config/nvim/.minimal_setup
+# Then restart Neovim and run :Lazy sync
+```
+
+After switching, restart Neovim and let lazy.nvim install/remove plugins as needed.
 
 ### Legacy Fallback
 
