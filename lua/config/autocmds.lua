@@ -7,6 +7,7 @@ local augroup = vim.api.nvim_create_augroup
 -- Create augroups
 local general = augroup("General", { clear = true })
 local wistl_filetype = augroup("WistlFiletype", { clear = true })
+local asm_filetype = augroup("AsmFiletype", { clear = true })
 
 -- Auto-generate ctags if not present
 autocmd("VimEnter", {
@@ -37,6 +38,49 @@ autocmd("FileType", {
     vim.bo.softtabstop = 4
     vim.bo.tabstop = 4
     vim.bo.textwidth = 80
+  end,
+})
+
+-- Assembly language filetype detection and configuration
+-- Filetype detection for assembly files
+autocmd({ "BufReadPost", "BufNewFile" }, {
+  group = asm_filetype,
+  pattern = { "*.asm", "*.s", "*.S", "*.nasm", "*.inc" },
+  callback = function()
+    -- Set appropriate filetype based on file extension
+    local filename = vim.fn.expand("%:t")
+    if filename:match("%.nasm$") or filename:match("%.inc$") then
+      vim.bo.filetype = "nasm"
+    else
+      vim.bo.filetype = "asm"
+    end
+  end,
+})
+
+-- Assembly language file settings  
+autocmd("FileType", {
+  group = asm_filetype,
+  pattern = { "asm", "nasm" },
+  callback = function()
+    -- Assembly-specific settings
+    vim.bo.autoindent = true
+    vim.bo.expandtab = false     -- Use tabs for assembly (common convention)
+    vim.bo.shiftwidth = 8        -- Standard tab width for assembly
+    vim.bo.softtabstop = 8       
+    vim.bo.tabstop = 8
+    vim.bo.textwidth = 80
+    vim.bo.commentstring = "; %s" -- Assembly comment style
+    
+    -- Assembly-specific keymaps
+    local keymap = vim.keymap
+    local opts = { buffer = true, silent = true }
+    
+    -- Quick comment toggle for assembly
+    keymap.set("n", "<leader>ac", "I; <Esc>", vim.tbl_extend("force", opts, { desc = "Comment line" }))
+    keymap.set("n", "<leader>au", "^2x", vim.tbl_extend("force", opts, { desc = "Uncomment line" }))
+    
+    -- Show assembly-specific information
+    vim.notify("Assembly mode: NASM assembler with x86 (IA32) instruction set configured", vim.log.levels.INFO)
   end,
 })
 
