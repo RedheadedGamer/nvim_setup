@@ -65,7 +65,7 @@ Use the automated install script:
 curl -fsSL https://raw.githubusercontent.com/RedheadedGamer/nvim_setup/main/install.sh | bash
 
 # Or clone first, then run
-git clone https://github.com/RedheadedGamer/nvim_setup.git /tmp/nvim_setup_tmp
+git clone git@github.com:RedheadedGamer/nvim_setup.git /tmp/nvim_setup_tmp
 cd /tmp/nvim_setup_tmp
 chmod +x install.sh
 ./install.sh
@@ -104,7 +104,7 @@ If you prefer to install manually:
 
 2. **Clone this repository**:
    ```bash
-   git clone https://github.com/RedheadedGamer/nvim_setup.git ~/.config/nvim
+   git clone git@github.com:RedheadedGamer/nvim_setup.git ~/.config/nvim
    ```
 
 3. **Start Neovim**:

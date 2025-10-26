@@ -139,7 +139,7 @@ backup_existing_config() {
 clone_repository() {
     print_msg "$BLUE" "Cloning Neovim configuration..."
     
-    if ! git clone https://github.com/RedheadedGamer/nvim_setup.git "$CONFIG_DIR"; then
+    if ! git clone git@github.com:RedheadedGamer/nvim_setup.git "$CONFIG_DIR"; then
         print_msg "$RED" "✗ Failed to clone repository"
         exit 1
     fi

@@ -110,7 +110,7 @@ The installer will guide you through choosing Full or Minimal setup.
 
 ```bash
 # Clone the repository temporarily
-git clone https://github.com/RedheadedGamer/nvim_setup.git /tmp/nvim_install
+git clone git@github.com:RedheadedGamer/nvim_setup.git /tmp/nvim_install
 cd /tmp/nvim_install
 
 # Make the script executable
@@ -173,7 +173,7 @@ mv ~/.config/nvim ~/.config/nvim.backup.$(date +%Y%m%d_%H%M%S)
 2. **Clone the repository:**
 
 ```bash
-git clone https://github.com/RedheadedGamer/nvim_setup.git ~/.config/nvim
+git clone git@github.com:RedheadedGamer/nvim_setup.git ~/.config/nvim
 ```
 
 3. **Ensure the `.minimal_setup` file does NOT exist:**
@@ -201,7 +201,7 @@ mv ~/.config/nvim ~/.config/nvim.backup.$(date +%Y%m%d_%H%M%S)
 2. **Clone the repository:**
 
 ```bash
-git clone https://github.com/RedheadedGamer/nvim_setup.git ~/.config/nvim
+git clone git@github.com:RedheadedGamer/nvim_setup.git ~/.config/nvim
 ```
 
 3. **Create the minimal setup marker:**
@@ -411,8 +411,9 @@ cat startup.log
 **Solutions:**
 
 1. **Check internet connection**
-2. **Try HTTPS instead of SSH:**
+2. **Check if SSH keys are configured:**
 ```bash
+# If you don't have SSH keys set up, you can use HTTPS instead:
 git clone https://github.com/RedheadedGamer/nvim_setup.git ~/.config/nvim
 ```
 
