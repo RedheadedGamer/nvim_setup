@@ -61,10 +61,10 @@ Fast and efficient configuration with:
 Use the automated install script:
 
 ```bash
-# Download and run the installer
+# Download and run the installer directly
 curl -fsSL https://raw.githubusercontent.com/RedheadedGamer/nvim_setup/main/install.sh | bash
 
-# Or clone first, then run
+# Or clone first, then run (recommended - avoids double cloning)
 git clone git@github.com:RedheadedGamer/nvim_setup.git /tmp/nvim_setup_tmp
 cd /tmp/nvim_setup_tmp
 chmod +x install.sh
@@ -74,9 +74,10 @@ chmod +x install.sh
 The installer will:
 1. Prompt you to choose between Full or Minimal setup
 2. Backup your existing configuration (if any)
-3. Clone the repository to `~/.config/nvim`
+3. Copy files to `~/.config/nvim` (uses existing clone if running from repository)
 4. Configure the setup based on your choice
-5. Provide next steps
+5. Clean up temporary files
+6. Provide next steps
 
 ### Installation Options
 

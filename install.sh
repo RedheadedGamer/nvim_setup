@@ -16,6 +16,8 @@ NC='\033[0m' # No Color
 INSTALL_TYPE=""
 CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/nvim"
 BACKUP_DIR="${CONFIG_DIR}.backup.$(date +%Y%m%d_%H%M%S)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TEMP_CLONE_DIR=""
 
 # Print colored message
 print_msg() {
@@ -135,23 +137,90 @@ backup_existing_config() {
     fi
 }
 
-# Clone the repository
-clone_repository() {
-    print_msg "$BLUE" "Cloning Neovim configuration..."
+# Check if we're running from within the repository
+is_running_from_repo() {
+    # Check if we're in a git repository and it's the nvim_setup repo
+    if git -C "$SCRIPT_DIR" rev-parse --git-dir > /dev/null 2>&1; then
+        local repo_url=$(git -C "$SCRIPT_DIR" config --get remote.origin.url 2>/dev/null || echo "")
+        if [[ "$repo_url" == *"nvim_setup"* ]]; then
+            return 0
+        fi
+    fi
+    return 1
+}
+
+# Copy files from source to destination, excluding .git and .github
+do_copy() {
+    local src="$1"
+    local dest="$2"
     
-    if ! git clone git@github.com:RedheadedGamer/nvim_setup.git "$CONFIG_DIR"; then
-        print_msg "$RED" "✗ Failed to clone repository"
-        echo ""
-        print_msg "$YELLOW" "Note: This script uses SSH for cloning. If you don't have SSH keys configured,"
-        print_msg "$YELLOW" "you can clone manually using HTTPS instead:"
-        print_msg "$BLUE" "  git clone https://github.com/RedheadedGamer/nvim_setup.git \"$CONFIG_DIR\""
-        echo ""
-        print_msg "$YELLOW" "For SSH setup instructions, see:"
-        print_msg "$BLUE" "  https://docs.github.com/en/authentication/connecting-to-github-with-ssh"
+    mkdir -p "$dest"
+    
+    if ! rsync -av --exclude='.git' --exclude='.github' "$src/" "$dest/"; then
+        # Fallback to cp if rsync is not available
+        print_msg "$YELLOW" "rsync not found, using cp instead..."
+        if ! cp -r "$src/." "$dest/"; then
+            print_msg "$RED" "✗ Failed to copy files"
+            return 1
+        fi
+        # Remove .git directory if it was copied
+        rm -rf "$dest/.git" "$dest/.github"
+    fi
+    return 0
+}
+
+# Copy files from the current directory to config directory
+copy_files() {
+    print_msg "$BLUE" "Copying Neovim configuration files..."
+    
+    if ! do_copy "$SCRIPT_DIR" "$CONFIG_DIR"; then
         exit 1
     fi
     
-    print_msg "$GREEN" "✓ Repository cloned successfully"
+    print_msg "$GREEN" "✓ Files copied successfully"
+}
+
+# Clone the repository or copy files
+install_files() {
+    if is_running_from_repo; then
+        print_msg "$BLUE" "Detected script running from repository..."
+        copy_files
+        # Mark for cleanup if running from a temporary directory
+        # Check common temp directory patterns
+        if [[ "$SCRIPT_DIR" == /tmp/* ]] || [[ "$SCRIPT_DIR" == /var/tmp/* ]] || [[ "$SCRIPT_DIR" == "$TMPDIR"/* ]]; then
+            TEMP_CLONE_DIR="$SCRIPT_DIR"
+        fi
+    else
+        print_msg "$BLUE" "Cloning Neovim configuration..."
+        
+        # Create a temporary directory for cloning
+        TEMP_CLONE_DIR=$(mktemp -d)
+        
+        if ! git clone git@github.com:RedheadedGamer/nvim_setup.git "$TEMP_CLONE_DIR"; then
+            print_msg "$RED" "✗ Failed to clone repository"
+            echo ""
+            print_msg "$YELLOW" "Note: This script uses SSH for cloning. If you don't have SSH keys configured,"
+            print_msg "$YELLOW" "you can clone manually using HTTPS instead:"
+            print_msg "$BLUE" "  git clone https://github.com/RedheadedGamer/nvim_setup.git \"$CONFIG_DIR\""
+            echo ""
+            print_msg "$YELLOW" "For SSH setup instructions, see:"
+            print_msg "$BLUE" "  https://docs.github.com/en/authentication/connecting-to-github-with-ssh"
+            rm -rf "$TEMP_CLONE_DIR"
+            exit 1
+        fi
+        
+        print_msg "$GREEN" "✓ Repository cloned successfully"
+        
+        # Now copy files from temp directory to config directory
+        print_msg "$BLUE" "Installing configuration files..."
+        
+        if ! do_copy "$TEMP_CLONE_DIR" "$CONFIG_DIR"; then
+            rm -rf "$TEMP_CLONE_DIR"
+            exit 1
+        fi
+        
+        print_msg "$GREEN" "✓ Configuration installed successfully"
+    fi
 }
 
 # Configure for minimal setup
@@ -253,6 +322,15 @@ print_instructions() {
     fi
 }
 
+# Clean up temporary files
+cleanup() {
+    if [ -n "$TEMP_CLONE_DIR" ] && [ -d "$TEMP_CLONE_DIR" ]; then
+        print_msg "$BLUE" "Cleaning up temporary files..."
+        rm -rf "$TEMP_CLONE_DIR"
+        print_msg "$GREEN" "✓ Cleanup complete"
+    fi
+}
+
 # Main installation flow
 main() {
     parse_args "$@"
@@ -263,7 +341,7 @@ main() {
     echo ""
     
     backup_existing_config
-    clone_repository
+    install_files
     
     if [ "$INSTALL_TYPE" = "minimal" ]; then
         configure_minimal
@@ -271,6 +349,7 @@ main() {
         configure_full
     fi
     
+    cleanup
     print_instructions
 }
 
