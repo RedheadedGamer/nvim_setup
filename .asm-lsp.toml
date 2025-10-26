@@ -1,0 +1,27 @@
+# asm-lsp configuration for NASM and Intel IA32 (x86) architecture
+# Place this file in your project root or home directory
+
+[assembler]
+# Assembler to use - nasm for NASM assembler
+assembler = "nasm"
+
+[instruction_set]
+# Instruction set architecture - x86 for Intel IA32 (32-bit)
+version = "x86"
+
+[opts]
+# Case sensitivity options for better IntelliSense
+# NASM is typically case-insensitive for instructions and registers
+case_insensitive_instructions = true
+case_insensitive_registers = true
+case_insensitive_directives = true
+
+[default_diagnostics]
+# Enable/disable default diagnostics
+enabled = true
+
+# Additional NASM-specific settings
+[compiler]
+# NASM-specific options can be added here
+# For example, include paths for macros and includes
+# include_paths = ["/path/to/includes"]

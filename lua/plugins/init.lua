@@ -210,12 +210,49 @@ return {
 
   {
     "projekt0n/github-nvim-theme",
-    lazy = true,
+    lazy = false, -- Load immediately for theme availability
+    priority = 995,
     config = function()
       require("github-theme").setup({
         options = {
           transparent = true,
-        }
+          terminal_colors = true,
+          dim_inactive = false,
+          styles = {
+            comments = "italic",
+            conditionals = "NONE",
+            constants = "NONE",
+            functions = "NONE",
+            keywords = "NONE",
+            numbers = "NONE",
+            operators = "NONE",
+            strings = "NONE",
+            types = "NONE",
+            variables = "NONE",
+          },
+          inverse = {
+            match_paren = false,
+            visual = false,
+            search = false,
+          },
+        },
+        palettes = {},
+        specs = {},
+        groups = {
+          -- Enhanced transparency support
+          all = {
+            Normal = { bg = "NONE" },
+            NormalFloat = { bg = "NONE" },
+            FloatBorder = { bg = "NONE" },
+            Pmenu = { bg = "NONE" },
+            PmenuSel = { bg = "NONE" },
+            TelescopeNormal = { bg = "NONE" },
+            TelescopeBorder = { bg = "NONE" },
+            TelescopePromptNormal = { bg = "NONE" },
+            TelescopeResultsNormal = { bg = "NONE" },
+            TelescopePreviewNormal = { bg = "NONE" },
+          },
+        },
       })
     end,
   },
@@ -734,7 +771,7 @@ return {
       require("nvim-treesitter.configs").setup({
         ensure_installed = {
           "lua", "python", "javascript", "typescript", "html", "css", 
-          "json", "yaml", "markdown", "bash", "vim", "vimdoc", "c", "java"
+          "json", "yaml", "markdown", "bash", "vim", "vimdoc", "c", "java", "asm"
         },
         sync_install = false,
         auto_install = true,
@@ -1718,6 +1755,7 @@ return {
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
       "WhoIsSethDaniel/mason-tool-installer.nvim",
+      "jay-babu/mason-nvim-dap.nvim",
       "hrsh7th/nvim-cmp",
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-buffer",
@@ -1732,18 +1770,55 @@ return {
       require("mason").setup({
         ui = {
           border = "rounded",
+          icons = {
+            package_installed = "✓",
+            package_pending = "➜",
+            package_uninstalled = "✗"
+          }
         },
+        max_concurrent_installers = 10,
       })
       
-      -- Ensure clangd is installed via Mason for clangd_extensions
+      -- Enhanced mason-tool-installer setup with more tools
       require("mason-tool-installer").setup({
         ensure_installed = {
+          -- LSP servers (managed by mason-lspconfig)
           "clangd",       -- C/C++ LSP (handled by clangd_extensions)
-          -- Note: cppcheck must be installed via system package manager
-          -- e.g., sudo pacman -S cppcheck (Arch) or sudo apt install cppcheck (Ubuntu)
+          "lua_ls",       -- Lua LSP
+          "pyright",      -- Python LSP
+          "ts_ls",        -- TypeScript LSP
+          "html",         -- HTML LSP
+          "cssls",        -- CSS LSP
+          "jsonls",       -- JSON LSP
+          "asm_lsp",      -- Assembly LSP server for NASM/GAS/MASM/TASM
+          
+          -- Formatters
+          "stylua",       -- Lua formatter
+          "black",        -- Python formatter
+          "isort",        -- Python import sorter
+          "prettier",     -- JS/TS/HTML/CSS formatter
+          "clang-format", -- C/C++ formatter
+          "asmfmt",       -- Assembly formatter (if available)
+          
+          -- Linters
+          "pylint",       -- Python linter
+          "eslint_d",     -- JS/TS linter (faster than eslint)
+          "cpplint",      -- C++ linter (alternative to cppcheck)
+          
+          -- Debuggers (for mason-nvim-dap)
+          "codelldb",     -- C/C++/Rust debugger
+          "debugpy",      -- Python debugger
+          "js-debug-adapter", -- JS/TS debugger
+          
+          -- Additional tools
+          "markdownlint", -- Markdown linter
+          "shellcheck",   -- Shell script linter
+          "shfmt",        -- Shell script formatter
         },
         auto_update = false,
         run_on_start = true,
+        start_delay = 3000, -- 3 second delay
+        debounce_hours = 5, -- at least 5 hours between attempts
       })
       
       require("mason-lspconfig").setup({
@@ -1757,12 +1832,44 @@ return {
           "jdtls",      -- Java LSP
           "cmake",      -- CMake LSP
           "bashls",     -- Bash LSP (useful for build scripts)
+          "marksman",   -- Markdown LSP
+          "asm_lsp",    -- Assembly LSP server (NASM/GAS/MASM/TASM)
         },
         automatic_installation = true,
       })
 
-      -- LSP settings
-      local lspconfig = require("lspconfig")
+      -- Mason DAP setup for automatic debugger installation
+      require("mason-nvim-dap").setup({
+        ensure_installed = {
+          "codelldb",     -- C/C++/Rust
+          "debugpy",      -- Python
+          "js",           -- JavaScript/TypeScript
+        },
+        automatic_installation = true,
+        handlers = {
+          function(config)
+            -- all sources with no handler get passed here
+            require('mason-nvim-dap').default_setup(config)
+          end,
+          codelldb = function(config)
+            config.configurations = {
+              {
+                name = "Launch file",
+                type = "codelldb",
+                request = "launch",
+                program = function()
+                  return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+                end,
+                cwd = '${workspaceFolder}',
+                stopOnEntry = false,
+              },
+            }
+            require('mason-nvim-dap').default_setup(config) -- don't forget this!
+          end,
+        },
+      })
+
+      -- LSP settings using new vim.lsp.config API (nvim 0.11+)
       local cmp_nvim_lsp = require("cmp_nvim_lsp")
       
       local capabilities = cmp_nvim_lsp.default_capabilities()
@@ -1880,12 +1987,96 @@ return {
         bashls = {
           filetypes = { "sh", "bash" },
         },
+        -- Assembly Language Server (supports NASM, GAS, MASM, TASM)
+        asm_lsp = {
+          cmd = { 
+            "asm-lsp",
+            "--config",
+            vim.fn.expand("~/.asm-lsp.toml")  -- Use config from home directory
+          },
+          filetypes = { "asm", "s", "S", "nasm" },
+          settings = {
+            asm_lsp = {
+              -- Configure for NASM and Intel x86 (IA32) syntax
+              assembler = "nasm",           -- NASM assembler
+              instruction_set = "x86",      -- x86/IA32 instruction set (32-bit)
+              -- Additional options for better IntelliSense
+              case_insensitive_instructions = true,
+              case_insensitive_registers = true,
+              case_insensitive_directives = true,
+            },
+          },
+          root_dir = function(fname)
+            -- Look for common assembly project indicators
+            -- Get directory of the file if fname is a file path
+            local start_path = vim.fn.fnamemodify(fname, ":p:h")
+            local found = vim.fs.find({
+              "Makefile",
+              "makefile", 
+              ".git"
+            }, { upward = true, path = start_path })
+            
+            if found and found[1] then
+              return vim.fs.dirname(found[1])
+            end
+            return vim.fn.getcwd()
+          end,
+        },
       }
 
+      -- Configure LSP servers using new vim.lsp.config API (nvim 0.11+)
       for server, config in pairs(servers) do
         config.capabilities = capabilities
         config.on_attach = on_attach
-        lspconfig[server].setup(config)
+        
+        -- Use new vim.lsp.config API
+        vim.lsp.config[server] = config
+        
+        -- Enable the server for appropriate filetypes using vim.lsp.start
+        if config.filetypes then
+          for _, ft in ipairs(config.filetypes) do
+            vim.api.nvim_create_autocmd("FileType", {
+              pattern = ft,
+              callback = function(args)
+                -- Start the LSP server with proper configuration
+                local root_dir = nil
+                if config.root_dir then
+                  root_dir = config.root_dir(vim.api.nvim_buf_get_name(args.buf))
+                else
+                  -- Default to current directory
+                  root_dir = vim.fn.getcwd()
+                end
+                
+                vim.lsp.start({
+                  name = server,
+                  cmd = config.cmd or { server },
+                  root_dir = root_dir,
+                  settings = config.settings,
+                  capabilities = config.capabilities,
+                  on_attach = config.on_attach,
+                  filetypes = config.filetypes,
+                  init_options = config.init_options,
+                })
+              end,
+            })
+          end
+        else
+          -- Auto-enable for default filetypes
+          vim.api.nvim_create_autocmd("FileType", {
+            pattern = "*",
+            once = true,
+            callback = function(args)
+              vim.lsp.start({
+                name = server,
+                cmd = config.cmd or { server },
+                root_dir = vim.fn.getcwd(),
+                settings = config.settings,
+                capabilities = config.capabilities,
+                on_attach = config.on_attach,
+              })
+            end,
+          })
+        end
       end
 
       -- Configure LSP handlers to prevent duplicates
@@ -2371,61 +2562,129 @@ return {
     end,
   },
 
-  -- Formatting (disabled auto-format on save for custom standards)
+  -- Enhanced formatting with Mason integration (manual only)
   {
     "stevearc/conform.nvim",
+    cmd = { "ConformInfo" },
+    keys = {
+      { "<leader>fm", desc = "Format buffer manually" },
+      { "<leader>fi", desc = "Formatter info" },
+      { "<leader>tf", desc = "Auto-formatting status (disabled)" },
+    },
     config = function()
-      -- Helper function to check if a formatter is available
+      -- Helper function to check if a formatter is available (checks Mason install dir too)
       local function is_formatter_available(formatter)
-        return vim.fn.executable(formatter) == 1
+        -- Check standard PATH
+        if vim.fn.executable(formatter) == 1 then
+          return true
+        end
+        
+        -- Check Mason install directory
+        local mason_path = vim.fn.stdpath("data") .. "/mason/bin/" .. formatter
+        if vim.fn.executable(mason_path) == 1 then
+          return true
+        end
+        
+        return false
       end
 
-      -- Build formatters table based on what's available
+      -- Build comprehensive formatters table based on what's available
       local formatters_by_ft = {}
       
-      -- Only add formatters that are available
+      -- Lua formatting
       if is_formatter_available("stylua") then
         formatters_by_ft.lua = { "stylua" }
       end
       
+      -- Python formatting
       if is_formatter_available("black") then
         formatters_by_ft.python = { "black" }
+        if is_formatter_available("isort") then
+          formatters_by_ft.python = { "isort", "black" }
+        end
       end
       
+      -- JavaScript/TypeScript/Web formatting
       if is_formatter_available("prettier") then
         formatters_by_ft.javascript = { "prettier" }
+        formatters_by_ft.javascriptreact = { "prettier" }
         formatters_by_ft.typescript = { "prettier" }
+        formatters_by_ft.typescriptreact = { "prettier" }
         formatters_by_ft.html = { "prettier" }
         formatters_by_ft.css = { "prettier" }
+        formatters_by_ft.scss = { "prettier" }
         formatters_by_ft.json = { "prettier" }
+        formatters_by_ft.jsonc = { "prettier" }
         formatters_by_ft.yaml = { "prettier" }
+        formatters_by_ft.yml = { "prettier" }
+        formatters_by_ft.markdown = { "prettier" }
+        formatters_by_ft.graphql = { "prettier" }
+        formatters_by_ft.vue = { "prettier" }
+        formatters_by_ft.svelte = { "prettier" }
       end
       
-      -- C formatter
+      -- C/C++ formatting
       if is_formatter_available("clang-format") then
         formatters_by_ft.c = { "clang-format" }
         formatters_by_ft.cpp = { "clang-format" }
+        formatters_by_ft.objc = { "clang-format" }
+        formatters_by_ft.objcpp = { "clang-format" }
       end
       
-      -- Java formatter
+      -- Java formatting
       if is_formatter_available("google-java-format") then
         formatters_by_ft.java = { "google-java-format" }
+      end
+      
+      -- Shell script formatting
+      if is_formatter_available("shfmt") then
+        formatters_by_ft.sh = { "shfmt" }
+        formatters_by_ft.bash = { "shfmt" }
+      end
+      
+      -- Go formatting (if available)
+      if is_formatter_available("gofmt") then
+        formatters_by_ft.go = { "gofmt" }
+      end
+      
+      -- Assembly formatting
+      if is_formatter_available("asmfmt") then
+        formatters_by_ft.asm = { "asmfmt" }
+        formatters_by_ft.nasm = { "asmfmt" }
+        formatters_by_ft.s = { "asmfmt" }
       end
 
       require("conform").setup({
         formatters_by_ft = formatters_by_ft,
-        -- Automatic formatting disabled by user request
+        -- Auto-formatting disabled by user request - no files change automatically
         -- Manual formatting available via <leader>fm
-        -- format_on_save = {
-        --   timeout_ms = 500,
-        --   lsp_fallback = true,
-        -- },
+        -- format_on_save = nil, -- Completely disabled
+        formatters = {
+          -- Custom formatter configurations
+          stylua = {
+            prepend_args = { "--indent-type", "Spaces", "--indent-width", "2" },
+          },
+          black = {
+            prepend_args = { "--fast" },
+          },
+          prettier = {
+            prepend_args = { "--tab-width", "2" },
+          },
+        },
       })
       
-      -- Manual format keymap (optional)
+      -- Enhanced format keymaps
       vim.keymap.set("n", "<leader>fm", function()
         require("conform").format({ lsp_fallback = true })
       end, { desc = "Format buffer manually" })
+      
+      -- Auto-formatting permanently disabled - show status
+      vim.keymap.set("n", "<leader>tf", function()
+        vim.notify("Auto-formatting is permanently disabled. Use <leader>fm for manual formatting.", vim.log.levels.INFO)
+      end, { desc = "Auto-formatting status (disabled)" })
+      
+      -- Show formatter info
+      vim.keymap.set("n", "<leader>fi", "<cmd>ConformInfo<cr>", { desc = "Formatter info" })
     end,
   },
 
@@ -2573,54 +2832,139 @@ return {
     end,
   },
 
-  -- C/C++ static analysis and linting
+  -- Enhanced linting with Mason integration
   {
     "mfussenegger/nvim-lint",
-    ft = { "c", "cpp" },
+    event = { "BufReadPre", "BufNewFile" },
     config = function()
       local lint = require("lint")
       
-      -- Check if cppcheck is available
-      local function is_cppcheck_available()
-        return vim.fn.executable("cppcheck") == 1
+      -- Helper function to check if a linter is available (checks Mason install dir too)
+      local function is_linter_available(linter)
+        -- Check standard PATH
+        if vim.fn.executable(linter) == 1 then
+          return true
+        end
+        
+        -- Check Mason install directory
+        local mason_path = vim.fn.stdpath("data") .. "/mason/bin/" .. linter
+        if vim.fn.executable(mason_path) == 1 then
+          return true
+        end
+        
+        return false
       end
       
-      -- Only configure cppcheck if it's available
-      if is_cppcheck_available() then
-        lint.linters_by_ft = {
-          c = { "cppcheck" },
-          cpp = { "cppcheck" },
-        }
+      -- Build comprehensive linters table based on what's available
+      local linters_by_ft = {}
+      
+      -- C/C++ linting
+      if is_linter_available("cppcheck") then
+        linters_by_ft.c = { "cppcheck" }
+        linters_by_ft.cpp = { "cppcheck" }
+      end
+      
+      if is_linter_available("cpplint") then
+        if linters_by_ft.c then
+          table.insert(linters_by_ft.c, "cpplint")
+        else
+          linters_by_ft.c = { "cpplint" }
+        end
         
-        -- Auto-lint on save and text changes
-        vim.api.nvim_create_autocmd({ "BufWritePost", "BufEnter", "InsertLeave" }, {
-          pattern = { "*.c", "*.cpp", "*.h", "*.hpp" },
-          callback = function()
+        if linters_by_ft.cpp then
+          table.insert(linters_by_ft.cpp, "cpplint")
+        else
+          linters_by_ft.cpp = { "cpplint" }
+        end
+      end
+      
+      -- Python linting
+      if is_linter_available("pylint") then
+        linters_by_ft.python = { "pylint" }
+      end
+      
+      -- JavaScript/TypeScript linting
+      if is_linter_available("eslint_d") then
+        linters_by_ft.javascript = { "eslint_d" }
+        linters_by_ft.javascriptreact = { "eslint_d" }
+        linters_by_ft.typescript = { "eslint_d" }
+        linters_by_ft.typescriptreact = { "eslint_d" }
+      elseif is_linter_available("eslint") then
+        linters_by_ft.javascript = { "eslint" }
+        linters_by_ft.javascriptreact = { "eslint" }
+        linters_by_ft.typescript = { "eslint" }
+        linters_by_ft.typescriptreact = { "eslint" }
+      end
+      
+      -- Shell script linting
+      if is_linter_available("shellcheck") then
+        linters_by_ft.sh = { "shellcheck" }
+        linters_by_ft.bash = { "shellcheck" }
+      end
+      
+      -- Markdown linting
+      if is_linter_available("markdownlint") then
+        linters_by_ft.markdown = { "markdownlint" }
+      end
+      
+      -- YAML linting
+      if is_linter_available("yamllint") then
+        linters_by_ft.yaml = { "yamllint" }
+        linters_by_ft.yml = { "yamllint" }
+      end
+      
+      -- Assembly linting (Note: Most assembly linting is done by assemblers like NASM)
+      -- The asm_lsp provides diagnostic information for assembly files
+
+      lint.linters_by_ft = linters_by_ft
+      
+      -- Enhanced auto-lint with debouncing
+      local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
+      
+      vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
+        group = lint_augroup,
+        callback = function()
+          -- Only lint if we have linters for this filetype
+          local ft = vim.bo.filetype
+          if linters_by_ft[ft] then
             lint.try_lint()
-          end,
-        })
-        
-        -- Manual lint command
-        vim.keymap.set("n", "<leader>cl", function()
-          lint.try_lint()
-        end, { desc = "Lint C/C++ file" })
-      else
-        -- Show a helpful message about installing cppcheck
-        vim.api.nvim_create_autocmd("FileType", {
-          pattern = { "c", "cpp" },
-          callback = function()
+          end
+        end,
+      })
+      
+      -- Manual lint command
+      vim.keymap.set("n", "<leader>ll", function()
+        lint.try_lint()
+      end, { desc = "Lint current file" })
+      
+      -- Show linter info
+      vim.keymap.set("n", "<leader>li", function()
+        local ft = vim.bo.filetype
+        local linters = linters_by_ft[ft] or {}
+        if #linters > 0 then
+          vim.notify("Available linters for " .. ft .. ": " .. table.concat(linters, ", "), vim.log.levels.INFO)
+        else
+          vim.notify("No linters configured for " .. ft, vim.log.levels.WARN)
+        end
+      end, { desc = "Show linter info" })
+      
+      -- Show helpful installation messages for missing tools
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = { "c", "cpp" },
+        callback = function()
+          if not is_linter_available("cppcheck") and not is_linter_available("cpplint") then
             vim.notify(
-              "cppcheck not found. Install it for additional static analysis:\n" ..
+              "No C/C++ linters found. Mason can install cpplint, or install cppcheck manually:\n" ..
               "• Arch Linux: sudo pacman -S cppcheck\n" ..
               "• Ubuntu: sudo apt install cppcheck\n" ..
               "• macOS: brew install cppcheck",
               vim.log.levels.INFO,
-              { title = "C/C++ Static Analysis" }
+              { title = "C/C++ Linting" }
             )
-          end,
-          once = true,
-        })
-      end
+          end
+        end,
+        once = true,
+      })
     end,
   },
 
@@ -2666,17 +3010,26 @@ return {
           },
           filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
           root_dir = function(fname)
-            return require("lspconfig.util").root_pattern(
+            -- Use vim.fs.find for root directory detection (nvim 0.11+)
+            -- Get directory of the file if fname is a file path
+            local start_path = vim.fn.fnamemodify(fname, ":p:h")
+            local found = vim.fs.find({
               "Makefile",
               "configure.ac", 
               "configure.in",
               "config.h.in",
               "meson.build",
               "meson_options.txt",
-              "build.ninja"
-            )(fname) or require("lspconfig.util").root_pattern("compile_commands.json", "compile_flags.txt")(
-              fname
-            ) or require("lspconfig.util").find_git_ancestor(fname)
+              "build.ninja",
+              "compile_commands.json",
+              "compile_flags.txt",
+              ".git"
+            }, { upward = true, path = start_path })
+            
+            if found and found[1] then
+              return vim.fs.dirname(found[1])
+            end
+            return vim.fn.getcwd()
           end,
           init_options = {
             usePlaceholders = true,

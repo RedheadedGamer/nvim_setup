@@ -100,7 +100,10 @@ require("config.theme").init()
 -- Display startup message
 if vim.fn.argc() == 0 then
   vim.defer_fn(function()
+    local current_theme = _G.nvim_current_theme or vim.g.current_theme or vim.g.colors_name or "default"
     print("🚀 Neovim Lua configuration loaded successfully!")
+    print("🎨 Current theme: " .. current_theme)
     print("💡 Use <leader>ff to find files, <leader>fg to grep, K for hover docs")
+    print("⚡ Theme shortcuts: <leader>th (switcher), <leader>ts (quick), <leader>tg (GitHub)")
   end, 100)
 end

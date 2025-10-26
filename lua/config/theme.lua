@@ -109,8 +109,12 @@ function M.get_available_themes()
     "kanagawa", "kanagawa-wave", "kanagawa-dragon", "kanagawa-lotus",
     -- Popular themes
     "sonokai", "edge", "everforest", "everforest-dark", "everforest-light", "material",
-    "vscode", "github_dark", "github_light", "github_dark_dimmed",
-    "darkplus", "aurora",
+    "vscode", "darkplus", "aurora",
+    -- GitHub theme variants (enhanced collection)
+    "github_dark", "github_light", "github_dark_dimmed", "github_dark_high_contrast",
+    "github_dark_colorblind", "github_light_high_contrast", "github_light_colorblind",
+    "github_dark_tritanopia", "github_light_tritanopia", "github_dark_default",
+    "github_light_default",
     -- Premium modern themes  
     "monokai-pro", "solarized", "ayu-dark", "ayu-light", "ayu-mirage",
     "oceanic-next", "palenight", "tender", "spaceduck", "deep-space",
@@ -144,6 +148,50 @@ function M.get_available_themes()
   
   table.sort(all_themes)
   return all_themes
+end
+
+-- Get list of GitHub themes specifically
+function M.get_github_themes()
+  return {
+    "github_dark",
+    "github_light", 
+    "github_dark_dimmed",
+    "github_dark_high_contrast",
+    "github_light_high_contrast",
+    "github_dark_colorblind",
+    "github_light_colorblind",
+    "github_dark_tritanopia",
+    "github_light_tritanopia",
+    "github_dark_default",
+    "github_light_default"
+  }
+end
+
+-- Quick function to cycle through GitHub themes
+function M.cycle_github_themes()
+  local github_themes = M.get_github_themes()
+  local current = _G.nvim_current_theme or vim.g.current_theme or vim.g.colors_name or ""
+  
+  -- Find current theme index
+  local current_index = 1
+  for i, theme in ipairs(github_themes) do
+    if theme == current then
+      current_index = i
+      break
+    end
+  end
+  
+  -- Get next theme (cycle back to first if at end)
+  local next_index = current_index < #github_themes and current_index + 1 or 1
+  local next_theme = github_themes[next_index]
+  
+  if M.apply_theme(next_theme) then
+    M.save_theme(next_theme)
+    vim.notify("🎨 GitHub Theme: " .. next_theme, vim.log.levels.INFO)
+    return next_theme
+  end
+  
+  return current
 end
 
 -- Initialize theme system
