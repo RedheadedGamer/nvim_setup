@@ -234,6 +234,14 @@ nvim
   git --version
   ```
 
+- **SSH Keys configured** (for cloning via the install script)
+  ```bash
+  # Check if SSH key is configured
+  ssh -T git@github.com
+  ```
+  - If you don't have SSH keys set up, see [GitHub SSH Setup Guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh)
+  - Alternatively, clone manually using HTTPS: `git clone https://github.com/RedheadedGamer/nvim_setup.git ~/.config/nvim`
+
 ### Additional for Full Setup
 
 #### Essential:

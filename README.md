@@ -131,6 +131,9 @@ If you prefer to install manually:
 #### Basic Requirements (Both Setups):
 - **Neovim >= 0.11.0** (for vim.lsp.config API support)
 - **Git**
+- **SSH Keys configured** (for cloning the repository)
+  - See [GitHub SSH Setup Guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh)
+  - Alternatively, clone manually using HTTPS: `git clone https://github.com/RedheadedGamer/nvim_setup.git ~/.config/nvim`
 
 #### Additional for Full Setup:
 - **Node.js** (for LSP servers)
