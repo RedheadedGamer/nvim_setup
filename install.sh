@@ -149,23 +149,32 @@ is_running_from_repo() {
     return 1
 }
 
+# Copy files from source to destination, excluding .git and .github
+do_copy() {
+    local src="$1"
+    local dest="$2"
+    
+    mkdir -p "$dest"
+    
+    if ! rsync -av --exclude='.git' --exclude='.github' "$src/" "$dest/"; then
+        # Fallback to cp if rsync is not available
+        print_msg "$YELLOW" "rsync not found, using cp instead..."
+        if ! cp -r "$src/." "$dest/"; then
+            print_msg "$RED" "✗ Failed to copy files"
+            return 1
+        fi
+        # Remove .git directory if it was copied
+        rm -rf "$dest/.git" "$dest/.github"
+    fi
+    return 0
+}
+
 # Copy files from the current directory to config directory
 copy_files() {
     print_msg "$BLUE" "Copying Neovim configuration files..."
     
-    # Create the config directory
-    mkdir -p "$CONFIG_DIR"
-    
-    # Copy all files except .git directory
-    if ! rsync -av --exclude='.git' --exclude='.github' "$SCRIPT_DIR/" "$CONFIG_DIR/"; then
-        # Fallback to cp if rsync is not available
-        print_msg "$YELLOW" "rsync not found, using cp instead..."
-        if ! cp -r "$SCRIPT_DIR/." "$CONFIG_DIR/"; then
-            print_msg "$RED" "✗ Failed to copy files"
-            exit 1
-        fi
-        # Remove .git directory if it was copied
-        rm -rf "$CONFIG_DIR/.git" "$CONFIG_DIR/.github"
+    if ! do_copy "$SCRIPT_DIR" "$CONFIG_DIR"; then
+        exit 1
     fi
     
     print_msg "$GREEN" "✓ Files copied successfully"
@@ -176,8 +185,9 @@ install_files() {
     if is_running_from_repo; then
         print_msg "$BLUE" "Detected script running from repository..."
         copy_files
-        # Mark that we should clean up the temp directory if it's in /tmp
-        if [[ "$SCRIPT_DIR" == /tmp/* ]]; then
+        # Mark for cleanup if running from a temporary directory
+        # Check common temp directory patterns
+        if [[ "$SCRIPT_DIR" == /tmp/* ]] || [[ "$SCRIPT_DIR" == /var/tmp/* ]] || [[ "$SCRIPT_DIR" == "$TMPDIR"/* ]]; then
             TEMP_CLONE_DIR="$SCRIPT_DIR"
         fi
     else
@@ -203,18 +213,10 @@ install_files() {
         
         # Now copy files from temp directory to config directory
         print_msg "$BLUE" "Installing configuration files..."
-        mkdir -p "$CONFIG_DIR"
         
-        if ! rsync -av --exclude='.git' --exclude='.github' "$TEMP_CLONE_DIR/" "$CONFIG_DIR/"; then
-            # Fallback to cp if rsync is not available
-            print_msg "$YELLOW" "rsync not found, using cp instead..."
-            if ! cp -r "$TEMP_CLONE_DIR/." "$CONFIG_DIR/"; then
-                print_msg "$RED" "✗ Failed to copy files"
-                rm -rf "$TEMP_CLONE_DIR"
-                exit 1
-            fi
-            # Remove .git directory if it was copied
-            rm -rf "$CONFIG_DIR/.git" "$CONFIG_DIR/.github"
+        if ! do_copy "$TEMP_CLONE_DIR" "$CONFIG_DIR"; then
+            rm -rf "$TEMP_CLONE_DIR"
+            exit 1
         fi
         
         print_msg "$GREEN" "✓ Configuration installed successfully"
