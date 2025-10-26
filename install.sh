@@ -144,7 +144,7 @@ clone_repository() {
         echo ""
         print_msg "$YELLOW" "Note: This script uses SSH for cloning. If you don't have SSH keys configured,"
         print_msg "$YELLOW" "you can clone manually using HTTPS instead:"
-        print_msg "$BLUE" "  git clone https://github.com/RedheadedGamer/nvim_setup.git $CONFIG_DIR"
+        print_msg "$BLUE" "  git clone https://github.com/RedheadedGamer/nvim_setup.git \"$CONFIG_DIR\""
         echo ""
         print_msg "$YELLOW" "For SSH setup instructions, see:"
         print_msg "$BLUE" "  https://docs.github.com/en/authentication/connecting-to-github-with-ssh"
