@@ -139,8 +139,15 @@ backup_existing_config() {
 clone_repository() {
     print_msg "$BLUE" "Cloning Neovim configuration..."
     
-    if ! git clone https://github.com/RedheadedGamer/nvim_setup.git "$CONFIG_DIR"; then
+    if ! git clone git@github.com:RedheadedGamer/nvim_setup.git "$CONFIG_DIR"; then
         print_msg "$RED" "✗ Failed to clone repository"
+        echo ""
+        print_msg "$YELLOW" "Note: This script uses SSH for cloning. If you don't have SSH keys configured,"
+        print_msg "$YELLOW" "you can clone manually using HTTPS instead:"
+        print_msg "$BLUE" "  git clone https://github.com/RedheadedGamer/nvim_setup.git \"$CONFIG_DIR\""
+        echo ""
+        print_msg "$YELLOW" "For SSH setup instructions, see:"
+        print_msg "$BLUE" "  https://docs.github.com/en/authentication/connecting-to-github-with-ssh"
         exit 1
     fi
     
