@@ -129,7 +129,7 @@ If you prefer to install manually:
 ### Prerequisites
 
 #### Basic Requirements (Both Setups):
-- **Neovim >= 0.9.0**
+- **Neovim >= 0.11.0** (for vim.lsp.config API support)
 - **Git**
 
 #### Additional for Full Setup:
