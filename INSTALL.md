@@ -135,8 +135,9 @@ chmod +x install.sh
 
 3. **Follow the prompts:**
    - The script will backup any existing configuration
-   - It will clone the repository to `~/.config/nvim`
+   - It will copy files from the cloned repository to `~/.config/nvim`
    - It will configure the chosen setup
+   - It will clean up temporary files
    - It will display next steps
 
 4. **Start Neovim:**
