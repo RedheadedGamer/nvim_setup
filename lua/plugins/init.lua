@@ -2746,6 +2746,7 @@ return {
             "--fallback-style=llvm",
             -- Force clangd to query GCC and Clang compilers for system headers across all platforms
             -- This ensures consistent header checking with GCC/Clang on Windows, macOS, and Linux
+            -- The ** glob pattern matches compilers in any directory path
             "--query-driver=**/*gcc*,**/*g++*,**/*clang*,**/*clang++*",
           },
           filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },

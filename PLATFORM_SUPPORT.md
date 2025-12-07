@@ -165,7 +165,7 @@ scoop bucket add versions
 
 **Known Issues:**
 - **codelldb linking error:** Mason may report "already linked" error. Solution: Remove Mason data directory and reinstall
-- **stdio.h not found:** With the `--query-driver` configuration, clangd automatically detects MinGW/Visual Studio headers when installed. If you still encounter this issue, ensure MinGW or Visual Studio Build Tools are properly installed
+- **stdio.h not found (rare):** With the `--query-driver` configuration, clangd automatically detects MinGW/Visual Studio headers when installed. In rare cases where automatic detection fails, ensure MinGW or Visual Studio Build Tools are properly installed and available in your PATH
 - Terminal colors may not display correctly in older Windows Terminal versions (use Windows Terminal from Microsoft Store)
 - Some Unix-specific shell integrations may not work (e.g., bash-specific autocomplete)
 
