@@ -2744,6 +2744,9 @@ return {
             "--completion-style=detailed",
             "--function-arg-placeholders",
             "--fallback-style=llvm",
+            -- Force clangd to query GCC for system headers across all platforms
+            -- This ensures consistent header checking with GCC on Windows, macOS, and Linux
+            "--query-driver=**/*gcc*,**/*g++*,**/*clang*,**/*clang++*",
           },
           filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
           root_dir = function(fname)

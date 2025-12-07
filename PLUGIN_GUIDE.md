@@ -79,8 +79,13 @@ cmd = {
   "--completion-style=detailed",
   "--function-arg-placeholders",
   "--fallback-style=llvm",
+  -- Force clangd to query GCC for system headers across all platforms
+  "--query-driver=**/*gcc*,**/*g++*,**/*clang*,**/*clang++*",
 }
 ```
+
+**Cross-Platform Header Checking:**
+The `--query-driver` flag forces clangd to query GCC (and Clang) compilers for their system header paths on all platforms (Windows, macOS, and Linux). This ensures consistent header detection and error checking regardless of the platform or compiler installation.
 
 #### Project Detection
 The configuration automatically detects C/C++ projects by looking for:

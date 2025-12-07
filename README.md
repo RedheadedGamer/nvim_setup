@@ -508,6 +508,7 @@ For detailed instructions on using all plugins, customizing features, and troubl
 
 ### 🔬 C/C++ Development Suite
 - **[clangd_extensions.nvim](https://github.com/p00f/clangd_extensions.nvim)** - Enhanced clangd features with inlay hints and AST viewing
+  - **Automatic GCC header detection** - Clangd is configured to query GCC for system headers across all platforms (Windows, macOS, Linux)
 - **[cmake-tools.nvim](https://github.com/Civitasv/cmake-tools.nvim)** - Complete CMake integration for project management
 - **[nvim-dap](https://github.com/mfussenegger/nvim-dap)** - Debug Adapter Protocol with codelldb and gdb support
 - **[nvim-dap-ui](https://github.com/rcarriga/nvim-dap-ui)** - Beautiful debugging interface
