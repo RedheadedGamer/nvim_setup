@@ -93,6 +93,7 @@
 - Scope highlighting (current block)
 - Customizable characters
 - Works alongside mini.indentscope
+- Automatically disabled for terminal and dashboard buffers
 
 **Keybindings:** None (visual enhancement)
 
@@ -101,23 +102,25 @@
 - Enable only_scope for cleaner look
 - Adjust colors in your theme
 - Enable underline for scope
+- Add more buffer types to exclude
 
-**Configuration location:** Line 82-94 in `lua/plugins/init.lua`
+**Configuration location:** Line 82-104 in `lua/plugins/init.lua`
 
-**Note:** Complements mini.indentscope (not a replacement)
+**Note:** Complements mini.indentscope (not a replacement). Disabled in terminal and dashboard for cleaner UI.
 
 ---
 
-### 5. 💻 snacks.terminal - Floating Terminal
+### 5. 💻 snacks.terminal - Bottom Terminal
 
-**What it does:** Provides a beautiful floating terminal window for running shell commands without leaving Neovim.
+**What it does:** Provides a terminal window at the bottom of the screen for running shell commands without leaving Neovim.
 
 **Features:**
-- Floating terminal with rounded borders
-- Configurable size and position
+- Bottom-positioned terminal (40% of screen height)
+- Full width for maximum workspace
 - Quick toggle functionality
 - Multiple terminal instances
 - LazyGit integration
+- Single-line border for clean look
 
 **Keybindings:**
 - `<leader>tt` - Toggle terminal
@@ -126,12 +129,14 @@
 - `<Esc><Esc>` - Close terminal
 
 **How to improve:**
-- Adjust terminal size (currently 90% width/height)
+- Adjust terminal height (currently 40% of screen)
 - Add more terminal shortcuts (npm, docker, etc.)
 - Create project-specific terminal commands
-- Customize border style
+- Change border style (currently "single")
 
-**Configuration location:** Line 96-109 in `lua/plugins/init.lua`
+**Configuration location:** Line 106-119 in `lua/plugins/init.lua`
+
+**Note:** Terminal opens from bottom, taking up less than half the screen for comfortable split-screen work.
 
 ---
 

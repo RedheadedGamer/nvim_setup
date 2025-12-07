@@ -91,19 +91,30 @@ return {
           char = "│",
           underline = false,
         },
+        -- Disable indent guides in specific buffer types
+        filter = function(buf)
+          local buftype = vim.bo[buf].buftype
+          local filetype = vim.bo[buf].filetype
+          -- Disable for terminal, dashboard, and special buffers
+          return buftype ~= "terminal" 
+            and filetype ~= "snacks_dashboard"
+            and filetype ~= "dashboard"
+            and buftype ~= "nofile"
+        end,
       },
       
       -- Terminal management
       terminal = {
         enabled = true,
         win = {
-          style = "float",
-          width = 0.9,
-          height = 0.9,
-          border = "rounded",
+          style = "terminal", -- Position at bottom
+          position = "bottom",
+          width = 1.0, -- Full width
+          height = 0.4, -- 40% of screen height (less than half)
+          border = "single",
           title = " Terminal ",
           title_pos = "center",
-          footer = " Press <Esc><Esc> to close ",
+          footer = " Press <Esc><Esc> or <C-/> to close ",
           footer_pos = "center",
         },
       },
