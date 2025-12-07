@@ -53,9 +53,9 @@ return {
       -- Notifier replacing basic vim.notify
       notifier = {
         enabled = true,
-        timeout = 3000,
-        width = { min = 40, max = 0.4 },
-        height = { min = 1, max = 0.6 },
+        timeout = 3000, -- MAGIC NUMBER: 3 seconds notification display time
+        width = { min = 40, max = 0.4 }, -- min chars, max 40% of screen
+        height = { min = 1, max = 0.6 }, -- min lines, max 60% of screen
         margin = { top = 0, right = 1, bottom = 0 },
         padding = true,
         sort = { "level", "added" },
@@ -73,10 +73,10 @@ return {
       scroll = {
         enabled = true,
         animate = {
-          duration = { step = 15, total = 250 },
+          duration = { step = 15, total = 250 }, -- MAGIC: 15ms per step, 250ms total scroll time
           easing = "linear",
         },
-        spamming = 10,
+        spamming = 10, -- MAGIC: Ignore rapid scroll events within 10ms
         filter = function(buf)
           return vim.bo[buf].buftype ~= "terminal"
         end,
@@ -150,9 +150,9 @@ return {
       -- General animation framework
       animate = {
         enabled = true,
-        duration = 20,
+        duration = 20, -- MAGIC: 20ms animation duration for UI elements
         easing = "linear",
-        fps = 60,
+        fps = 60, -- MAGIC: 60 frames per second for smooth animations
       },
       
       -- Git utilities
@@ -541,106 +541,6 @@ return {
       })
     end,
   },
-
-
-
-  -- ============================================================================ 
-  -- ADDITIONAL PREMIUM THEMES (20+ new high-quality themes)
-  -- ============================================================================
-
-  -- Monokai Pro family - Professional themes
-
-  -- Solarized - Classic and beloved
-
-  -- Ayu - Elegant minimal themes
-
-  -- Oceanic Next - Beautiful blue theme
-
-  -- Palenight - Material inspired
-
-  -- Gruvbox Baby - Modern Gruvbox
-
-  -- Tender - Gentle purple theme
-
-  -- Spaceduck - Retro space theme
-
-  -- Deep Space - Cosmic dark theme
-
-  -- Moonfly - Dark blue theme
-
-  -- Nightowl - Dark theme for night owls
-
-  -- Zephyr - Modern dark theme
-
-  -- Onedark Vivid - Enhanced OneDark
-
-  -- Oxocarbon - Modern IBM inspired
-
-  -- Melange - Warm color palette
-
-  -- Flow - Minimal and clean
-
-  -- Cyberdream - Futuristic theme
-
-  -- Vesper - Dark purple theme
-
-  -- Bamboo - Natural green theme
-
-  -- Flexoki - Modern neutral theme
-
-  -- Lackluster - Deliberately muted
-
-  -- ============================================================================
-  -- ADDITIONAL COOL THEMES (20+ more popular and modern themes)
-  -- ============================================================================
-
-  -- Fluoromachine - Modern neon themes
-
-  -- Lualine themes for variety
-
-  -- Nightfox family - More fox themes
-
-  -- Doom themes family
-
-  -- Tokyo Night variants
-
-  -- PaperColor theme
-
-  -- Codedark theme (VS Code inspired)
-
-  -- One themes
-
-  -- Lush - dependency for apprentice theme
-
-  -- Apprentice-inspired theme (replacement for problematic romainl/Apprentice)
-
-  -- Zenburn theme
-
-  -- Base16 alternatives - Arctic themes
-
-  -- Rigel theme
-
-  -- Blue Moon theme
-
-  -- Horizon theme
-
-  -- Embark theme
-
-  -- Forest Night theme
-
-  -- Iceberg theme
-
-  -- Challenger Deep theme
-
-  -- Jellybeans theme
-
-  -- Srcery theme
-
-  -- PaperColor improved
-
-  -- Miramare theme
-
-  -- Artify theme
 
   -- Essential dependencies
   {
