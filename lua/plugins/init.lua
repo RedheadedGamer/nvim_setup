@@ -263,7 +263,8 @@ return {
       { "<leader>tz", function() require("snacks").toggle.zen() end, desc = "Toggle Zen Mode" },
       { "<leader>tZ", function() require("snacks").toggle.zoom() end, desc = "Toggle Zoom" },
       { "<leader>tD", function() require("snacks").toggle.dim() end, desc = "Toggle Dim" },
-      { "<leader>tg", function() require("snacks").toggle.option("signcolumn", { on = "yes", off = "no" }) end, desc = "Toggle Sign Column" },
+      -- CONFLICT FIX #60: Changed from <leader>tg to <leader>tG to avoid clash with lazygit
+      { "<leader>tG", function() require("snacks").toggle.option("signcolumn", { on = "yes", off = "no" }) end, desc = "Toggle Sign Column" },
       { "<leader>ts", function() require("snacks").toggle.option("spell") end, desc = "Toggle Spell Check" },
       { "<leader>tw", function() require("snacks").toggle.option("wrap") end, desc = "Toggle Wrap" },
     },
@@ -856,23 +857,10 @@ return {
     end,
   },
 
-  -- Additional high-quality mini plugins for enhanced experience
-  {
-    "echasnovski/mini.bufremove",
-    version = "*",
-    config = function()
-      require("mini.bufremove").setup()
-      
-      -- Keymap for better buffer deletion
-      vim.keymap.set("n", "<leader>bd", function()
-        require("mini.bufremove").delete()
-      end, { desc = "Delete buffer (keep layout)" })
-      
-      vim.keymap.set("n", "<leader>bD", function()
-        require("mini.bufremove").delete(0, true)
-      end, { desc = "Force delete buffer" })
-    end,
-  },
+  -- REMOVED: mini.bufremove (CONFLICT FIX #4)
+  -- Reason: Duplicates snacks.bufdelete functionality on same keybindings
+  -- snacks.bufdelete is more feature-rich and already loaded
+  -- Original keymaps were: <leader>bd and <leader>bD
 
   -- mini.starter and mini.animate removed - replaced by snacks.nvim dashboard and scroll
   
@@ -1058,7 +1046,8 @@ return {
         { "<leader>tz", desc = "Toggle Zen Mode", icon = "🧘" },
         { "<leader>tZ", desc = "Toggle Zoom", icon = "🔍" },
         { "<leader>tD", desc = "Toggle Dim", icon = "🌗" },
-        { "<leader>tg", desc = "Toggle Git Signs", icon = "📦" },
+        -- CONFLICT FIX #60: Updated to reflect new keybinding
+        { "<leader>tG", desc = "Toggle Sign Column", icon = "📦" },
         { "<leader>ts", desc = "Toggle Spell Check", icon = "✓" },
         { "<leader>tw", desc = "Toggle Wrap", icon = "↩️" },
 
@@ -2034,19 +2023,11 @@ return {
     end,
   },
 
-  -- Git integration with fugitive.vim (replacing problematic mini.git)
-  {
-    "tpope/vim-fugitive",
-    cmd = { "Git", "G", "Gdiffsplit", "Gread", "Gwrite", "Ggrep", "GMove", "GDelete", "GBrowse", "GRemove" },
-    keys = {
-      { "<leader>gs", "<cmd>Git<cr>", desc = "Git status" },
-      { "<leader>gc", "<cmd>Git commit<cr>", desc = "Git commit" },
-      { "<leader>gp", "<cmd>Git push<cr>", desc = "Git push" },
-      { "<leader>gl", "<cmd>Git log --oneline<cr>", desc = "Git log" },
-      { "<leader>gd", "<cmd>Gdiffsplit<cr>", desc = "Git diff" },
-      { "<leader>gb", "<cmd>Git blame<cr>", desc = "Git blame" },
-    },
-  },
+  -- REMOVED: vim-fugitive (CONFLICT FIX #6)
+  -- Reason: Overlaps with snacks.git + gitsigns functionality
+  -- snacks provides: git blame, browse, lazygit integration
+  -- gitsigns provides: signs, hunks, blame, diff
+  -- fugitive's commands are redundant and add 20MB to memory
 
   -- Gitsigns for enhanced git integration
   {
@@ -2196,6 +2177,10 @@ return {
     end,
   },
 
+  -- USAGE NOTE (CONFLICT RESOLUTION #9):
+  -- Telescope (<leader>f*) is the PRIMARY fuzzy finder - feature-rich, well-supported
+  -- mini.pick (<leader>p*) is the ALTERNATIVE - lightweight, minimal dependencies
+  -- Use telescope for daily work, mini.pick as lightweight backup or for minimal setups
   {
     "echasnovski/mini.pick",
     version = "*",
