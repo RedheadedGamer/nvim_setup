@@ -1544,10 +1544,7 @@ return {
           "eslint_d",     -- JS/TS linter (faster than eslint)
           "cpplint",      -- C++ linter (alternative to cppcheck)
           
-          -- Debuggers (for mason-nvim-dap)
-          "codelldb",     -- C/C++/Rust debugger
-          "debugpy",      -- Python debugger
-          "js-debug-adapter", -- JS/TS debugger
+          -- Debuggers are managed by mason-nvim-dap separately to avoid race conditions
           
           -- Additional tools
           "markdownlint", -- Markdown linter
