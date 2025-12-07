@@ -11,9 +11,10 @@ A modern, feature-rich Neovim configuration written in Lua with **complete mini.
 - **🔬 Advanced C/C++ Development**: Complete development environment with enhanced clangd, CMake integration, debugging, and static analysis
 - **Plugin Manager**: Uses [lazy.nvim](https://github.com/folke/lazy.nvim) for fast, lazy-loaded plugin management
 - **Auto-completion**: Powerful completion engine with [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) replacing CoC
-- **Complete Mini.nvim Ecosystem**: All 28 mini.nvim plugins for comprehensive development tools
+- **🍿 snacks.nvim Integration**: All 21 features from folke's modern plugin collection (dashboard, notifications, terminal, git, zen mode, and more) - [See complete guide](SNACKS_GUIDE.md)
+- **Complete Mini.nvim Ecosystem**: 27 mini.nvim plugins for comprehensive development tools
 - **170+ Keybinds**: Comprehensive keybind system with which-key integration for discoverability
-- **Optimized Performance**: Streamlined configuration with curated high-quality themes
+- **Optimized Performance**: Streamlined configuration with 15 curated high-quality themes (75% reduction)
 - **Smart Movement**: Mini.move integration for moving lines and selections with Alt+hjkl
 - **Enhanced Bracket Matching**: Improved bracket/parenthesis visibility with rainbow colors and smart matching
 - **Advanced Text Objects**: Enhanced editing with mini.ai, mini.surround, and mini.operators
@@ -21,7 +22,7 @@ A modern, feature-rich Neovim configuration written in Lua with **complete mini.
 - **Tab-based Indentation**: Configured to use actual tabs (noexpandtab) for consistent formatting
 - **Fuzzy Finding**: Telescope integration for file finding, searching, and more
 - **Syntax Highlighting**: Enhanced syntax highlighting with Treesitter
-- **Multiple Themes**: 50+ beautiful colorschemes with enhanced theme switcher (fixed infinite indenting issue)
+- **Multiple Themes**: 15 beautiful, actively-maintained colorschemes with ~40 variants
 - **LaTeX Support**: VimTeX integration for LaTeX document editing
 - **Transparent Background**: Configured for transparent terminal backgrounds
 - **Enhanced Transparency**: 80+ UI elements configured for full transparency support  
@@ -361,6 +362,7 @@ mv init.vim.legacy init.vim
 For detailed instructions on using all plugins, customizing features, and troubleshooting, see the **[Complete Plugin Usage Guide](PLUGIN_GUIDE.md)**.
 
 **Quick links to common tasks:**
+- [🍿 snacks.nvim Complete Guide](SNACKS_GUIDE.md) - All 21 features explained with keybindings and improvement tips
 - [🔧 Enable/Disable Features](PLUGIN_GUIDE.md#-enablingdisabling-features)
 - [🎯 Git & SSH Setup](PLUGIN_GUIDE.md#-git-integration)
 - [🎨 Theme Customization](PLUGIN_GUIDE.md#-theme-management)
