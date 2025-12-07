@@ -300,7 +300,7 @@ return {
   -- Primary colorscheme (default)
   {
     "olimorris/onedarkpro.nvim",
-    lazy = false,
+    lazy = false, -- PERFORMANCE: Keep default theme eager for immediate UI
     priority = 1000,
     config = function()
       require("onedarkpro").setup({
@@ -314,8 +314,7 @@ return {
   -- Popular theme collection (optimized for transparency)
   {
     "folke/tokyonight.nvim",
-    lazy = false, -- Load immediately for availability
-    priority = 999,
+    lazy = true, -- PERFORMANCE: Lazy load themes not actively used
     config = function()
       require("tokyonight").setup({
         style = "night",
@@ -330,8 +329,7 @@ return {
   
   {
     "ellisonleao/gruvbox.nvim",
-    lazy = false, -- Load immediately for availability
-    priority = 998,
+    lazy = true, -- PERFORMANCE: Lazy load themes not actively used
     config = function()
       require("gruvbox").setup({
         transparent_mode = true,
@@ -341,8 +339,7 @@ return {
   
   {
     "Mofiqul/dracula.nvim",
-    lazy = false, -- Load immediately for availability
-    priority = 997,
+    lazy = true, -- PERFORMANCE: Lazy load themes not actively used
     config = function()
       require("dracula").setup({
         transparent_bg = true,
@@ -364,8 +361,7 @@ return {
   {
     "catppuccin/nvim",
     name = "catppuccin",
-    lazy = false, -- Load immediately for availability
-    priority = 996,
+    lazy = true, -- PERFORMANCE: Lazy load themes not actively used
     config = function()
       require("catppuccin").setup({
         flavour = "mocha",
@@ -433,8 +429,7 @@ return {
 
   {
     "sainnhe/everforest",
-    lazy = false, -- Load immediately for theme switcher availability
-    priority = 976, -- Set priority for immediate loading
+    lazy = true, -- PERFORMANCE: Lazy load themes not actively used
     config = function()
       vim.g.everforest_background = "medium"
       vim.g.everforest_transparent_background = 1
@@ -494,8 +489,7 @@ return {
 
   {
     "projekt0n/github-nvim-theme",
-    lazy = false, -- Load immediately for theme availability
-    priority = 995,
+    lazy = true, -- PERFORMANCE: Lazy load themes not actively used
     config = function()
       require("github-theme").setup({
         options = {
@@ -1419,49 +1413,9 @@ return {
             local actions = require("telescope.actions")
             local state = require("telescope.actions.state")
             
-            -- Show current selection in the prompt
-            local function update_prompt()
-              local selection = state.get_selected_entry()
-              if selection then
-                local current_theme = selection.value
-                -- Clear all previous theme preview notifications (using snacks.notifier if loaded)
-                local snacks_ok, snacks = pcall(require, "snacks")
-                if snacks_ok and snacks.notifier then
-                  pcall(snacks.notifier.dismiss)
-                end
-                
-                -- Show new notification for current preview theme
-                vim.notify(
-                  string.format("📋 Previewing: %s", current_theme), 
-                  vim.log.levels.INFO, 
-                  {
-                    timeout = 1500,
-                    title = "Theme Preview",
-                  }
-                )
-              end
-            end
-            
-            -- Update on cursor movement
-            map("i", "<Down>", function()
-              actions.move_selection_next(prompt_bufnr)
-              vim.defer_fn(update_prompt, 100)
-            end)
-            
-            map("i", "<Up>", function()
-              actions.move_selection_previous(prompt_bufnr)
-              vim.defer_fn(update_prompt, 100)
-            end)
-            
-            map("n", "j", function()
-              actions.move_selection_next(prompt_bufnr)
-              vim.defer_fn(update_prompt, 100)
-            end)
-            
-            map("n", "k", function()
-              actions.move_selection_previous(prompt_bufnr)
-              vim.defer_fn(update_prompt, 100)
-            end)
+            -- PERFORMANCE FIX: Removed notification spam on cursor movement
+            -- Theme preview is handled by telescope's enable_preview = true
+            -- No need for additional notifications that create 50+ popups
             
             -- Save theme on selection
             actions.select_default:replace(function()
