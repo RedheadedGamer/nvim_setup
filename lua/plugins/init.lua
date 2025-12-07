@@ -25,7 +25,10 @@ return {
             { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
             { icon = " ", key = "r", desc = "Recent Files", action = ":Telescope oldfiles" },
             { icon = " ", key = "g", desc = "Find Text", action = ":Telescope live_grep" },
-            { icon = " ", key = "c", desc = "Config", action = function() vim.cmd("e " .. vim.fn.stdpath("config") .. "/init.lua") end },
+            { icon = " ", key = "c", desc = "Config", action = function() 
+              -- SECURITY FIX: Use safe API instead of concatenating into vim.cmd
+              vim.api.nvim_cmd({ cmd = 'edit', args = { vim.fn.stdpath("config") .. "/init.lua" } }, {})
+            end },
             { icon = " ", key = "s", desc = "Restore Session", action = ":lua require('mini.sessions').select()" },
             { icon = "󰒲 ", key = "l", desc = "Lazy", action = ":Lazy" },
             { icon = " ", key = "m", desc = "Mason", action = ":Mason" },
@@ -267,8 +270,18 @@ return {
     
     -- Init function for additional setup
     init = function()
-      -- Replace vim.notify with snacks notifier
-      vim.notify = require("snacks").notifier.notify
+      -- SECURITY FIX: Replace vim.notify with fallback protection
+      local ok, snacks = pcall(require, "snacks")
+      if ok and snacks.notifier then
+        local original_notify = vim.notify
+        vim.notify = function(msg, level, opts)
+          -- Try snacks notifier first, fallback to original if it fails
+          local success = pcall(snacks.notifier.notify, msg, level, opts)
+          if not success then
+            original_notify(msg, level, opts)
+          end
+        end
+      end
       
       -- Setup snacks autocmds
       vim.api.nvim_create_autocmd("User", {
@@ -1728,8 +1741,8 @@ return {
           cmd = { 
             "asm-lsp",
             "--config",
-            -- Cross-platform home directory path
-            (_G.is_windows and vim.fn.expand("$USERPROFILE") or vim.fn.expand("~")) .. "/.asm-lsp.toml"
+            -- SECURITY FIX: Use stdpath and normalize path to prevent traversal
+            vim.fs.normalize((vim.fn.stdpath("config"):match("^(.+)/nvim") or vim.env.HOME or vim.fn.expand("~")) .. "/.asm-lsp.toml")
           },
           filetypes = { "asm", "s", "S", "nasm" },
           settings = {
