@@ -453,12 +453,93 @@ end, ...)
 
 ---
 
+## Phase 5: LSP Configuration Fixes - COMPLETED ✅
+
+### Changes Made:
+
+#### 2025-12-07 22:20 | FIX | lua/plugins/init.lua:1766-1778 | Remove LSP double initialization (Issue #18)
+**BEFORE:**
+```lua
+vim.lsp.config[server] = config
+-- THEN also create FileType autocmd with vim.lsp.start
+vim.api.nvim_create_autocmd("FileType", {
+  callback = function(args)
+    vim.lsp.start({ ... })  -- Manual start
+  end,
+})
+```
+**AFTER:**
+```lua
+-- Only set vim.lsp.config - auto-starts when files opened
+vim.lsp.config[server] = config
+-- Removed 50+ lines of duplicate FileType autocmd code
+```
+**Impact:** Eliminated double initialization, LSP servers start once
+**Status:** ✅ Fixed
+
+#### 2025-12-07 22:20 | ADD | lua/plugins/init.lua:1510 | Document clangd handling (Issue #28)
+**Change:** Added comment clarifying clangd is handled by clangd_extensions plugin
+```lua
+"clangd", -- C/C++ LSP (PHASE 5 FIX #28: handled by clangd_extensions plugin, not mason-lspconfig)
+```
+**Impact:** Clear documentation prevents configuration conflicts
+**Status:** ✅ Documented
+
+#### 2025-12-07 22:20 | FIX | lua/plugins/init.lua:1748-1762, 2730-2751 | Improve root_dir fallback (Issue #29)
+**BEFORE:**
+```lua
+if found and found[1] then
+  return vim.fs.dirname(found[1])
+end
+return vim.fn.getcwd()  -- Bad: may not be project root
+```
+**AFTER:**
+```lua
+if found and found[1] then
+  return vim.fs.dirname(found[1])
+end
+return start_path  -- Better: directory of current file
+```
+**Impact:** LSP finds project files correctly even without project markers
+**Status:** ✅ Fixed (2 locations: asm_lsp and clangd)
+
+#### 2025-12-07 22:20 | ADD | lua/plugins/init.lua:1769-1775 | Add executable checks (Issue #34)
+**BEFORE:**
+```lua
+for server, config in pairs(servers) do
+  vim.lsp.config[server] = config  -- No validation
+end
+```
+**AFTER:**
+```lua
+for server, config in pairs(servers) do
+  local server_cmd = config.cmd and config.cmd[1] or server
+  if vim.fn.executable(server_cmd) == 0 then
+    vim.notify("LSP server '%s' not found. Install via :Mason", vim.log.levels.WARN)
+    goto continue
+  end
+  vim.lsp.config[server] = config
+  ::continue::
+end
+```
+**Impact:** Clear warnings when LSP servers missing, prevents silent failures
+**Status:** ✅ Fixed
+
+### Summary:
+- ✅ Removed LSP double initialization (50+ lines cleaner)
+- ✅ Documented clangd configuration approach
+- ✅ Improved root_dir fallback (2 locations)
+- ✅ Added executable validation before LSP config
+- ✅ All 4 Phase 5 issues resolved
+
+---
+
 ## Statistics
 
 **Total Changes Planned:** 72 issues to fix
-**Completed:** 25
+**Completed:** 29 (25 + 4 from Phase 5)
 **In Progress:** 0
-**Pending:** 47
+**Pending:** 43
 
 **Code to Remove:** ~200 lines
 **Code to Add:** ~150 lines

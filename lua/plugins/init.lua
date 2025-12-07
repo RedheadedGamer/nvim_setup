@@ -1507,7 +1507,7 @@ return {
         installer.setup({
         ensure_installed = {
           -- LSP servers (managed by mason-lspconfig)
-          "clangd",       -- C/C++ LSP (handled by clangd_extensions)
+          "clangd",       -- C/C++ LSP (PHASE 5 FIX #28: handled by clangd_extensions plugin, not mason-lspconfig)
           "lua_ls",       -- Lua LSP
           "pyright",      -- Python LSP
           "ts_ls",        -- TypeScript LSP
@@ -1746,8 +1746,8 @@ return {
             },
           },
           root_dir = function(fname)
+            -- PHASE 5 FIX #29: Better root_dir fallback
             -- Look for common assembly project indicators
-            -- Get directory of the file if fname is a file path
             local start_path = vim.fn.fnamemodify(fname, ":p:h")
             local found = vim.fs.find({
               "Makefile",
@@ -1758,64 +1758,37 @@ return {
             if found and found[1] then
               return vim.fs.dirname(found[1])
             end
-            return vim.fn.getcwd()
+            -- Better fallback: directory of current file instead of getcwd()
+            return start_path
           end,
         },
       }
 
-      -- Configure LSP servers using new vim.lsp.config API (nvim 0.11+)
+      -- PHASE 5 FIX #18: Remove LSP double initialization
+      -- PHASE 5 FIX #34: Add executable checks before configuring LSP
+      -- Using only vim.lsp.config API (nvim 0.11+) without manual vim.lsp.start
       for server, config in pairs(servers) do
+        -- Check if server executable exists before configuring
+        local server_cmd = config.cmd and config.cmd[1] or server
+        if vim.fn.executable(server_cmd) == 0 then
+          vim.notify(
+            string.format("LSP server '%s' not found. Install via :Mason or system package manager.", server),
+            vim.log.levels.WARN
+          )
+          -- Skip this server but continue with others
+          goto continue
+        end
+        
         config.capabilities = capabilities
         config.on_attach = on_attach
         
-        -- Use new vim.lsp.config API
+        -- Set config in vim.lsp.config - this is the single source of truth
         vim.lsp.config[server] = config
         
-        -- Enable the server for appropriate filetypes using vim.lsp.start
-        if config.filetypes then
-          for _, ft in ipairs(config.filetypes) do
-            vim.api.nvim_create_autocmd("FileType", {
-              pattern = ft,
-              callback = function(args)
-                -- Start the LSP server with proper configuration
-                local root_dir = nil
-                if config.root_dir then
-                  root_dir = config.root_dir(vim.api.nvim_buf_get_name(args.buf))
-                else
-                  -- Default to current directory
-                  root_dir = vim.fn.getcwd()
-                end
-                
-                vim.lsp.start({
-                  name = server,
-                  cmd = config.cmd or { server },
-                  root_dir = root_dir,
-                  settings = config.settings,
-                  capabilities = config.capabilities,
-                  on_attach = config.on_attach,
-                  filetypes = config.filetypes,
-                  init_options = config.init_options,
-                })
-              end,
-            })
-          end
-        else
-          -- Auto-enable for default filetypes
-          vim.api.nvim_create_autocmd("FileType", {
-            pattern = "*",
-            once = true,
-            callback = function(args)
-              vim.lsp.start({
-                name = server,
-                cmd = config.cmd or { server },
-                root_dir = vim.fn.getcwd(),
-                settings = config.settings,
-                capabilities = config.capabilities,
-                on_attach = config.on_attach,
-              })
-            end,
-          })
-        end
+        -- Note: vim.lsp automatically starts servers when files are opened
+        -- No need for manual FileType autocmds with vim.lsp.start
+        
+        ::continue::
       end
 
       -- Configure LSP handlers to prevent duplicates
@@ -2768,8 +2741,8 @@ return {
           },
           filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
           root_dir = function(fname)
+            -- PHASE 5 FIX #29: Better root_dir fallback
             -- Use vim.fs.find for root directory detection (nvim 0.11+)
-            -- Get directory of the file if fname is a file path
             local start_path = vim.fn.fnamemodify(fname, ":p:h")
             local found = vim.fs.find({
               "Makefile",
@@ -2787,7 +2760,8 @@ return {
             if found and found[1] then
               return vim.fs.dirname(found[1])
             end
-            return vim.fn.getcwd()
+            -- Better fallback: directory of current file instead of getcwd()
+            return start_path
           end,
           init_options = {
             usePlaceholders = true,
