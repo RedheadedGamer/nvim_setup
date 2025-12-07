@@ -6,7 +6,18 @@
 --
 -- Modern Lua Configuration for Neovim
 -- Converted from init.vim by Stephan Raabe (2023)
+-- Cross-platform support: Linux, macOS, Windows
 -- -----------------------------------------------------
+
+-- Detect OS for cross-platform compatibility
+local is_windows = vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1
+local is_mac = vim.fn.has("mac") == 1 or vim.fn.has("macunix") == 1
+local is_linux = vim.fn.has("unix") == 1 and not is_mac
+
+-- Store OS detection globally for other modules
+_G.is_windows = is_windows
+_G.is_mac = is_mac
+_G.is_linux = is_linux
 
 -- Ensure proper runtime path for configuration modules
 local config_path = vim.fn.stdpath("config")

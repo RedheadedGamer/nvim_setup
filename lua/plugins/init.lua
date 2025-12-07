@@ -25,7 +25,7 @@ return {
             { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
             { icon = " ", key = "r", desc = "Recent Files", action = ":Telescope oldfiles" },
             { icon = " ", key = "g", desc = "Find Text", action = ":Telescope live_grep" },
-            { icon = " ", key = "c", desc = "Config", action = ":e ~/.config/nvim/init.lua" },
+            { icon = " ", key = "c", desc = "Config", action = function() vim.cmd("e " .. vim.fn.stdpath("config") .. "/init.lua") end },
             { icon = " ", key = "s", desc = "Restore Session", action = ":lua require('mini.sessions').select()" },
             { icon = "󰒲 ", key = "l", desc = "Lazy", action = ":Lazy" },
             { icon = " ", key = "m", desc = "Mason", action = ":Mason" },
@@ -1728,7 +1728,8 @@ return {
           cmd = { 
             "asm-lsp",
             "--config",
-            vim.fn.expand("~/.asm-lsp.toml")  -- Use config from home directory
+            -- Cross-platform home directory path
+            (_G.is_windows and vim.fn.expand("$USERPROFILE") or vim.fn.expand("~")) .. "/.asm-lsp.toml"
           },
           filetypes = { "asm", "s", "S", "nasm" },
           settings = {
