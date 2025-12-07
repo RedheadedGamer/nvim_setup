@@ -394,7 +394,9 @@ scoop install neovim git
 scoop install nodejs python ripgrep
 
 # Optional C/C++ tools
-scoop install mingw cmake llvm
+# Install MinGW FIRST - it provides complete GCC toolchain with all headers
+scoop install mingw cmake
+# Optional: LLVM can coexist with MinGW but is not required
 # Note: GDB comes with mingw, or install separately: scoop install gdb
 
 # Additional buckets for more packages
@@ -402,11 +404,18 @@ scoop bucket add extras
 scoop bucket add versions
 ```
 
-**Note for Windows users:**
-- Configuration is stored in `$env:LOCALAPPDATA\nvim` (typically `C:\Users\YourUsername\AppData\Local\nvim`)
-- Make sure to use PowerShell (not Command Prompt) for the installation
-- Mason LSP servers will be installed to `$env:LOCALAPPDATA\nvim-data\mason`
-- Some LSP servers may require Visual Studio Build Tools or Windows SDK for C/C++ development
+**Important Notes for Windows Users:**
+- **Configuration Location:** `$env:LOCALAPPDATA\nvim` (typically `C:\Users\YourUsername\AppData\Local\nvim`)
+- **Use PowerShell** (not Command Prompt) for installation
+- **Mason Directory:** LSP servers install to `$env:LOCALAPPDATA\nvim-data\mason`
+- **C/C++ Development:** 
+  - MinGW is recommended and includes all necessary headers (stdio.h, etc.)
+  - Alternatively, install Visual Studio Build Tools with C++ workload
+  - Do NOT install only LLVM - it lacks Windows system headers
+- **Common Issues:** See [WINDOWS_TROUBLESHOOTING.md](WINDOWS_TROUBLESHOOTING.md) for solutions to:
+  - "codelldb is already linked" error
+  - "stdio.h file not found" error
+  - LSP server installation problems
 
 ## Switching Between Setups
 

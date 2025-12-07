@@ -62,7 +62,7 @@ PREREQUISITES:
       - Node.js (install via: scoop install nodejs)
       - Python (install via: scoop install python)
       - ripgrep (install via: scoop install ripgrep)
-      - GCC/Clang for C/C++ (install via: scoop install mingw or llvm)
+      - GCC/Clang for C/C++ (install via: scoop install mingw - RECOMMENDED, includes all headers)
 
 "@
 }
@@ -354,8 +354,10 @@ function Write-Instructions {
         Write-Host ""
         Write-Host "4. Install prerequisites if missing (using Scoop):"
         Write-ColorMessage $Yellow "   scoop install nodejs python ripgrep"
-        Write-ColorMessage $Yellow "   scoop install mingw        # For C/C++ development"
-        Write-ColorMessage $Yellow "   scoop install cmake        # For CMake projects"
+        Write-ColorMessage $Yellow "   scoop install mingw cmake  # For C/C++ development (MinGW includes all headers)"
+        Write-Host ""
+        Write-ColorMessage $Blue "   Note: If you encounter 'codelldb already linked' or 'stdio.h not found' errors,"
+        Write-ColorMessage $Blue "   see WINDOWS_TROUBLESHOOTING.md for solutions."
         Write-Host ""
         Write-Host "5. Key bindings:"
         Write-ColorMessage $Yellow "   • <Space>ff - Find files"

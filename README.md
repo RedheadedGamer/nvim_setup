@@ -261,9 +261,13 @@ scoop install neovim git
 scoop install nodejs python ripgrep
 
 # C/C++ development (optional for full setup)
-scoop install mingw cmake llvm
+# IMPORTANT: Install mingw FIRST for complete C++ headers and toolchain
+scoop install mingw cmake
+# Optional: LLVM can be added alongside MinGW, but MinGW provides essential headers
 # Note: GDB comes with mingw, or install separately: scoop install gdb
 ```
+
+> **🪟 Windows Users:** Having issues? See [WINDOWS_TROUBLESHOOTING.md](WINDOWS_TROUBLESHOOTING.md) for solutions to common problems like "codelldb already linked" or "stdio.h not found".
 
 ### Post-Installation
 

@@ -158,12 +158,17 @@ scoop bucket add versions
 - Use PowerShell (not Command Prompt) for installation
 - Git from Scoop includes Git Bash for Unix-like commands
 - Mason installs LSP servers to `$env:LOCALAPPDATA\nvim-data\mason`
-- Some C/C++ features may require Visual Studio Build Tools for best compatibility
+- **Recommended:** Use MinGW instead of standalone LLVM for C/C++ development (includes all system headers)
+- For best C/C++ support, install Visual Studio Build Tools with C++ workload
 - Path separators are automatically handled by Neovim's Lua API
 
 **Known Issues:**
+- **codelldb linking error:** Mason may report "already linked" error. Solution: Remove Mason data directory and reinstall
+- **stdio.h not found:** Clang from LLVM package lacks Windows headers. Solution: Use MinGW or Visual Studio Build Tools
 - Terminal colors may not display correctly in older Windows Terminal versions (use Windows Terminal from Microsoft Store)
 - Some Unix-specific shell integrations may not work (e.g., bash-specific autocomplete)
+
+**See [WINDOWS_TROUBLESHOOTING.md](WINDOWS_TROUBLESHOOTING.md) for detailed solutions to common Windows issues.**
 
 ---
 
