@@ -13,3 +13,6 @@ test_*/
 # Backup files
 *.bak
 *.backup
+
+# Generated theme configuration
+theme_config.lua
