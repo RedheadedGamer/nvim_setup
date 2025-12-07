@@ -132,9 +132,79 @@ return {
         jumplist = true,
         modes = { "n", "i", "c" },
       },
+      
+      -- General animation framework
+      animate = {
+        enabled = true,
+        duration = 20,
+        easing = "linear",
+        fps = 60,
+      },
+      
+      -- Git utilities
+      git = {
+        enabled = true,
+      },
+      
+      -- Git browse - open URLs in browser
+      gitbrowse = {
+        enabled = true,
+      },
+      
+      -- LazyGit integration
+      lazygit = {
+        enabled = true,
+        configure = true,
+      },
+      
+      -- LSP rename with preview
+      rename = {
+        enabled = true,
+      },
+      
+      -- Smart buffer deletion
+      bufdelete = {
+        enabled = true,
+      },
+      
+      -- Toggle utilities
+      toggle = {
+        enabled = true,
+      },
+      
+      -- Zen mode for distraction-free coding
+      zen = {
+        enabled = true,
+        zoom = {
+          width = 0.85,
+          height = 0.9,
+        },
+        toggles = {
+          dim = true,
+          git_signs = false,
+          mini_diff = false,
+          diagnostics = false,
+          inlay_hints = false,
+        },
+      },
+      
+      -- Dim inactive windows
+      dim = {
+        enabled = true,
+      },
+      
+      -- Scratch buffer for quick notes
+      scratch = {
+        enabled = true,
+      },
+      
+      -- Window utilities
+      win = {
+        enabled = true,
+      },
     },
     
-    -- Keybindings
+    -- Keybindings for all snacks features
     keys = {
       -- Dashboard
       { "<leader>sd", function() require("snacks").dashboard.open() end, desc = "Dashboard" },
@@ -152,6 +222,36 @@ return {
       -- Word navigation
       { "]]", function() require("snacks").words.jump(vim.v.count1) end, desc = "Next Reference" },
       { "[[", function() require("snacks").words.jump(-vim.v.count1) end, desc = "Previous Reference" },
+      
+      -- Git utilities
+      { "<leader>gb", function() require("snacks").git.blame_line() end, desc = "Git Blame Line" },
+      { "<leader>gB", function() require("snacks").gitbrowse() end, desc = "Git Browse" },
+      { "<leader>gf", function() require("snacks").lazygit.log_file() end, desc = "LazyGit File History" },
+      { "<leader>gl", function() require("snacks").lazygit.log() end, desc = "LazyGit Log" },
+      { "<leader>gg", function() require("snacks").lazygit() end, desc = "LazyGit" },
+      
+      -- LSP rename with preview
+      { "<leader>rn", function() require("snacks").rename() end, desc = "Rename (with preview)" },
+      
+      -- Buffer delete
+      { "<leader>bd", function() require("snacks").bufdelete() end, desc = "Delete Buffer" },
+      { "<leader>bD", function() require("snacks").bufdelete({ force = true }) end, desc = "Delete Buffer (force)" },
+      
+      -- Zen mode
+      { "<leader>z", function() require("snacks").zen() end, desc = "Zen Mode" },
+      { "<leader>Z", function() require("snacks").zen.zoom() end, desc = "Zen Zoom" },
+      
+      -- Scratch buffer
+      { "<leader>.", function() require("snacks").scratch() end, desc = "Scratch Buffer" },
+      { "<leader>S", function() require("snacks").scratch.select() end, desc = "Select Scratch" },
+      
+      -- Toggles
+      { "<leader>tz", function() require("snacks").toggle.zen() end, desc = "Toggle Zen Mode" },
+      { "<leader>tZ", function() require("snacks").toggle.zoom() end, desc = "Toggle Zoom" },
+      { "<leader>tD", function() require("snacks").toggle.dim() end, desc = "Toggle Dim" },
+      { "<leader>tg", function() require("snacks").toggle.option("signcolumn", { on = "yes", off = "no" }) end, desc = "Toggle Sign Column" },
+      { "<leader>ts", function() require("snacks").toggle.option("spell") end, desc = "Toggle Spell Check" },
+      { "<leader>tw", function() require("snacks").toggle.option("wrap") end, desc = "Toggle Wrap" },
     },
     
     -- Init function for additional setup
@@ -904,20 +1004,45 @@ return {
         { "<leader>f", group = "find/telescope", icon = "🔍" },
         { "<leader>p", group = "pick/mini.pick", icon = "📋" },
         { "<leader>x", group = "trouble/diagnostics", icon = "🔧" },
-        { "<leader>t", group = "theme/trim", icon = "🎨" },
-        { "<leader>g", group = "git/diff", icon = "📦" },
+        { "<leader>t", group = "theme/toggle/terminal", icon = "🎨" },
+        { "<leader>g", group = "git/snacks", icon = "📦" },
         { "<leader>c", group = "code/lsp", icon = "💻" },
         { "<leader>w", group = "window", icon = "🪟" },
-        { "<leader>b", group = "buffer", icon = "📄" },
+        { "<leader>b", group = "buffer/snacks", icon = "📄" },
         { "<leader>v", group = "visits/mini.visits", icon = "📍" },
-        { "<leader>s", group = "session/mini.sessions", icon = "💾" },
+        { "<leader>s", group = "session/snacks", icon = "💾" },
         { "<leader>m", group = "map/minimap", icon = "🗺️" },
         { "<leader>r", group = "refactor/rename", icon = "♻️" },
         { "<leader>d", group = "diagnostics", icon = "🩺" },
         { "<leader>h", group = "git hunks", icon = "📊" },
         { "<leader>l", group = "lsp", icon = "🔧" },
-        { "<leader>n", group = "notifications/new", icon = "🔔" },
-        { "<leader>c", group = "config/code", icon = "⚙️" },
+        { "<leader>n", group = "notifications/snacks", icon = "🔔" },
+        { "<leader>z", group = "zen/snacks", icon = "🧘" },
+
+        -- Snacks-specific groups and actions
+        { "<leader>sd", desc = "Dashboard (snacks)", icon = "🏠" },
+        { "<leader>nh", desc = "Notification History", icon = "📜" },
+        { "<leader>nd", desc = "Dismiss Notifications", icon = "🚫" },
+        { "<leader>gb", desc = "Git Blame Line (snacks)", icon = "👤" },
+        { "<leader>gB", desc = "Git Browse (snacks)", icon = "🌐" },
+        { "<leader>gf", desc = "Git File History (snacks)", icon = "📖" },
+        { "<leader>gl", desc = "Git Log (snacks)", icon = "📋" },
+        { "<leader>gg", desc = "LazyGit (snacks)", icon = "💻" },
+        { "<leader>rn", desc = "Rename with preview (snacks)", icon = "✏️" },
+        { "<leader>bd", desc = "Delete Buffer (snacks)", icon = "🗑️" },
+        { "<leader>bD", desc = "Delete Buffer Force (snacks)", icon = "💥" },
+        { "<leader>z", desc = "Zen Mode (snacks)", icon = "🧘" },
+        { "<leader>Z", desc = "Zen Zoom (snacks)", icon = "🔍" },
+        { "<leader>.", desc = "Scratch Buffer (snacks)", icon = "📝" },
+        { "<leader>S", desc = "Select Scratch (snacks)", icon = "📚" },
+        
+        -- Snacks toggle commands
+        { "<leader>tz", desc = "Toggle Zen Mode", icon = "🧘" },
+        { "<leader>tZ", desc = "Toggle Zoom", icon = "🔍" },
+        { "<leader>tD", desc = "Toggle Dim", icon = "🌗" },
+        { "<leader>tg", desc = "Toggle Git Signs", icon = "📦" },
+        { "<leader>ts", desc = "Toggle Spell Check", icon = "✓" },
+        { "<leader>tw", desc = "Toggle Wrap", icon = "↩️" },
 
         -- Git hunk actions (gitsigns)
         { "<leader>hs", desc = "Stage hunk", icon = "+" },
