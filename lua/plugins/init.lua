@@ -1275,8 +1275,11 @@ return {
               local selection = state.get_selected_entry()
               if selection then
                 local current_theme = selection.value
-                -- Clear all previous theme preview notifications (using snacks.notifier)
-                require("snacks").notifier.dismiss()
+                -- Clear all previous theme preview notifications (using snacks.notifier if loaded)
+                local snacks_ok, snacks = pcall(require, "snacks")
+                if snacks_ok and snacks.notifier then
+                  pcall(snacks.notifier.dismiss)
+                end
                 
                 -- Show new notification for current preview theme
                 vim.notify(
