@@ -304,7 +304,13 @@ return {
     lazy = false, -- PERFORMANCE: Keep default theme eager for immediate UI
     priority = 1000,
     config = function()
-      require("onedarkpro").setup({
+      -- ERROR HANDLING: Protect theme loading
+      local ok, onedarkpro = pcall(require, "onedarkpro")
+      if not ok then
+        vim.notify("Failed to load onedarkpro theme: " .. tostring(onedarkpro), vim.log.levels.ERROR)
+        return
+      end
+      onedarkpro.setup({
         options = {
           transparency = true,
         }
@@ -647,7 +653,13 @@ return {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     config = function()
-      require("nvim-treesitter.configs").setup({
+      -- ERROR HANDLING: Protect treesitter loading
+      local ok, treesitter = pcall(require, "nvim-treesitter.configs")
+      if not ok then
+        vim.notify("Failed to load treesitter: " .. tostring(treesitter), vim.log.levels.ERROR)
+        return
+      end
+      treesitter.setup({
         ensure_installed = {
           "lua", "python", "javascript", "typescript", "html", "css", 
           "json", "yaml", "markdown", "bash", "vim", "vimdoc", "c", "java", "asm"
@@ -1292,8 +1304,13 @@ return {
     tag = "0.1.8",
     dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
-      local telescope = require("telescope")
-      local actions = require("telescope.actions")
+      -- ERROR HANDLING: Protect telescope loading
+      local ok_telescope, telescope = pcall(require, "telescope")
+      local ok_actions, actions = pcall(require, "telescope.actions")
+      if not ok_telescope or not ok_actions then
+        vim.notify("Failed to load telescope", vim.log.levels.ERROR)
+        return
+      end
       
       telescope.setup({
         defaults = {
@@ -1461,8 +1478,15 @@ return {
       "rafamadriz/friendly-snippets",
     },
     config = function()
+      -- ERROR HANDLING: Protect Mason and LSP setup
+      local ok_mason, mason = pcall(require, "mason")
+      if not ok_mason then
+        vim.notify("Failed to load mason: " .. tostring(mason), vim.log.levels.ERROR)
+        return
+      end
+      
       -- Mason setup
-      require("mason").setup({
+      mason.setup({
         ui = {
           border = "rounded",
           icons = {
@@ -1475,7 +1499,12 @@ return {
       })
       
       -- Enhanced mason-tool-installer setup with more tools
-      require("mason-tool-installer").setup({
+      local ok_installer, installer = pcall(require, "mason-tool-installer")
+      if not ok_installer then
+        vim.notify("Failed to load mason-tool-installer: " .. tostring(installer), vim.log.levels.WARN)
+        -- Continue anyway, mason can work without tool-installer
+      else
+        installer.setup({
         ensure_installed = {
           -- LSP servers (managed by mason-lspconfig)
           "clangd",       -- C/C++ LSP (handled by clangd_extensions)
@@ -1511,9 +1540,15 @@ return {
         run_on_start = true,
         start_delay = 3000, -- 3 second delay
         debounce_hours = 5, -- at least 5 hours between attempts
-      })
+        })
+      end
       
-      require("mason-lspconfig").setup({
+      local ok_lspconfig, lspconfig = pcall(require, "mason-lspconfig")
+      if not ok_lspconfig then
+        vim.notify("Failed to load mason-lspconfig: " .. tostring(lspconfig), vim.log.levels.WARN)
+        -- Continue anyway
+      else
+        lspconfig.setup({
         ensure_installed = {
           "lua_ls",
           "pyright", 
@@ -1528,10 +1563,16 @@ return {
           "asm_lsp",    -- Assembly LSP server (NASM/GAS/MASM/TASM)
         },
         automatic_installation = true,
-      })
+        })
+      end
 
       -- Mason DAP setup for automatic debugger installation
-      require("mason-nvim-dap").setup({
+      local ok_dap, dap_mason = pcall(require, "mason-nvim-dap")
+      if not ok_dap then
+        vim.notify("Failed to load mason-nvim-dap: " .. tostring(dap_mason), vim.log.levels.WARN)
+        -- Continue anyway
+      else
+        dap_mason.setup({
         ensure_installed = {
           "codelldb",     -- C/C++/Rust
           "debugpy",      -- Python
@@ -1559,10 +1600,15 @@ return {
             require('mason-nvim-dap').default_setup(config) -- don't forget this!
           end,
         },
-      })
+        })
+      end
 
       -- LSP settings using new vim.lsp.config API (nvim 0.11+)
-      local cmp_nvim_lsp = require("cmp_nvim_lsp")
+      local ok_cmp_lsp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+      if not ok_cmp_lsp then
+        vim.notify("Failed to load cmp_nvim_lsp: " .. tostring(cmp_nvim_lsp), vim.log.levels.ERROR)
+        return
+      end
       
       local capabilities = cmp_nvim_lsp.default_capabilities()
       
