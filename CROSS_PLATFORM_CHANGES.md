@@ -289,6 +289,28 @@ Potential enhancements for future releases:
 
 Changes made to address issue: "can you make sure this setup works on both arch linux and windows with scoop please. Make sure all lsp servers are correct"
 
+### 7. Clangd GCC Header Detection Enhancement (`lua/plugins/init.lua`)
+
+**New Feature**: Automatic GCC header detection across all platforms
+
+**Changes**:
+- Added `--query-driver` flag to clangd command line arguments
+- Pattern matches GCC, G++, Clang, and Clang++ across all paths: `**/*gcc*,**/*g++*,**/*clang*,**/*clang++*`
+- Forces clangd to query these compilers for their system header paths
+
+**Benefits**:
+- Consistent header checking across Windows (MinGW), macOS (Homebrew/Xcode), and Linux
+- Automatic detection of system headers without manual configuration
+- Eliminates "stdio.h not found" and similar header errors
+- Works with any GCC/Clang installation regardless of path
+
+**Documentation Updated**:
+- `PLUGIN_GUIDE.md` - Added explanation of query-driver flag and cross-platform benefits
+- `README.md` - Added note about automatic GCC header detection feature
+- `WINDOWS_TROUBLESHOOTING.md` - Added note that manual header configuration is now optional
+
+**Code Location**: Line 2749 in `lua/plugins/init.lua`
+
 ## Verification
 
 All changes have been:
@@ -303,3 +325,4 @@ To verify the changes work correctly, users can:
 3. Run the appropriate installation script
 4. Start Neovim and check `:checkhealth`
 5. Test LSP features (hover, go to definition, completion)
+6. Verify clangd finds system headers without manual configuration

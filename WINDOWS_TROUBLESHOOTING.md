@@ -139,6 +139,8 @@ For best Windows C++ support, install Microsoft's official tools:
 
 #### Solution 3: Configure Clang to Use MinGW Headers
 
+**Note:** As of the latest configuration, clangd is configured with `--query-driver` flag which automatically queries GCC and Clang compilers for their system headers. If you have MinGW installed, clangd should automatically detect the headers. The manual configuration below is only needed for special cases.
+
 If you want to keep LLVM/Clang:
 
 1. **Install MinGW alongside LLVM:**
