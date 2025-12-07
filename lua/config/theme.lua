@@ -87,45 +87,35 @@ end
 function M.get_available_themes()
   local colorschemes = vim.fn.getcompletion("", "color")
   
-  -- Add themes that might not be loaded yet but should be available
+  -- Add themes that are actually installed (15 theme plugins with ~40 variants)
   local additional_themes = {
-    -- OneDark variants
+    -- OneDark variants (onedarkpro.nvim)
     "onedark_dark", "onedark_vivid", "onedark_cool", "onedark_warm",
-    -- Tokyo Night variants
-    "tokyonight-night", "tokyonight-storm", "tokyonight-day", "tokyonight-moon",
-    -- Gruvbox family
-    "gruvbox", "gruvbox-baby", "gruvbox-material", "gruvbox-flat",
-    -- Dracula variants
+    -- Tokyo Night variants (tokyonight.nvim)
+    "tokyonight", "tokyonight-night", "tokyonight-storm", "tokyonight-day", "tokyonight-moon",
+    -- Gruvbox family (gruvbox.nvim + gruvbox-material)
+    "gruvbox", "gruvbox-material",
+    -- Dracula variants (dracula.nvim)
     "dracula", "dracula-soft",
-    -- Nord theme
+    -- Nord theme (nord.nvim)
     "nord",
-    -- Catppuccin variants
-    "catppuccin-latte", "catppuccin-frappe", "catppuccin-macchiato", "catppuccin-mocha",
-    -- Fox themes
+    -- Catppuccin variants (catppuccin/nvim)
+    "catppuccin", "catppuccin-latte", "catppuccin-frappe", "catppuccin-macchiato", "catppuccin-mocha",
+    -- Fox themes (nightfox.nvim - 7 variants)
     "nightfox", "dawnfox", "dayfox", "duskfox", "nordfox", "terafox", "carbonfox",
-    -- Rose Pine variants
+    -- Rose Pine variants (rose-pine/neovim)
     "rose-pine", "rose-pine-main", "rose-pine-moon", "rose-pine-dawn",
-    -- Kanagawa variants
+    -- Kanagawa variants (kanagawa.nvim)
     "kanagawa", "kanagawa-wave", "kanagawa-dragon", "kanagawa-lotus",
-    -- Popular themes
-    "sonokai", "edge", "everforest", "everforest-dark", "everforest-light", "material",
-    "vscode", "darkplus", "aurora",
-    -- GitHub theme variants (enhanced collection)
+    -- High-quality themes (sainnhe collection)
+    "sonokai", "edge", "everforest",
+    -- Material theme (material.nvim)
+    "material", "material-darker", "material-lighter", "material-oceanic", "material-palenight", "material-deep-ocean",
+    -- GitHub theme variants (github-nvim-theme - 11 variants)
     "github_dark", "github_light", "github_dark_dimmed", "github_dark_high_contrast",
     "github_dark_colorblind", "github_light_high_contrast", "github_light_colorblind",
     "github_dark_tritanopia", "github_light_tritanopia", "github_dark_default",
     "github_light_default",
-    -- Premium modern themes  
-    "monokai-pro", "solarized", "ayu-dark", "ayu-light", "ayu-mirage",
-    "oceanic-next", "palenight", "tender", "spaceduck", "deep-space",
-    "moonfly", "nightfly", "zephyr", "oxocarbon", "melange", "flow",
-    "cyberdream", "vesper", "bamboo", "flexoki", "lackluster",
-    -- Additional premium themes for 50+ count
-    "onehalf-dark", "onehalf-light", "papercolor-theme", "apprentice",
-    "seoul256", "hybrid", "jellybeans", "molokai", "srcery", 
-    "iceberg", "falcon", "challenger-deep", "vim-monokai-tasty", "substrata",
-    "calvera-dark", "tokyodark", "alduin", "tender-vim", "space-vim-dark",
-    "gotham", "zenburn", "railscasts", "badwolf", "lucius"
   }
   
   -- Combine and deduplicate

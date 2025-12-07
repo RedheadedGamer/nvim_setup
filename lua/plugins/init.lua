@@ -1145,46 +1145,11 @@ return {
     end,
   },
 
-  -- Fancy notification manager
-  {
-    "rcarriga/nvim-notify",
-    config = function()
-      require("notify").setup({
-        background_colour = "#000000",
-        fps = 30,
-        icons = {
-          DEBUG = "",
-          ERROR = "",
-          INFO = "",
-          TRACE = "✎",
-          WARN = ""
-        },
-        level = 2,
-        minimum_width = 50,
-        render = "default",
-        stages = "fade_in_slide_out",
-        timeout = 3000,
-        top_down = true
-      })
-      
-      -- Set nvim-notify as the default notification handler
-      vim.notify = require("notify")
-      
-      -- Notification keymaps
-      vim.keymap.set("n", "<leader>nd", function()
-        require("notify").dismiss({ silent = true, pending = true })
-      end, { desc = "Dismiss notifications" })
-      
-      vim.keymap.set("n", "<leader>nh", function()
-        require("notify").history()
-      end, { desc = "Notification history" })
-      
-      vim.keymap.set("n", "<leader>nc", function()
-        require("notify").dismiss()
-      end, { desc = "Clear notifications" })
-    end,
-  },
-
+  -- nvim-notify removed - replaced by snacks.notifier (configured in snacks.nvim above)
+  -- Notification keymaps are now:
+  --   <leader>nh - Notification history (snacks.notifier.show_history)
+  --   <leader>nd - Dismiss notifications (snacks.notifier.dismiss)
+  
   -- ============================================================================
   -- CORE DEVELOPMENT TOOLS
   -- ============================================================================
