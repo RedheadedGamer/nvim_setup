@@ -16,9 +16,18 @@ This guide provides detailed instructions for installing the Neovim configuratio
 
 The fastest way to get started:
 
+**Linux/macOS:**
 ```bash
 # Download and run the installer
 curl -fsSL https://raw.githubusercontent.com/RedheadedGamer/nvim_setup/main/install.sh | bash
+```
+
+**Windows (PowerShell):**
+```powershell
+# Clone and run the installer
+git clone https://github.com/RedheadedGamer/nvim_setup.git $env:TEMP\nvim_install
+cd $env:TEMP\nvim_install
+.\install.ps1
 ```
 
 The installer will guide you through choosing Full or Minimal setup.
@@ -104,7 +113,7 @@ The installer will guide you through choosing Full or Minimal setup.
 
 ## Automated Installation
 
-### Using the Install Script
+### Using the Install Script (Linux/macOS)
 
 1. **Download and make executable:**
 
@@ -148,7 +157,49 @@ nvim
 
 Wait for plugins to install, then restart Neovim.
 
-### One-Liner Installation
+### Using the Install Script (Windows)
+
+1. **Download the repository:**
+
+```powershell
+# Clone the repository to a temporary location
+git clone https://github.com/RedheadedGamer/nvim_setup.git $env:TEMP\nvim_install
+cd $env:TEMP\nvim_install
+```
+
+2. **Run with desired option:**
+
+```powershell
+# Interactive mode (prompts for choice)
+.\install.ps1
+
+# Full setup (all features)
+.\install.ps1 -Full
+
+# Minimal setup (lightweight)
+.\install.ps1 -Minimal
+
+# Show help
+.\install.ps1 -Help
+```
+
+3. **Follow the prompts:**
+   - The script will check for prerequisites (Scoop, Neovim, Git)
+   - It will backup any existing configuration
+   - It will copy files to `$env:LOCALAPPDATA\nvim`
+   - It will configure the chosen setup
+   - It will clean up temporary files
+   - It will display next steps
+
+4. **Start Neovim:**
+
+```powershell
+nvim
+```
+
+Wait for plugins to install, then restart Neovim.
+
+### One-Liner Installation (Linux/macOS)
 
 ```bash
 # Full setup
@@ -323,18 +374,71 @@ sudo dnf install nodejs npm python3 python3-pip ripgrep
 sudo dnf install gcc gcc-c++ cmake gdb clang clang-tools-extra cppcheck ninja-build
 ```
 
+#### Windows (with Scoop)
+
+First, install Scoop if you haven't already:
+
+```powershell
+# Install Scoop package manager
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+```
+
+Then install the required packages:
+
+```powershell
+# Basic (required for both setups)
+scoop install neovim git
+
+# Full setup requirements
+scoop install nodejs python ripgrep
+
+# Optional C/C++ tools
+# Install MinGW FIRST - it provides complete GCC toolchain with all headers
+scoop install mingw cmake
+# Optional: LLVM can coexist with MinGW but is not required
+# Note: GDB comes with mingw, or install separately: scoop install gdb
+
+# Additional buckets for more packages
+scoop bucket add extras
+scoop bucket add versions
+```
+
+**Important Notes for Windows Users:**
+- **Configuration Location:** `$env:LOCALAPPDATA\nvim` (typically `C:\Users\YourUsername\AppData\Local\nvim`)
+- **Use PowerShell** (not Command Prompt) for installation
+- **Mason Directory:** LSP servers install to `$env:LOCALAPPDATA\nvim-data\mason`
+- **C/C++ Development:** 
+  - MinGW is recommended and includes all necessary headers (stdio.h, etc.)
+  - Alternatively, install Visual Studio Build Tools with C++ workload
+  - Do NOT install only LLVM - it lacks Windows system headers
+- **Common Issues:** See [WINDOWS_TROUBLESHOOTING.md](WINDOWS_TROUBLESHOOTING.md) for solutions to:
+  - "codelldb is already linked" error
+  - "stdio.h file not found" error
+  - LSP server installation problems
+
 ## Switching Between Setups
 
 You can easily switch between Full and Minimal setups at any time.
 
 ### Switch to Minimal Setup
 
+**Linux/macOS:**
 ```bash
 # Create the minimal marker file
 touch ~/.config/nvim/.minimal_setup
 
 # Restart Neovim and sync plugins
 nvim +Lazy\ sync
+```
+
+**Windows (PowerShell):**
+```powershell
+# Create the minimal marker file
+New-Item -ItemType File -Path $env:LOCALAPPDATA\nvim\.minimal_setup
+
+# Restart Neovim and sync plugins
+nvim +Lazy` sync
 ```
 
 This will:
@@ -344,12 +448,22 @@ This will:
 
 ### Switch to Full Setup
 
+**Linux/macOS:**
 ```bash
 # Remove the minimal marker file
 rm ~/.config/nvim/.minimal_setup
 
 # Restart Neovim and sync plugins
 nvim +Lazy\ sync
+```
+
+**Windows (PowerShell):**
+```powershell
+# Remove the minimal marker file
+Remove-Item $env:LOCALAPPDATA\nvim\.minimal_setup
+
+# Restart Neovim and sync plugins
+nvim +Lazy` sync
 ```
 
 This will:
@@ -361,6 +475,7 @@ This will:
 
 Check which setup is active:
 
+**Linux/macOS:**
 ```bash
 # Check if minimal setup is active
 if [ -f ~/.config/nvim/.minimal_setup ]; then
@@ -370,7 +485,17 @@ else
 fi
 ```
 
-Or within Neovim:
+**Windows (PowerShell):**
+```powershell
+# Check if minimal setup is active
+if (Test-Path $env:LOCALAPPDATA\nvim\.minimal_setup) {
+    Write-Host "Current setup: MINIMAL"
+} else {
+    Write-Host "Current setup: FULL"
+}
+```
+
+Or within Neovim (all platforms):
 ```vim
 :lua print(vim.fn.filereadable(vim.fn.stdpath("config") .. "/.minimal_setup") == 1 and "MINIMAL" or "FULL")
 ```

@@ -257,6 +257,80 @@ configure_full() {
     print_msg "$GREEN" "✓ Full setup configured"
 }
 
+# Detect OS and provide installation commands
+detect_os() {
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        OS=$ID
+    elif [ -f /etc/arch-release ]; then
+        OS="arch"
+    elif [ "$(uname -s)" = "Darwin" ]; then
+        OS="macos"
+    else
+        OS="unknown"
+    fi
+}
+
+# Get platform-specific package install commands
+get_package_commands() {
+    detect_os
+    
+    case "$OS" in
+        arch|archlinux|manjaro)
+            print_msg "$BLUE" "Install missing packages on Arch Linux:"
+            echo ""
+            print_msg "$YELLOW" "   # Basic packages"
+            print_msg "$YELLOW" "   sudo pacman -S neovim git"
+            echo ""
+            print_msg "$YELLOW" "   # Full setup packages"
+            print_msg "$YELLOW" "   sudo pacman -S nodejs npm python python-pip ripgrep"
+            echo ""
+            print_msg "$YELLOW" "   # C/C++ development (optional)"
+            print_msg "$YELLOW" "   sudo pacman -S base-devel cmake gdb clang cppcheck bear ninja"
+            ;;
+        ubuntu|debian|linuxmint|pop)
+            print_msg "$BLUE" "Install missing packages on Ubuntu/Debian:"
+            echo ""
+            print_msg "$YELLOW" "   # Basic packages"
+            print_msg "$YELLOW" "   sudo apt update && sudo apt install neovim git"
+            echo ""
+            print_msg "$YELLOW" "   # Full setup packages"
+            print_msg "$YELLOW" "   sudo apt install nodejs npm python3 python3-pip ripgrep"
+            echo ""
+            print_msg "$YELLOW" "   # C/C++ development (optional)"
+            print_msg "$YELLOW" "   sudo apt install build-essential cmake gdb clang clang-tools cppcheck bear ninja-build"
+            ;;
+        fedora|rhel|centos)
+            print_msg "$BLUE" "Install missing packages on Fedora/RHEL:"
+            echo ""
+            print_msg "$YELLOW" "   # Basic packages"
+            print_msg "$YELLOW" "   sudo dnf install neovim git"
+            echo ""
+            print_msg "$YELLOW" "   # Full setup packages"
+            print_msg "$YELLOW" "   sudo dnf install nodejs npm python3 python3-pip ripgrep"
+            echo ""
+            print_msg "$YELLOW" "   # C/C++ development (optional)"
+            print_msg "$YELLOW" "   sudo dnf install gcc gcc-c++ cmake gdb clang clang-tools-extra cppcheck ninja-build"
+            ;;
+        macos|darwin)
+            print_msg "$BLUE" "Install missing packages on macOS:"
+            echo ""
+            print_msg "$YELLOW" "   # Basic packages"
+            print_msg "$YELLOW" "   brew install neovim git"
+            echo ""
+            print_msg "$YELLOW" "   # Full setup packages"
+            print_msg "$YELLOW" "   brew install node python ripgrep"
+            echo ""
+            print_msg "$YELLOW" "   # C/C++ development (optional)"
+            print_msg "$YELLOW" "   brew install cmake llvm cppcheck bear ninja"
+            ;;
+        *)
+            print_msg "$BLUE" "Install missing packages using your system package manager"
+            print_msg "$YELLOW" "   Required: neovim, git, nodejs, python, ripgrep"
+            ;;
+    esac
+}
+
 # Print post-installation instructions
 print_instructions() {
     echo ""
@@ -278,11 +352,9 @@ print_instructions() {
         echo ""
         echo "3. Wait for installation to complete, then restart Neovim"
         echo ""
-        echo "4. Optional dependencies for full features:"
-        print_msg "$YELLOW" "   • Node.js (for LSP servers)"
-        print_msg "$YELLOW" "   • Python (for Python LSP)"
-        print_msg "$YELLOW" "   • ripgrep (for better search)"
-        print_msg "$YELLOW" "   • C/C++ tools: clang, cmake, gdb (for C/C++ development)"
+        echo "4. If you're missing dependencies, install them:"
+        echo ""
+        get_package_commands
         echo ""
         echo "5. Key bindings:"
         print_msg "$YELLOW" "   • <Space>ff - Find files"

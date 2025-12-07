@@ -2,7 +2,11 @@
 
 A modern, feature-rich Neovim configuration written in Lua with **complete mini.nvim ecosystem integration** (28 plugins), LSP support, auto-completion, and optimized performance for enhanced development experience.
 
+**🌍 Cross-Platform:** Works on Linux (Arch, Ubuntu, Debian, Fedora), macOS, and Windows with Scoop!
+
 > **⚡ New to this config?** Start here: [QUICKSTART.md](QUICKSTART.md) - Get up and running in 5 minutes!
+>
+> **🖥️ Platform-specific setup?** See [PLATFORM_SUPPORT.md](PLATFORM_SUPPORT.md) - Complete cross-platform guide!
 
 ## ✨ Features
 
@@ -33,8 +37,10 @@ A modern, feature-rich Neovim configuration written in Lua with **complete mini.
 > **📖 For detailed installation instructions, troubleshooting, and switching between setups, see [INSTALL.md](INSTALL.md)**
 > 
 > **📊 For a detailed comparison of Full vs Minimal setups, see [SETUP_COMPARISON.md](SETUP_COMPARISON.md)**
+>
+> **🖥️ For platform-specific guides (Arch, Ubuntu, Windows, macOS), see [PLATFORM_SUPPORT.md](PLATFORM_SUPPORT.md)**
 
-This configuration offers **two installation modes** to suit different needs:
+This configuration offers **two installation modes** and works on **all major platforms**:
 
 ### Installation Modes
 
@@ -61,6 +67,7 @@ Fast and efficient configuration with:
 
 Use the automated install script:
 
+**Linux/macOS:**
 ```bash
 # Download and run the installer directly
 curl -fsSL https://raw.githubusercontent.com/RedheadedGamer/nvim_setup/main/install.sh | bash
@@ -72,16 +79,27 @@ chmod +x install.sh
 ./install.sh
 ```
 
+**Windows (PowerShell):**
+```powershell
+# Clone the repository to a temporary location
+git clone https://github.com/RedheadedGamer/nvim_setup.git $env:TEMP\nvim_install
+cd $env:TEMP\nvim_install
+
+# Run the installer
+.\install.ps1
+```
+
 The installer will:
 1. Prompt you to choose between Full or Minimal setup
 2. Backup your existing configuration (if any)
-3. Copy files to `~/.config/nvim` (uses existing clone if running from repository)
+3. Copy files to `~/.config/nvim` (Linux/macOS) or `$env:LOCALAPPDATA\nvim` (Windows)
 4. Configure the setup based on your choice
 5. Clean up temporary files
 6. Provide next steps
 
 ### Installation Options
 
+**Linux/macOS:**
 ```bash
 # Full setup (with LSP, Mason, linters)
 ./install.sh --full
@@ -93,11 +111,23 @@ The installer will:
 ./install.sh
 ```
 
+**Windows (PowerShell):**
+```powershell
+# Full setup (with LSP, Mason, linters)
+.\install.ps1 -Full
+
+# Minimal setup (without LSP features)
+.\install.ps1 -Minimal
+
+# Interactive mode (will prompt for choice)
+.\install.ps1
+```
+
 ### Manual Installation
 
 If you prefer to install manually:
 
-#### For Full Setup:
+#### For Full Setup (Linux/macOS):
 
 1. **Backup existing configuration**:
    ```bash
@@ -114,7 +144,24 @@ If you prefer to install manually:
    nvim
    ```
 
-#### For Minimal Setup:
+#### For Full Setup (Windows):
+
+1. **Backup existing configuration** (PowerShell):
+   ```powershell
+   Move-Item $env:LOCALAPPDATA\nvim $env:LOCALAPPDATA\nvim.backup -ErrorAction SilentlyContinue
+   ```
+
+2. **Clone this repository**:
+   ```powershell
+   git clone https://github.com/RedheadedGamer/nvim_setup.git $env:LOCALAPPDATA\nvim
+   ```
+
+3. **Start Neovim**:
+   ```powershell
+   nvim
+   ```
+
+#### For Minimal Setup (Linux/macOS):
 
 1. **Backup and clone** (same as above)
 
@@ -125,6 +172,20 @@ If you prefer to install manually:
 
 3. **Start Neovim**:
    ```bash
+   nvim
+   ```
+
+#### For Minimal Setup (Windows):
+
+1. **Backup and clone** (same as Full Setup Windows instructions above)
+
+2. **Create minimal setup marker**:
+   ```powershell
+   New-Item -ItemType File -Path $env:LOCALAPPDATA\nvim\.minimal_setup
+   ```
+
+3. **Start Neovim**:
+   ```powershell
    nvim
    ```
 
@@ -187,14 +248,39 @@ brew install node python ripgrep
 brew install cmake llvm cppcheck bear ninja
 ```
 
+**Windows (with Scoop):**
+```powershell
+# Install Scoop if not already installed
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+
+# Basic (for both setups)
+scoop install neovim git
+
+# Full setup additional packages
+scoop install nodejs python ripgrep
+
+# C/C++ development (optional for full setup)
+# IMPORTANT: Install mingw FIRST for complete C++ headers and toolchain
+scoop install mingw cmake
+# Optional: LLVM can be added alongside MinGW, but MinGW provides essential headers
+# Note: GDB comes with mingw, or install separately: scoop install gdb
+```
+
+> **🪟 Windows Users:** Having issues? See [WINDOWS_TROUBLESHOOTING.md](WINDOWS_TROUBLESHOOTING.md) for solutions to common problems like "codelldb already linked" or "stdio.h not found".
+
 ### Post-Installation
 
 After installation:
 
-1. **Start Neovim** - The configuration will automatically install plugins
-2. **Wait for completion** - Let lazy.nvim finish downloading all plugins
-3. **Restart Neovim** - For best results
-4. **Check health** (optional): Run `:checkhealth` to verify setup
+1. **Verify prerequisites** (optional but recommended):
+   - Linux/macOS: `./verify_setup.sh`
+   - Windows: `.\verify_setup.ps1`
+
+2. **Start Neovim** - The configuration will automatically install plugins
+3. **Wait for completion** - Let lazy.nvim finish downloading all plugins
+4. **Restart Neovim** - For best results
+5. **Check health** (optional): Run `:checkhealth` to verify setup
 
 ### Switching Between Setups
 
