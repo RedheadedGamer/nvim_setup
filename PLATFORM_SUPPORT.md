@@ -161,10 +161,11 @@ scoop bucket add versions
 - **Recommended:** Use MinGW instead of standalone LLVM for C/C++ development (includes all system headers)
 - For best C/C++ support, install Visual Studio Build Tools with C++ workload
 - Path separators are automatically handled by Neovim's Lua API
+- **Automatic header detection:** Clangd is configured with `--query-driver` to automatically detect GCC/Clang system headers
 
 **Known Issues:**
 - **codelldb linking error:** Mason may report "already linked" error. Solution: Remove Mason data directory and reinstall
-- **stdio.h not found:** Clang from LLVM package lacks Windows headers. Solution: Use MinGW or Visual Studio Build Tools
+- **stdio.h not found:** ~~Clang from LLVM package lacks Windows headers. Solution: Use MinGW or Visual Studio Build Tools~~ **Update:** With the new `--query-driver` configuration, clangd automatically detects MinGW headers when MinGW is installed
 - Terminal colors may not display correctly in older Windows Terminal versions (use Windows Terminal from Microsoft Store)
 - Some Unix-specific shell integrations may not work (e.g., bash-specific autocomplete)
 
