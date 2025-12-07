@@ -2644,10 +2644,26 @@ return {
             "--completion-style=detailed",
             "--function-arg-placeholders",
             "--fallback-style=llvm",
-            -- Force clangd to query GCC and Clang compilers for system headers across all platforms
-            -- This ensures consistent header checking with GCC/Clang on Windows, macOS, and Linux
-            -- The ** glob pattern matches compilers in any directory path
-            "--query-driver=**/*gcc*,**/*g++*,**/*clang*,**/*clang++*",
+            -- PHASE 10 FIX #54: Restricted query-driver for security
+            -- Instead of "**/*gcc*" which allows ANY matching binary in system,
+            -- use explicit common compiler paths for cross-platform support
+            -- Users can add custom paths if needed via LSP config
+            "--query-driver=" .. table.concat({
+              "/usr/bin/gcc",
+              "/usr/bin/g++",
+              "/usr/bin/clang",
+              "/usr/bin/clang++",
+              "/usr/local/bin/gcc*",
+              "/usr/local/bin/g++*",
+              "/usr/local/bin/clang*",
+              "/opt/homebrew/bin/gcc*",  -- macOS Homebrew
+              "/opt/homebrew/bin/g++*",
+              "/opt/homebrew/bin/clang*",
+              "C:/msys64/mingw64/bin/gcc.exe",  -- Windows MSYS2
+              "C:/msys64/mingw64/bin/g++.exe",
+              "C:/Program Files/LLVM/bin/clang.exe",  -- Windows LLVM
+              "C:/Program Files/LLVM/bin/clang++.exe",
+            }, ","),
           },
           filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
           root_dir = function(fname)

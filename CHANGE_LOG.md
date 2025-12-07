@@ -685,12 +685,54 @@ end
 
 ---
 
+## Phase 10: Security Hardening - PARTIAL ✅
+
+### Changes Made:
+
+#### 2025-12-07 22:35 | SECURITY | lua/plugins/init.lua:2640-2658 | Restrict clangd query-driver (Issue #54)
+**BEFORE:**
+```lua
+"--query-driver=**/*gcc*,**/*g++*,**/*clang*,**/*clang++*",
+```
+**Security Risk:** The ** glob pattern allows clangd to execute ANY binary matching gcc*, g++*, clang*, clang++* anywhere in the filesystem. A malicious binary named "gcc-evil" in PATH could be executed.
+
+**AFTER:**
+```lua
+"--query-driver=" .. table.concat({
+  "/usr/bin/gcc",
+  "/usr/bin/g++",
+  "/usr/bin/clang",
+  "/usr/bin/clang++",
+  "/usr/local/bin/gcc*",  -- Local installs
+  "/opt/homebrew/bin/gcc*",  -- macOS Homebrew
+  "C:/msys64/mingw64/bin/gcc.exe",  -- Windows MSYS2
+  "C:/Program Files/LLVM/bin/clang.exe",  -- Windows LLVM
+  ...
+}, ","),
+```
+
+**Security Improvement:**
+- Explicit paths only - no arbitrary binary execution
+- Covers Linux, macOS (Homebrew), Windows (MSYS2, LLVM)
+- Limited glob patterns to known-safe directories
+- Users can add custom paths if needed via LSP config
+
+**Impact:** Prevents potential arbitrary code execution via malicious compiler-named binaries
+**Status:** ✅ Secured
+
+### Summary:
+- ✅ Restricted clangd query-driver to explicit compiler paths
+- ✅ Maintains cross-platform support (Linux, macOS, Windows)
+- ✅ Prevents arbitrary binary execution security risk
+
+---
+
 ## Statistics
 
 **Total Changes Planned:** 72 issues to fix
-**Completed:** 35 (32 + 3 from Phase 6)
+**Completed:** 36 (35 + 1 from Phase 10)
 **In Progress:** 0
-**Pending:** 37
+**Pending:** 36
 
 **Code to Remove:** ~200 lines
 **Code to Add:** ~150 lines
