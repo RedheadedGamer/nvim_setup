@@ -1579,7 +1579,7 @@ return {
         ensure_installed = {
           "codelldb",     -- C/C++/Rust
           "debugpy",      -- Python
-          "js-debug-adapter",           -- JavaScript/TypeScript
+          "js-debug-adapter", -- JavaScript/TypeScript
         },
         automatic_installation = true,
         handlers = {
