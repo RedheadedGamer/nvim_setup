@@ -84,14 +84,20 @@ echo ""
 
 check_command "node" "Node.js" "false"
 check_command "npm" "NPM" "false"
-check_command "python3" "Python" "false" || check_command "python" "Python" "false"
+# Check for Python (try python3 first, then python)
+if ! check_command "python3" "Python" "false"; then
+    check_command "python" "Python" "false"
+fi
 check_command "rg" "ripgrep" "false"
 
 echo ""
 print_msg "$BLUE" "Checking C/C++ development tools..."
 echo ""
 
-check_command "gcc" "GCC" "false" || check_command "clang" "Clang" "false"
+# Check for C compiler (try gcc first, then clang)
+if ! check_command "gcc" "GCC" "false"; then
+    check_command "clang" "Clang" "false"
+fi
 check_command "cmake" "CMake" "false"
 check_command "gdb" "GDB" "false"
 
