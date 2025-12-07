@@ -2,6 +2,288 @@
 -- Plugin manager setup with lazy.nvim
 
 return {
+  -- ============================================================================
+  -- SNACKS.NVIM - Modern all-in-one plugin by folke
+  -- Replaces mini.starter and mini.animate with better alternatives
+  -- ============================================================================
+  {
+    "folke/snacks.nvim",
+    priority = 1000,
+    lazy = false,
+    ---@type snacks.Config
+    opts = {
+      -- Enable/disable features globally
+      bigfile = { enabled = true },
+      quickfile = { enabled = true },
+      
+      -- Dashboard replacing mini.starter
+      dashboard = {
+        enabled = true,
+        preset = {
+          keys = {
+            { icon = " ", key = "f", desc = "Find File", action = ":Telescope find_files" },
+            { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
+            { icon = " ", key = "r", desc = "Recent Files", action = ":Telescope oldfiles" },
+            { icon = " ", key = "g", desc = "Find Text", action = ":Telescope live_grep" },
+            { icon = " ", key = "c", desc = "Config", action = ":e ~/.config/nvim/init.lua" },
+            { icon = " ", key = "s", desc = "Restore Session", action = ":lua require('mini.sessions').select()" },
+            { icon = "󰒲 ", key = "l", desc = "Lazy", action = ":Lazy" },
+            { icon = " ", key = "m", desc = "Mason", action = ":Mason" },
+            { icon = " ", key = "q", desc = "Quit", action = ":qa" },
+          },
+          header = [[
+███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
+████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║
+██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
+██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
+██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
+╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝
+          ]],
+        },
+        sections = {
+          { section = "header" },
+          { section = "keys", gap = 1, padding = 1 },
+          { section = "startup" },
+        },
+      },
+      
+      -- Notifier replacing basic vim.notify
+      notifier = {
+        enabled = true,
+        timeout = 3000,
+        width = { min = 40, max = 0.4 },
+        height = { min = 1, max = 0.6 },
+        margin = { top = 0, right = 1, bottom = 0 },
+        padding = true,
+        sort = { "level", "added" },
+        icons = {
+          error = " ",
+          warn = " ",
+          info = " ",
+          debug = " ",
+          trace = " ",
+        },
+        style = "compact",
+      },
+      
+      -- Scroll animations replacing mini.animate
+      scroll = {
+        enabled = true,
+        animate = {
+          duration = { step = 15, total = 250 },
+          easing = "linear",
+        },
+        spamming = 10,
+        filter = function(buf)
+          return vim.bo[buf].buftype ~= "terminal"
+        end,
+      },
+      
+      -- Enhanced indent guides
+      indent = {
+        enabled = true,
+        char = "│",
+        blank = "│",
+        only_scope = false,
+        only_current = false,
+        scope = {
+          enabled = true,
+          char = "│",
+          underline = false,
+        },
+        -- Disable indent guides in specific buffer types
+        filter = function(buf)
+          local buftype = vim.bo[buf].buftype
+          local filetype = vim.bo[buf].filetype
+          -- Disable for terminal, dashboard, and special buffers
+          return buftype ~= "terminal" 
+            and filetype ~= "snacks_dashboard"
+            and filetype ~= "dashboard"
+            and buftype ~= "nofile"
+        end,
+      },
+      
+      -- Terminal management
+      terminal = {
+        enabled = true,
+        win = {
+          style = "terminal", -- Position at bottom
+          position = "bottom",
+          width = 1.0, -- Full width
+          height = 0.4, -- 40% of screen height (less than half)
+          border = "single",
+          title = " Terminal ",
+          title_pos = "center",
+          footer = " Press <Esc><Esc> or <C-/> to close ",
+          footer_pos = "center",
+        },
+      },
+      
+      -- Enhanced statuscolumn
+      statuscolumn = {
+        enabled = true,
+        left = { "mark", "sign" },
+        right = { "fold", "git" },
+        folds = {
+          open = true,
+          git_hl = true,
+        },
+        git = {
+          patterns = { "GitSign", "MiniDiffSign" },
+        },
+      },
+      
+      -- Enhanced word motions
+      words = {
+        enabled = true,
+        debounce = 200,
+        notify_jump = false,
+        notify_end = true,
+        foldopen = true,
+        jumplist = true,
+        modes = { "n", "i", "c" },
+      },
+      
+      -- General animation framework
+      animate = {
+        enabled = true,
+        duration = 20,
+        easing = "linear",
+        fps = 60,
+      },
+      
+      -- Git utilities
+      git = {
+        enabled = true,
+      },
+      
+      -- Git browse - open URLs in browser
+      gitbrowse = {
+        enabled = true,
+      },
+      
+      -- LazyGit integration
+      lazygit = {
+        enabled = true,
+        configure = true,
+      },
+      
+      -- LSP rename with preview
+      rename = {
+        enabled = true,
+      },
+      
+      -- Smart buffer deletion
+      bufdelete = {
+        enabled = true,
+      },
+      
+      -- Toggle utilities
+      toggle = {
+        enabled = true,
+      },
+      
+      -- Zen mode for distraction-free coding
+      zen = {
+        enabled = true,
+        zoom = {
+          width = 0.85,
+          height = 0.9,
+        },
+        toggles = {
+          dim = true,
+          git_signs = false,
+          mini_diff = false,
+          diagnostics = false,
+          inlay_hints = false,
+        },
+      },
+      
+      -- Dim inactive windows
+      dim = {
+        enabled = true,
+      },
+      
+      -- Scratch buffer for quick notes
+      scratch = {
+        enabled = true,
+      },
+      
+      -- Window utilities
+      win = {
+        enabled = true,
+      },
+    },
+    
+    -- Keybindings for all snacks features
+    keys = {
+      -- Dashboard
+      { "<leader>sd", function() require("snacks").dashboard.open() end, desc = "Dashboard" },
+      
+      -- Notifications
+      { "<leader>nh", function() require("snacks").notifier.show_history() end, desc = "Notification History" },
+      { "<leader>nd", function() require("snacks").notifier.dismiss() end, desc = "Dismiss Notifications" },
+      
+      -- Terminal
+      { "<leader>tt", function() require("snacks").terminal.toggle() end, desc = "Toggle Terminal" },
+      { "<leader>tg", function() require("snacks").terminal("lazygit") end, desc = "LazyGit" },
+      { "<C-/>", function() require("snacks").terminal.toggle() end, desc = "Toggle Terminal", mode = { "n", "t" } },
+      { "<C-_>", function() require("snacks").terminal.toggle() end, desc = "Toggle Terminal", mode = { "n", "t" } },
+      
+      -- Word navigation
+      { "]]", function() require("snacks").words.jump(vim.v.count1) end, desc = "Next Reference" },
+      { "[[", function() require("snacks").words.jump(-vim.v.count1) end, desc = "Previous Reference" },
+      
+      -- Git utilities
+      { "<leader>gb", function() require("snacks").git.blame_line() end, desc = "Git Blame Line" },
+      { "<leader>gB", function() require("snacks").gitbrowse() end, desc = "Git Browse" },
+      { "<leader>gf", function() require("snacks").lazygit.log_file() end, desc = "LazyGit File History" },
+      { "<leader>gl", function() require("snacks").lazygit.log() end, desc = "LazyGit Log" },
+      { "<leader>gg", function() require("snacks").lazygit() end, desc = "LazyGit" },
+      
+      -- LSP rename with preview
+      { "<leader>rn", function() require("snacks").rename() end, desc = "Rename (with preview)" },
+      
+      -- Buffer delete
+      { "<leader>bd", function() require("snacks").bufdelete() end, desc = "Delete Buffer" },
+      { "<leader>bD", function() require("snacks").bufdelete({ force = true }) end, desc = "Delete Buffer (force)" },
+      
+      -- Zen mode
+      { "<leader>z", function() require("snacks").zen() end, desc = "Zen Mode" },
+      { "<leader>Z", function() require("snacks").zen.zoom() end, desc = "Zen Zoom" },
+      
+      -- Scratch buffer
+      { "<leader>.", function() require("snacks").scratch() end, desc = "Scratch Buffer" },
+      { "<leader>S", function() require("snacks").scratch.select() end, desc = "Select Scratch" },
+      
+      -- Toggles
+      { "<leader>tz", function() require("snacks").toggle.zen() end, desc = "Toggle Zen Mode" },
+      { "<leader>tZ", function() require("snacks").toggle.zoom() end, desc = "Toggle Zoom" },
+      { "<leader>tD", function() require("snacks").toggle.dim() end, desc = "Toggle Dim" },
+      { "<leader>tg", function() require("snacks").toggle.option("signcolumn", { on = "yes", off = "no" }) end, desc = "Toggle Sign Column" },
+      { "<leader>ts", function() require("snacks").toggle.option("spell") end, desc = "Toggle Spell Check" },
+      { "<leader>tw", function() require("snacks").toggle.option("wrap") end, desc = "Toggle Wrap" },
+    },
+    
+    -- Init function for additional setup
+    init = function()
+      -- Replace vim.notify with snacks notifier
+      vim.notify = require("snacks").notifier.notify
+      
+      -- Setup snacks autocmds
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "VeryLazy",
+        callback = function()
+          -- Add custom snacks configuration here
+        end,
+      })
+    end,
+  },
+
+  -- ============================================================================
+  -- THEMES
+  -- ============================================================================
+  
   -- Primary colorscheme (default)
   {
     "olimorris/onedarkpro.nvim",
@@ -196,17 +478,6 @@ return {
     end,
   },
 
-  {
-    "Mofiqul/vscode.nvim",
-    lazy = true,
-    config = function()
-      require("vscode").setup({
-        transparent = true,
-        italic_comments = true,
-        disable_nvimtree_bg = true,
-      })
-    end,
-  },
 
   {
     "projekt0n/github-nvim-theme",
@@ -257,505 +528,105 @@ return {
     end,
   },
 
-  {
-    "lunarvim/darkplus.nvim",
-    lazy = true,
-  },
 
-  {
-    "ray-x/aurora",
-    lazy = true,
-  },
 
   -- ============================================================================ 
   -- ADDITIONAL PREMIUM THEMES (20+ new high-quality themes)
   -- ============================================================================
 
   -- Monokai Pro family - Professional themes
-  {
-    "loctvl842/monokai-pro.nvim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 995,
-    config = function()
-      require("monokai-pro").setup({
-        transparent_background = true,
-        filter = "pro", -- pro, classic, machine, octagon, ristretto, spectrum
-      })
-    end,
-  },
 
   -- Solarized - Classic and beloved
-  {
-    "maxmx03/solarized.nvim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 994,
-    config = function()
-      require("solarized").setup({
-        transparent = {
-          enabled = true,
-          pmenu = true,
-          normal = true,
-          normalfloat = true,
-          neotree = true,
-          nvimtree = true,
-          whichkey = true,
-          telescope = true,
-          lazy = true,
-        },
-        palette = "solarized", -- solarized, selenized
-        styles = {
-          comments = { italic = true },
-          functions = { italic = false },
-          variables = { italic = false },
-        },
-        highlights = {},
-        colors = {},
-        theme = "neo", -- or "default"
-      })
-    end,
-  },
 
   -- Ayu - Elegant minimal themes
-  {
-    "Shatur/neovim-ayu",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 993,
-    config = function()
-      require("ayu").setup({
-        mirage = true,
-        terminal = false,
-        overrides = {},
-      })
-    end,
-  },
 
   -- Oceanic Next - Beautiful blue theme
-  {
-    "mhartington/oceanic-next",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 992,
-  },
 
   -- Palenight - Material inspired
-  {
-    "drewtempelmeyer/palenight.vim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 991,
-  },
 
   -- Gruvbox Baby - Modern Gruvbox
-  {
-    "luisiacc/gruvbox-baby",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 990,
-    config = function()
-      vim.g.gruvbox_baby_transparent_mode = 1
-      vim.g.gruvbox_baby_function_style = "NONE"
-      vim.g.gruvbox_baby_keyword_style = "italic"
-    end,
-  },
 
   -- Tender - Gentle purple theme
-  {
-    "jacoborus/tender.vim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 989,
-  },
 
   -- Spaceduck - Retro space theme
-  {
-    "pineapplegiant/spaceduck",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 988,
-  },
 
   -- Deep Space - Cosmic dark theme
-  {
-    "tyrannicaltoucan/vim-deep-space",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 987,
-  },
 
   -- Moonfly - Dark blue theme
-  {
-    "bluz71/vim-moonfly-colors",
-    name = "moonfly",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 986,
-  },
 
   -- Nightowl - Dark theme for night owls
-  {
-    "bluz71/vim-nightfly-colors",
-    name = "nightfly",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 985,
-  },
 
   -- Zephyr - Modern dark theme
-  {
-    "glepnir/zephyr-nvim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 984,
-  },
 
   -- Onedark Vivid - Enhanced OneDark
-  {
-    "navarasu/onedark.nvim",
-    name = "onedark-nvim", -- Avoid name conflict
-    lazy = false, -- Load immediately for theme switcher
-    priority = 983,
-    config = function()
-      require("onedark").setup({
-        style = "vivid", -- dark, darker, cool, deep, warm, warmer, vivid
-        transparent = true,
-        code_style = {
-          comments = "italic",
-          keywords = "bold",
-          functions = "bold",
-          strings = "italic",
-          variables = "NONE"
-        },
-      })
-    end,
-  },
 
   -- Oxocarbon - Modern IBM inspired
-  {
-    "nyoom-engineering/oxocarbon.nvim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 982,
-  },
 
   -- Melange - Warm color palette
-  {
-    "savq/melange-nvim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 981,
-  },
 
   -- Flow - Minimal and clean
-  {
-    "0xstepit/flow.nvim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 980,
-    config = function()
-      require("flow").setup({
-        transparent = true,
-        fluo_color = "pink",
-        mode = "normal",
-        aggressive_spell = false,
-      })
-    end,
-  },
 
   -- Cyberdream - Futuristic theme
-  {
-    "scottmckendry/cyberdream.nvim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 979,
-    config = function()
-      require("cyberdream").setup({
-        transparent = true,
-        italic_comments = true,
-        hide_fillchars = true,
-        borderless_telescope = true,
-      })
-    end,
-  },
 
   -- Vesper - Dark purple theme
-  {
-    "datsfilipe/vesper.nvim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 978,
-  },
 
   -- Bamboo - Natural green theme
-  {
-    "ribru17/bamboo.nvim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 977,
-    config = function()
-      require("bamboo").setup({
-        transparent = true,
-        style = "vulgaris", -- vulgaris, multiplex
-      })
-    end,
-  },
 
   -- Flexoki - Modern neutral theme
-  {
-    "kepano/flexoki-neovim",
-    name = "flexoki",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 975,
-  },
 
   -- Lackluster - Deliberately muted
-  {
-    "slugbyte/lackluster.nvim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 974,
-  },
 
   -- ============================================================================
   -- ADDITIONAL COOL THEMES (20+ more popular and modern themes)
   -- ============================================================================
 
   -- Fluoromachine - Modern neon themes
-  {
-    "maxmx03/fluoromachine.nvim",
-    lazy = false,
-    priority = 973,
-    config = function()
-      require("fluoromachine").setup({
-        glow = false,
-        brightness = 0.05,
-        transparent = true,
-      })
-    end,
-  },
 
   -- Lualine themes for variety
-  {
-    "nvim-lualine/lualine.nvim",
-    lazy = true,
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-  },
 
   -- Nightfox family - More fox themes
-  {
-    "EdenEast/nightfox.nvim",
-    name = "nightfox-extended",
-    lazy = false,
-    priority = 972,
-    config = function()
-      require("nightfox").setup({
-        options = {
-          transparent = true,
-          terminal_colors = true,
-          inverse = {
-            match_paren = false,
-            visual = false,
-            search = false,
-          },
-        },
-        palettes = {},
-        specs = {},
-        groups = {},
-      })
-    end,
-  },
 
   -- Doom themes family
-  {
-    "NTBBloodbath/doom-one.nvim",
-    lazy = false,
-    priority = 971,
-    config = function()
-      vim.g.doom_one_cursor_coloring = false
-      vim.g.doom_one_terminal_colors = true
-      vim.g.doom_one_italic_comments = true
-      vim.g.doom_one_enable_treesitter = true
-      vim.g.doom_one_diagnostics_text_color = false
-      vim.g.doom_one_transparent_background = true
-    end,
-  },
 
   -- Tokyo Night variants
-  {
-    "folke/tokyonight.nvim",
-    name = "tokyonight-extended",
-    lazy = false,
-    priority = 970,
-    config = function()
-      require("tokyonight").setup({
-        style = "storm", -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
-        light_style = "day",
-        transparent = true,
-        terminal_colors = true,
-        styles = {
-          comments = { italic = true },
-          keywords = { italic = true },
-          functions = {},
-          variables = {},
-          sidebars = "transparent",
-          floats = "transparent",
-        },
-        sidebars = { "qf", "help" },
-        day_brightness = 0.3,
-        hide_inactive_statusline = false,
-        dim_inactive = false,
-        lualine_bold = false,
-      })
-    end,
-  },
 
   -- PaperColor theme
-  {
-    "NLKNguyen/papercolor-theme",
-    lazy = false,
-    priority = 969,
-  },
 
   -- Codedark theme (VS Code inspired)
-  {
-    "tomasiser/vim-code-dark",
-    lazy = false,
-    priority = 968,
-  },
 
   -- One themes
-  {
-    "rakr/vim-one",
-    lazy = false,
-    priority = 967,
-  },
 
   -- Lush - dependency for apprentice theme
-  {
-    "rktjmp/lush.nvim",
-    lazy = false,
-    priority = 967,
-  },
 
   -- Apprentice-inspired theme (replacement for problematic romainl/Apprentice)
-  {
-    "adisen99/apprentice.nvim",
-    dependencies = { "rktjmp/lush.nvim" },
-    lazy = false,
-    priority = 966,
-    config = function()
-      require("apprentice").setup({
-        style = "dark", -- "dark" or "light"
-        transparent = true,
-        terminal_colors = true,
-        styles = {
-          comments = { italic = true },
-          keywords = { italic = false },
-          functions = { italic = false },
-          variables = { italic = false },
-        },
-      })
-    end,
-  },
 
   -- Zenburn theme
-  {
-    "jnurmine/Zenburn",
-    lazy = false,
-    priority = 965,
-  },
 
   -- Base16 alternatives - Arctic themes
-  {
-    "rockerBOO/boo-colorscheme-nvim",
-    lazy = false,
-    priority = 964,
-  },
 
   -- Rigel theme
-  {
-    "Rigellute/rigel",
-    lazy = false,
-    priority = 963,
-  },
 
   -- Blue Moon theme
-  {
-    "kyazdani42/blue-moon",
-    lazy = false,
-    priority = 962,
-  },
 
   -- Horizon theme
-  {
-    "akinsho/horizon.nvim",
-    lazy = false,
-    priority = 961,
-    config = function()
-      vim.g.horizon_italic_comments = true
-      vim.g.horizon_italic_keywords = true
-      vim.g.horizon_italic_functions = false
-      vim.g.horizon_italic_variables = false
-      vim.g.horizon_contrast = true
-      vim.g.horizon_borders = false
-      vim.g.horizon_disable_background = true
-    end,
-  },
 
   -- Embark theme
-  {
-    "embark-theme/vim",
-    name = "embark",
-    lazy = false,
-    priority = 960,
-  },
 
   -- Forest Night theme
-  {
-    "sainnhe/forest-night",
-    lazy = false,
-    priority = 959,
-    config = function()
-      vim.g.forest_night_style = "default"
-      vim.g.forest_night_enable_italic = 1
-      vim.g.forest_night_disable_italic_comment = 0
-      vim.g.forest_night_transparent_background = 1
-    end,
-  },
 
   -- Iceberg theme
-  {
-    "cocopon/iceberg.vim",
-    lazy = false,
-    priority = 958,
-  },
 
   -- Challenger Deep theme
-  {
-    "challenger-deep-theme/vim",
-    name = "challenger-deep",
-    lazy = false,
-    priority = 957,
-  },
 
   -- Jellybeans theme
-  {
-    "nanotech/jellybeans.vim",
-    lazy = false,
-    priority = 956,
-  },
 
   -- Srcery theme
-  {
-    "srcery-colors/srcery-vim",
-    lazy = false,
-    priority = 955,
-  },
 
   -- PaperColor improved
-  {
-    "NLKNguyen/papercolor-theme",
-    name = "papercolor-improved",
-    lazy = false,
-    priority = 954,
-  },
 
   -- Miramare theme
-  {
-    "franbach/miramare",
-    lazy = false,
-    priority = 953,
-  },
 
   -- Artify theme
-  {
-    "RRethy/vim-illuminate", -- This includes some nice themes
-    lazy = false,
-    priority = 952,
-  },
 
   -- Essential dependencies
   {
@@ -996,133 +867,8 @@ return {
     end,
   },
 
-  {
-    "echasnovski/mini.starter",
-    version = "*",
-    lazy = false, -- Ensure it loads immediately
-    priority = 1001, -- Load after colorscheme but very early
-    config = function()
-      local starter = require("mini.starter")
-      starter.setup({
-        evaluate_single = true,
-        items = {
-          -- Essential actions section
-          {
-            { action = "enew", name = "N: New file", section = "📝 Quick Actions" },
-            { action = "Telescope find_files", name = "F: Find files", section = "📝 Quick Actions" },
-            { action = "Telescope live_grep", name = "G: Live grep", section = "📝 Quick Actions" },
-            { action = "Telescope oldfiles", name = "R: Recent files", section = "📝 Quick Actions" },
-          },
-          -- Discovery and help section  
-          {
-            { action = "Telescope keymaps", name = "K: Browse keymaps", section = "🔍 Discovery" },
-            { action = "Telescope commands", name = "C: Browse commands", section = "🔍 Discovery" },
-            { action = "Telescope help_tags", name = "H: Browse help", section = "🔍 Discovery" },
-            { action = "lua require('which-key').show({ global = true })", name = "?: Global keymaps", section = "🔍 Discovery" },
-          },
-          -- Theme and customization
-          {
-            { action = "lua require('telescope.builtin').colorscheme({enable_preview = true})", name = "T: Theme switcher", section = "🎨 Customize" },
-            { action = "Telescope buffers", name = "B: Buffers", section = "🎨 Customize" },
-            { action = "e ~/.config/nvim/init.lua", name = "I: Edit config", section = "🎨 Customize" },
-            { action = "e ~/.config/nvim/lua/config/keymaps.lua", name = "M: Edit keymaps", section = "🎨 Customize" },
-          },
-          -- Management section
-          {
-            { action = "Lazy", name = "L: Plugin manager", section = "🔧 Management" },
-            { action = "Mason", name = "S: LSP manager", section = "🔧 Management" },
-            { action = "checkhealth", name = "D: Health check", section = "🔧 Management" },
-            { action = "Lazy sync", name = "Y: Sync plugins", section = "🔧 Management" },
-          },
-          -- Session management (if sessions plugin is available)
-          {
-            { action = "lua require('mini.sessions').select()", name = "O: Load session", section = "💾 Sessions" },
-            { action = "lua require('mini.sessions').write(vim.fn.input('Session name: '))", name = "W: Save session", section = "💾 Sessions" },
-          },
-          -- Built-in actions last
-          starter.sections.recent_files(8, false),
-          starter.sections.recent_files(5, true),
-        },
-        header = function()
-          local hour = tonumber(vim.fn.strftime('%H'))
-          local part_id = math.floor((hour + 4) / 8) + 1
-          local day_part = ({ 'evening', 'morning', 'afternoon', 'evening' })[part_id]
-          local username = vim.loop.os_getenv('USER') or 'user'
-          
-          -- Enhanced ASCII art header
-          local header_art = {
-            "╭─────────────────────────────────────────────────────────╮",
-            "│                                                         │",
-            "│  ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗    │",
-            "│  ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║    │", 
-            "│  ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║    │",
-            "│  ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║    │",
-            "│  ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║    │",
-            "│  ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝    │",
-            "│                                                         │",
-            "│           " .. string.format("Good %s, %s!", day_part, username) .. string.rep(" ", 25 - string.len(day_part .. username)) .. "│",
-            "│                                                         │",
-            "╰─────────────────────────────────────────────────────────╯",
-          }
-          
-          return table.concat(header_art, '\n')
-        end,
-        footer = function()
-          local stats = require("lazy").stats()
-          local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
-          return "⚡ Loaded " .. stats.loaded .. "/" .. stats.count .. " plugins in " .. ms .. "ms"
-        end,
-        content_hooks = {
-          starter.gen_hook.adding_bullet("│ ", false),
-          starter.gen_hook.indexing('all', { 'Builtin actions' }),
-          starter.gen_hook.padding(3, 2),
-          starter.gen_hook.aligning('center', 'center'),
-        },
-        query_updaters = 'abcdefghijklmnopqrstuvwxyz0123456789_-.',
-      })
-
-      -- Ensure mini.starter is triggered properly on VimEnter
-      vim.api.nvim_create_autocmd("VimEnter", {
-        group = vim.api.nvim_create_augroup("MiniStarterAutostart", { clear = true }),
-        callback = function()
-          -- Only open if no arguments were passed (no files to open)
-          if vim.fn.argc() == 0 then
-            starter.open()
-          end
-        end,
-      })
-    end,
-  },
-
-  {
-    "echasnovski/mini.animate",
-    version = "*",
-    config = function()
-      require("mini.animate").setup({
-        cursor = {
-          enable = true,
-          timing = require("mini.animate").gen_timing.linear({ duration = 100, unit = "total" }),
-        },
-        scroll = {
-          enable = true,
-          timing = require("mini.animate").gen_timing.linear({ duration = 150, unit = "total" }),
-        },
-        resize = {
-          enable = true,
-          timing = require("mini.animate").gen_timing.linear({ duration = 100, unit = "total" }),
-        },
-        open = {
-          enable = true,
-          timing = require("mini.animate").gen_timing.linear({ duration = 150, unit = "total" }),
-        },
-        close = {
-          enable = true,
-          timing = require("mini.animate").gen_timing.linear({ duration = 150, unit = "total" }),
-        },
-      })
-    end,
-  },
-
+  -- mini.starter and mini.animate removed - replaced by snacks.nvim dashboard and scroll
+  
   {
     "echasnovski/mini.cursorword",
     version = "*",
@@ -1269,20 +1015,45 @@ return {
         { "<leader>f", group = "find/telescope", icon = "🔍" },
         { "<leader>p", group = "pick/mini.pick", icon = "📋" },
         { "<leader>x", group = "trouble/diagnostics", icon = "🔧" },
-        { "<leader>t", group = "theme/trim", icon = "🎨" },
-        { "<leader>g", group = "git/diff", icon = "📦" },
+        { "<leader>t", group = "theme/toggle/terminal", icon = "🎨" },
+        { "<leader>g", group = "git/snacks", icon = "📦" },
         { "<leader>c", group = "code/lsp", icon = "💻" },
         { "<leader>w", group = "window", icon = "🪟" },
-        { "<leader>b", group = "buffer", icon = "📄" },
+        { "<leader>b", group = "buffer/snacks", icon = "📄" },
         { "<leader>v", group = "visits/mini.visits", icon = "📍" },
-        { "<leader>s", group = "session/mini.sessions", icon = "💾" },
+        { "<leader>s", group = "session/snacks", icon = "💾" },
         { "<leader>m", group = "map/minimap", icon = "🗺️" },
         { "<leader>r", group = "refactor/rename", icon = "♻️" },
         { "<leader>d", group = "diagnostics", icon = "🩺" },
         { "<leader>h", group = "git hunks", icon = "📊" },
         { "<leader>l", group = "lsp", icon = "🔧" },
-        { "<leader>n", group = "notifications/new", icon = "🔔" },
-        { "<leader>c", group = "config/code", icon = "⚙️" },
+        { "<leader>n", group = "notifications/snacks", icon = "🔔" },
+        { "<leader>z", group = "zen/snacks", icon = "🧘" },
+
+        -- Snacks-specific groups and actions
+        { "<leader>sd", desc = "Dashboard (snacks)", icon = "🏠" },
+        { "<leader>nh", desc = "Notification History", icon = "📜" },
+        { "<leader>nd", desc = "Dismiss Notifications", icon = "🚫" },
+        { "<leader>gb", desc = "Git Blame Line (snacks)", icon = "👤" },
+        { "<leader>gB", desc = "Git Browse (snacks)", icon = "🌐" },
+        { "<leader>gf", desc = "Git File History (snacks)", icon = "📖" },
+        { "<leader>gl", desc = "Git Log (snacks)", icon = "📋" },
+        { "<leader>gg", desc = "LazyGit (snacks)", icon = "💻" },
+        { "<leader>rn", desc = "Rename with preview (snacks)", icon = "✏️" },
+        { "<leader>bd", desc = "Delete Buffer (snacks)", icon = "🗑️" },
+        { "<leader>bD", desc = "Delete Buffer Force (snacks)", icon = "💥" },
+        { "<leader>z", desc = "Zen Mode (snacks)", icon = "🧘" },
+        { "<leader>Z", desc = "Zen Zoom (snacks)", icon = "🔍" },
+        { "<leader>.", desc = "Scratch Buffer (snacks)", icon = "📝" },
+        { "<leader>S", desc = "Select Scratch (snacks)", icon = "📚" },
+        
+        -- Snacks toggle commands
+        { "<leader>tz", desc = "Toggle Zen Mode", icon = "🧘" },
+        { "<leader>tZ", desc = "Toggle Zoom", icon = "🔍" },
+        { "<leader>tD", desc = "Toggle Dim", icon = "🌗" },
+        { "<leader>tg", desc = "Toggle Git Signs", icon = "📦" },
+        { "<leader>ts", desc = "Toggle Spell Check", icon = "✓" },
+        { "<leader>tw", desc = "Toggle Wrap", icon = "↩️" },
 
         -- Git hunk actions (gitsigns)
         { "<leader>hs", desc = "Stage hunk", icon = "+" },
@@ -1510,46 +1281,11 @@ return {
     end,
   },
 
-  -- Fancy notification manager
-  {
-    "rcarriga/nvim-notify",
-    config = function()
-      require("notify").setup({
-        background_colour = "#000000",
-        fps = 30,
-        icons = {
-          DEBUG = "",
-          ERROR = "",
-          INFO = "",
-          TRACE = "✎",
-          WARN = ""
-        },
-        level = 2,
-        minimum_width = 50,
-        render = "default",
-        stages = "fade_in_slide_out",
-        timeout = 3000,
-        top_down = true
-      })
-      
-      -- Set nvim-notify as the default notification handler
-      vim.notify = require("notify")
-      
-      -- Notification keymaps
-      vim.keymap.set("n", "<leader>nd", function()
-        require("notify").dismiss({ silent = true, pending = true })
-      end, { desc = "Dismiss notifications" })
-      
-      vim.keymap.set("n", "<leader>nh", function()
-        require("notify").history()
-      end, { desc = "Notification history" })
-      
-      vim.keymap.set("n", "<leader>nc", function()
-        require("notify").dismiss()
-      end, { desc = "Clear notifications" })
-    end,
-  },
-
+  -- nvim-notify removed - replaced by snacks.notifier (configured in snacks.nvim above)
+  -- Notification keymaps are now:
+  --   <leader>nh - Notification history (snacks.notifier.show_history)
+  --   <leader>nd - Dismiss notifications (snacks.notifier.dismiss)
+  
   -- ============================================================================
   -- CORE DEVELOPMENT TOOLS
   -- ============================================================================
@@ -1675,8 +1411,11 @@ return {
               local selection = state.get_selected_entry()
               if selection then
                 local current_theme = selection.value
-                -- Clear all previous theme preview notifications
-                require("notify").dismiss({ silent = true, pending = true })
+                -- Clear all previous theme preview notifications (using snacks.notifier if loaded)
+                local snacks_ok, snacks = pcall(require, "snacks")
+                if snacks_ok and snacks.notifier then
+                  pcall(snacks.notifier.dismiss)
+                end
                 
                 -- Show new notification for current preview theme
                 vim.notify(
