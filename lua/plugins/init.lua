@@ -1495,7 +1495,7 @@ return {
             package_uninstalled = "✗"
           }
         },
-        max_concurrent_installers = 10,
+        max_concurrent_installers = 5, -- PERFORMANCE: Reduced from 10 to prevent system overwhelm
       })
       
       -- Enhanced mason-tool-installer setup with more tools
@@ -1888,7 +1888,9 @@ return {
         end
       })
 
-      -- Set shorter updatetime for more responsive hover
+      -- Set updatetime for CursorHold responsiveness
+      -- WARNING: This affects ALL CursorHold events globally, not just LSP hover/diagnostics
+      -- Other plugins using CursorHold will also trigger every 300ms
       vim.opt.updatetime = 300
 
       -- Completion setup (nvim-cmp)
@@ -2125,8 +2127,17 @@ return {
           -- Actions
           map('n', '<leader>hs', gitsigns.stage_hunk, { desc = "Stage hunk" })
           map('n', '<leader>hr', gitsigns.reset_hunk, { desc = "Reset hunk" })
-          map('v', '<leader>hs', function() gitsigns.stage_hunk {vim.fn.line('.'), vim.fn.line('v')} end, { desc = "Stage hunk" })
-          map('v', '<leader>hr', function() gitsigns.reset_hunk {vim.fn.line('.'), vim.fn.line('v')} end, { desc = "Reset hunk" })
+          -- FIX: Sort line numbers to handle upward visual selection
+          map('v', '<leader>hs', function() 
+            local start_line, end_line = vim.fn.line('.'), vim.fn.line('v')
+            if start_line > end_line then start_line, end_line = end_line, start_line end
+            gitsigns.stage_hunk {start_line, end_line}
+          end, { desc = "Stage hunk" })
+          map('v', '<leader>hr', function()
+            local start_line, end_line = vim.fn.line('.'), vim.fn.line('v')
+            if start_line > end_line then start_line, end_line = end_line, start_line end
+            gitsigns.reset_hunk {start_line, end_line}
+          end, { desc = "Reset hunk" })
           map('n', '<leader>hS', gitsigns.stage_buffer, { desc = "Stage buffer" })
           map('n', '<leader>hu', gitsigns.undo_stage_hunk, { desc = "Undo stage hunk" })
           map('n', '<leader>hR', gitsigns.reset_buffer, { desc = "Reset buffer" })
@@ -2408,9 +2419,17 @@ return {
         },
       })
       
-      -- Enhanced format keymaps
+      -- Enhanced format keymaps with error handling
       vim.keymap.set("n", "<leader>fm", function()
-        require("conform").format({ lsp_fallback = true })
+        -- ERROR HANDLING: Protect format operation
+        local ok, err = pcall(function()
+          require("conform").format({ lsp_fallback = true })
+        end)
+        if ok then
+          vim.notify("Buffer formatted successfully", vim.log.levels.INFO)
+        else
+          vim.notify("Format failed: " .. tostring(err), vim.log.levels.ERROR)
+        end
       end, { desc = "Format buffer manually" })
       
       -- Auto-formatting permanently disabled - show status

@@ -380,12 +380,85 @@ end
 
 ---
 
+## Phase 6-7: Performance & Configuration - PARTIAL ✅
+
+### Changes Made:
+
+#### 2025-12-07 21:10 | PERFORMANCE | lua/plugins/init.lua:1498 | Reduce Mason concurrent installers
+**BEFORE:** `max_concurrent_installers = 10`
+**AFTER:** `max_concurrent_installers = 5`
+**Impact:** Prevents system overwhelm during initial installation, more stable on slower systems
+**Status:** ✅ Optimized
+
+#### 2025-12-07 21:10 | CONFIG | lua/plugins/init.lua:1891-1894 | Document updatetime side effects
+**BEFORE:**
+```lua
+-- Set shorter updatetime for more responsive hover
+vim.opt.updatetime = 300
+```
+**AFTER:**
+```lua
+-- Set updatetime for CursorHold responsiveness
+-- WARNING: This affects ALL CursorHold events globally, not just LSP hover/diagnostics
+-- Other plugins using CursorHold will also trigger every 300ms
+vim.opt.updatetime = 300
+```
+**Impact:** Clear documentation of global side effects
+**Status:** ✅ Documented
+
+#### 2025-12-07 21:10 | FIX | lua/plugins/init.lua:2414 | Add error handling to conform format
+**BEFORE:**
+```lua
+vim.keymap.set("n", "<leader>fm", function()
+  require("conform").format({ lsp_fallback = true })
+end, ...)
+```
+**AFTER:**
+```lua
+vim.keymap.set("n", "<leader>fm", function()
+  local ok, err = pcall(function()
+    require("conform").format({ lsp_fallback = true })
+  end)
+  if ok then
+    vim.notify("Buffer formatted successfully", vim.log.levels.INFO)
+  else
+    vim.notify("Format failed: " .. tostring(err), vim.log.levels.ERROR)
+  end
+end, ...)
+```
+**Impact:** User feedback on format success/failure
+**Status:** ✅ Fixed
+
+#### 2025-12-07 21:10 | FIX | lua/plugins/init.lua:2130-2131 | Fix gitsigns visual selection line order
+**BEFORE:**
+```lua
+map('v', '<leader>hs', function() gitsigns.stage_hunk {vim.fn.line('.'), vim.fn.line('v')} end, ...)
+```
+**AFTER:**
+```lua
+map('v', '<leader>hs', function()
+  local start_line, end_line = vim.fn.line('.'), vim.fn.line('v')
+  if start_line > end_line then start_line, end_line = end_line, start_line end
+  gitsigns.stage_hunk {start_line, end_line}
+end, ...)
+```
+**Impact:** Correct hunk staging when selecting upward in visual mode
+**Status:** ✅ Fixed
+
+### Summary:
+- ✅ Reduced Mason installer concurrency (stability)
+- ✅ Documented updatetime global impact
+- ✅ Added format error handling
+- ✅ Fixed gitsigns visual selection bug
+
+---
+
 ## Statistics
 
 **Total Changes Planned:** 72 issues to fix
-**Completed:** 0
+**Completed:** 25
 **In Progress:** 0
-**Pending:** 72
+**Pending:** 47
 
 **Code to Remove:** ~200 lines
 **Code to Add:** ~150 lines
