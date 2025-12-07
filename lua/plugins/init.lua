@@ -649,17 +649,22 @@ return {
         blacklist = {}, -- No blacklisted filetypes
       }
       
-      -- Set up enhanced highlight colors for better visibility
+      -- PHASE 6 FIX #12: Set highlights once after initial ColorScheme, not on every change
+      -- This prevents 7 nvim_set_hl calls on every theme switch
+      local highlights_set = false
       vim.api.nvim_create_autocmd("ColorScheme", {
         group = vim.api.nvim_create_augroup("RainbowDelimitersHighlight", { clear = true }),
         callback = function()
-          vim.api.nvim_set_hl(0, "RainbowDelimiterRed", { fg = "#E06C75", bold = true })
-          vim.api.nvim_set_hl(0, "RainbowDelimiterYellow", { fg = "#E5C07B", bold = true })
-          vim.api.nvim_set_hl(0, "RainbowDelimiterBlue", { fg = "#61AFEF", bold = true })
-          vim.api.nvim_set_hl(0, "RainbowDelimiterOrange", { fg = "#D19A66", bold = true })
-          vim.api.nvim_set_hl(0, "RainbowDelimiterGreen", { fg = "#98C379", bold = true })
-          vim.api.nvim_set_hl(0, "RainbowDelimiterViolet", { fg = "#C678DD", bold = true })
-          vim.api.nvim_set_hl(0, "RainbowDelimiterCyan", { fg = "#56B6C2", bold = true })
+          if not highlights_set then
+            vim.api.nvim_set_hl(0, "RainbowDelimiterRed", { fg = "#E06C75", bold = true })
+            vim.api.nvim_set_hl(0, "RainbowDelimiterYellow", { fg = "#E5C07B", bold = true })
+            vim.api.nvim_set_hl(0, "RainbowDelimiterBlue", { fg = "#61AFEF", bold = true })
+            vim.api.nvim_set_hl(0, "RainbowDelimiterOrange", { fg = "#D19A66", bold = true })
+            vim.api.nvim_set_hl(0, "RainbowDelimiterGreen", { fg = "#98C379", bold = true })
+            vim.api.nvim_set_hl(0, "RainbowDelimiterViolet", { fg = "#C678DD", bold = true })
+            vim.api.nvim_set_hl(0, "RainbowDelimiterCyan", { fg = "#56B6C2", bold = true })
+            highlights_set = true
+          end
         end,
       })
     end,
@@ -1522,22 +1527,9 @@ return {
         keymap.set("n", "gi", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "Go to implementation" }))
         keymap.set("n", "gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { desc = "Go to references" }))
         
-        -- Enhanced hover documentation with duplicate prevention
-        keymap.set("n", "K", function()
-          -- Close any existing hover windows to prevent duplicates
-          for _, win in ipairs(vim.api.nvim_list_wins()) do
-            local buf = vim.api.nvim_win_get_buf(win)
-            local ft = vim.api.nvim_buf_get_option(buf, 'filetype')
-            if ft == 'lsp-hover' or 
-               (vim.api.nvim_win_get_config(win).relative ~= '' and 
-                vim.api.nvim_buf_get_name(buf):match('lsp%-hover')) then
-              pcall(vim.api.nvim_win_close, win, false)
-            end
-          end
-          
-          -- Use standard hover with simple configuration
-          vim.lsp.buf.hover()
-        end, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
+        -- PHASE 6 FIX #19: Simplified hover - removed manual window cleanup loop
+        -- The focus_id in handlers (line ~1730) prevents duplicates automatically
+        keymap.set("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
         
         keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
         keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code action" }))
@@ -2191,19 +2183,28 @@ return {
       { "<leader>tf", desc = "Auto-formatting status (disabled)" },
     },
     config = function()
-      -- Helper function to check if a formatter is available (checks Mason install dir too)
+      -- PHASE 6 FIX #14: Cache formatter availability checks to avoid repeated filesystem calls
+      local formatter_cache = {}
       local function is_formatter_available(formatter)
+        -- Return cached result if available
+        if formatter_cache[formatter] ~= nil then
+          return formatter_cache[formatter]
+        end
+        
         -- Check standard PATH
         if vim.fn.executable(formatter) == 1 then
+          formatter_cache[formatter] = true
           return true
         end
         
         -- Check Mason install directory
         local mason_path = vim.fn.stdpath("data") .. "/mason/bin/" .. formatter
         if vim.fn.executable(mason_path) == 1 then
+          formatter_cache[formatter] = true
           return true
         end
         
+        formatter_cache[formatter] = false
         return false
       end
 
@@ -2466,19 +2467,28 @@ return {
     config = function()
       local lint = require("lint")
       
-      -- Helper function to check if a linter is available (checks Mason install dir too)
+      -- PHASE 6 FIX #14: Cache linter availability checks to avoid repeated filesystem calls
+      local linter_cache = {}
       local function is_linter_available(linter)
+        -- Return cached result if available
+        if linter_cache[linter] ~= nil then
+          return linter_cache[linter]
+        end
+        
         -- Check standard PATH
         if vim.fn.executable(linter) == 1 then
+          linter_cache[linter] = true
           return true
         end
         
         -- Check Mason install directory
         local mason_path = vim.fn.stdpath("data") .. "/mason/bin/" .. linter
         if vim.fn.executable(mason_path) == 1 then
+          linter_cache[linter] = true
           return true
         end
         
+        linter_cache[linter] = false
         return false
       end
       
