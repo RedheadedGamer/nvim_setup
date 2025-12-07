@@ -146,18 +146,34 @@ If you want to keep LLVM/Clang:
    scoop install mingw llvm
    ```
 
-2. **Create or edit** `.clangd` file in your project root:
+2. **Find your MinGW include paths** (PowerShell):
+   ```powershell
+   # Find MinGW installation path
+   scoop prefix mingw
+   ```
+
+3. **Create or edit** `.clangd` file in your project root:
    ```yaml
    CompileFlags:
      Add:
-       - -IC:/Users/YourUsername/scoop/apps/mingw/current/include
-       - -IC:/Users/YourUsername/scoop/apps/mingw/current/lib/gcc/x86_64-w64-mingw32/*/include
+       - -I<SCOOP_MINGW_PATH>/include
+       - -I<SCOOP_MINGW_PATH>/lib/gcc/x86_64-w64-mingw32/<GCC_VERSION>/include
    ```
-   Replace `YourUsername` with your actual username.
+   Replace `<SCOOP_MINGW_PATH>` with output from `scoop prefix mingw`.
+   Replace `<GCC_VERSION>` with actual version (e.g., `13.2.0`).
+   
+   **Example:**
+   ```yaml
+   CompileFlags:
+     Add:
+       - -IC:/Users/YourName/scoop/apps/mingw/current/include
+       - -IC:/Users/YourName/scoop/apps/mingw/current/lib/gcc/x86_64-w64-mingw32/13.2.0/include
+   ```
 
-3. **Alternative:** Set environment variable (PowerShell - add to profile):
+4. **Alternative:** Set environment variable (PowerShell - add to profile):
    ```powershell
-   $env:CPATH = "C:\Users\YourUsername\scoop\apps\mingw\current\include"
+   $mingwPath = scoop prefix mingw
+   $env:CPATH = "$mingwPath\include"
    ```
 
 #### Solution 4: Use WSL for C/C++ Development
