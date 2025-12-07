@@ -2,7 +2,11 @@
 
 A modern, feature-rich Neovim configuration written in Lua with **complete mini.nvim ecosystem integration** (28 plugins), LSP support, auto-completion, and optimized performance for enhanced development experience.
 
+**🌍 Cross-Platform:** Works on Linux (Arch, Ubuntu, Debian, Fedora), macOS, and Windows with Scoop!
+
 > **⚡ New to this config?** Start here: [QUICKSTART.md](QUICKSTART.md) - Get up and running in 5 minutes!
+>
+> **🖥️ Platform-specific setup?** See [PLATFORM_SUPPORT.md](PLATFORM_SUPPORT.md) - Complete cross-platform guide!
 
 ## ✨ Features
 
@@ -33,8 +37,10 @@ A modern, feature-rich Neovim configuration written in Lua with **complete mini.
 > **📖 For detailed installation instructions, troubleshooting, and switching between setups, see [INSTALL.md](INSTALL.md)**
 > 
 > **📊 For a detailed comparison of Full vs Minimal setups, see [SETUP_COMPARISON.md](SETUP_COMPARISON.md)**
+>
+> **🖥️ For platform-specific guides (Arch, Ubuntu, Windows, macOS), see [PLATFORM_SUPPORT.md](PLATFORM_SUPPORT.md)**
 
-This configuration offers **two installation modes** to suit different needs:
+This configuration offers **two installation modes** and works on **all major platforms**:
 
 ### Installation Modes
 
@@ -263,10 +269,14 @@ scoop install mingw cmake llvm
 
 After installation:
 
-1. **Start Neovim** - The configuration will automatically install plugins
-2. **Wait for completion** - Let lazy.nvim finish downloading all plugins
-3. **Restart Neovim** - For best results
-4. **Check health** (optional): Run `:checkhealth` to verify setup
+1. **Verify prerequisites** (optional but recommended):
+   - Linux/macOS: `./verify_setup.sh`
+   - Windows: `.\verify_setup.ps1`
+
+2. **Start Neovim** - The configuration will automatically install plugins
+3. **Wait for completion** - Let lazy.nvim finish downloading all plugins
+4. **Restart Neovim** - For best results
+5. **Check health** (optional): Run `:checkhealth` to verify setup
 
 ### Switching Between Setups
 
