@@ -2,6 +2,177 @@
 -- Plugin manager setup with lazy.nvim
 
 return {
+  -- ============================================================================
+  -- SNACKS.NVIM - Modern all-in-one plugin by folke
+  -- Replaces mini.starter and mini.animate with better alternatives
+  -- ============================================================================
+  {
+    "folke/snacks.nvim",
+    priority = 1000,
+    lazy = false,
+    ---@type snacks.Config
+    opts = {
+      -- Enable/disable features globally
+      bigfile = { enabled = true },
+      quickfile = { enabled = true },
+      
+      -- Dashboard replacing mini.starter
+      dashboard = {
+        enabled = true,
+        preset = {
+          keys = {
+            { icon = " ", key = "f", desc = "Find File", action = ":Telescope find_files" },
+            { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
+            { icon = " ", key = "r", desc = "Recent Files", action = ":Telescope oldfiles" },
+            { icon = " ", key = "g", desc = "Find Text", action = ":Telescope live_grep" },
+            { icon = " ", key = "c", desc = "Config", action = ":e ~/.config/nvim/init.lua" },
+            { icon = " ", key = "s", desc = "Restore Session", action = ":lua require('mini.sessions').select()" },
+            { icon = "󰒲 ", key = "l", desc = "Lazy", action = ":Lazy" },
+            { icon = " ", key = "m", desc = "Mason", action = ":Mason" },
+            { icon = " ", key = "q", desc = "Quit", action = ":qa" },
+          },
+          header = [[
+███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
+████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║
+██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
+██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
+██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
+╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝
+          ]],
+        },
+        sections = {
+          { section = "header" },
+          { section = "keys", gap = 1, padding = 1 },
+          { section = "startup" },
+        },
+      },
+      
+      -- Notifier replacing basic vim.notify
+      notifier = {
+        enabled = true,
+        timeout = 3000,
+        width = { min = 40, max = 0.4 },
+        height = { min = 1, max = 0.6 },
+        margin = { top = 0, right = 1, bottom = 0 },
+        padding = true,
+        sort = { "level", "added" },
+        icons = {
+          error = " ",
+          warn = " ",
+          info = " ",
+          debug = " ",
+          trace = " ",
+        },
+        style = "compact",
+      },
+      
+      -- Scroll animations replacing mini.animate
+      scroll = {
+        enabled = true,
+        animate = {
+          duration = { step = 15, total = 250 },
+          easing = "linear",
+        },
+        spamming = 10,
+        filter = function(buf)
+          return vim.bo[buf].buftype ~= "terminal"
+        end,
+      },
+      
+      -- Enhanced indent guides
+      indent = {
+        enabled = true,
+        char = "│",
+        blank = "│",
+        only_scope = false,
+        only_current = false,
+        scope = {
+          enabled = true,
+          char = "│",
+          underline = false,
+        },
+      },
+      
+      -- Terminal management
+      terminal = {
+        enabled = true,
+        win = {
+          style = "float",
+          width = 0.9,
+          height = 0.9,
+          border = "rounded",
+          title = " Terminal ",
+          title_pos = "center",
+          footer = " Press <Esc><Esc> to close ",
+          footer_pos = "center",
+        },
+      },
+      
+      -- Enhanced statuscolumn
+      statuscolumn = {
+        enabled = true,
+        left = { "mark", "sign" },
+        right = { "fold", "git" },
+        folds = {
+          open = true,
+          git_hl = true,
+        },
+        git = {
+          patterns = { "GitSign", "MiniDiffSign" },
+        },
+      },
+      
+      -- Enhanced word motions
+      words = {
+        enabled = true,
+        debounce = 200,
+        notify_jump = false,
+        notify_end = true,
+        foldopen = true,
+        jumplist = true,
+        modes = { "n", "i", "c" },
+      },
+    },
+    
+    -- Keybindings
+    keys = {
+      -- Dashboard
+      { "<leader>sd", function() require("snacks").dashboard.open() end, desc = "Dashboard" },
+      
+      -- Notifications
+      { "<leader>nh", function() require("snacks").notifier.show_history() end, desc = "Notification History" },
+      { "<leader>nd", function() require("snacks").notifier.dismiss() end, desc = "Dismiss Notifications" },
+      
+      -- Terminal
+      { "<leader>tt", function() require("snacks").terminal.toggle() end, desc = "Toggle Terminal" },
+      { "<leader>tg", function() require("snacks").terminal("lazygit") end, desc = "LazyGit" },
+      { "<C-/>", function() require("snacks").terminal.toggle() end, desc = "Toggle Terminal", mode = { "n", "t" } },
+      { "<C-_>", function() require("snacks").terminal.toggle() end, desc = "Toggle Terminal", mode = { "n", "t" } },
+      
+      -- Word navigation
+      { "]]", function() require("snacks").words.jump(vim.v.count1) end, desc = "Next Reference" },
+      { "[[", function() require("snacks").words.jump(-vim.v.count1) end, desc = "Previous Reference" },
+    },
+    
+    -- Init function for additional setup
+    init = function()
+      -- Replace vim.notify with snacks notifier
+      vim.notify = require("snacks").notifier.notify
+      
+      -- Setup snacks autocmds
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "VeryLazy",
+        callback = function()
+          -- Add custom snacks configuration here
+        end,
+      })
+    end,
+  },
+
+  -- ============================================================================
+  -- THEMES
+  -- ============================================================================
+  
   -- Primary colorscheme (default)
   {
     "olimorris/onedarkpro.nvim",
@@ -996,133 +1167,8 @@ return {
     end,
   },
 
-  {
-    "echasnovski/mini.starter",
-    version = "*",
-    lazy = false, -- Ensure it loads immediately
-    priority = 1001, -- Load after colorscheme but very early
-    config = function()
-      local starter = require("mini.starter")
-      starter.setup({
-        evaluate_single = true,
-        items = {
-          -- Essential actions section
-          {
-            { action = "enew", name = "N: New file", section = "📝 Quick Actions" },
-            { action = "Telescope find_files", name = "F: Find files", section = "📝 Quick Actions" },
-            { action = "Telescope live_grep", name = "G: Live grep", section = "📝 Quick Actions" },
-            { action = "Telescope oldfiles", name = "R: Recent files", section = "📝 Quick Actions" },
-          },
-          -- Discovery and help section  
-          {
-            { action = "Telescope keymaps", name = "K: Browse keymaps", section = "🔍 Discovery" },
-            { action = "Telescope commands", name = "C: Browse commands", section = "🔍 Discovery" },
-            { action = "Telescope help_tags", name = "H: Browse help", section = "🔍 Discovery" },
-            { action = "lua require('which-key').show({ global = true })", name = "?: Global keymaps", section = "🔍 Discovery" },
-          },
-          -- Theme and customization
-          {
-            { action = "lua require('telescope.builtin').colorscheme({enable_preview = true})", name = "T: Theme switcher", section = "🎨 Customize" },
-            { action = "Telescope buffers", name = "B: Buffers", section = "🎨 Customize" },
-            { action = "e ~/.config/nvim/init.lua", name = "I: Edit config", section = "🎨 Customize" },
-            { action = "e ~/.config/nvim/lua/config/keymaps.lua", name = "M: Edit keymaps", section = "🎨 Customize" },
-          },
-          -- Management section
-          {
-            { action = "Lazy", name = "L: Plugin manager", section = "🔧 Management" },
-            { action = "Mason", name = "S: LSP manager", section = "🔧 Management" },
-            { action = "checkhealth", name = "D: Health check", section = "🔧 Management" },
-            { action = "Lazy sync", name = "Y: Sync plugins", section = "🔧 Management" },
-          },
-          -- Session management (if sessions plugin is available)
-          {
-            { action = "lua require('mini.sessions').select()", name = "O: Load session", section = "💾 Sessions" },
-            { action = "lua require('mini.sessions').write(vim.fn.input('Session name: '))", name = "W: Save session", section = "💾 Sessions" },
-          },
-          -- Built-in actions last
-          starter.sections.recent_files(8, false),
-          starter.sections.recent_files(5, true),
-        },
-        header = function()
-          local hour = tonumber(vim.fn.strftime('%H'))
-          local part_id = math.floor((hour + 4) / 8) + 1
-          local day_part = ({ 'evening', 'morning', 'afternoon', 'evening' })[part_id]
-          local username = vim.loop.os_getenv('USER') or 'user'
-          
-          -- Enhanced ASCII art header
-          local header_art = {
-            "╭─────────────────────────────────────────────────────────╮",
-            "│                                                         │",
-            "│  ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗    │",
-            "│  ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║    │", 
-            "│  ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║    │",
-            "│  ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║    │",
-            "│  ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║    │",
-            "│  ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝    │",
-            "│                                                         │",
-            "│           " .. string.format("Good %s, %s!", day_part, username) .. string.rep(" ", 25 - string.len(day_part .. username)) .. "│",
-            "│                                                         │",
-            "╰─────────────────────────────────────────────────────────╯",
-          }
-          
-          return table.concat(header_art, '\n')
-        end,
-        footer = function()
-          local stats = require("lazy").stats()
-          local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
-          return "⚡ Loaded " .. stats.loaded .. "/" .. stats.count .. " plugins in " .. ms .. "ms"
-        end,
-        content_hooks = {
-          starter.gen_hook.adding_bullet("│ ", false),
-          starter.gen_hook.indexing('all', { 'Builtin actions' }),
-          starter.gen_hook.padding(3, 2),
-          starter.gen_hook.aligning('center', 'center'),
-        },
-        query_updaters = 'abcdefghijklmnopqrstuvwxyz0123456789_-.',
-      })
-
-      -- Ensure mini.starter is triggered properly on VimEnter
-      vim.api.nvim_create_autocmd("VimEnter", {
-        group = vim.api.nvim_create_augroup("MiniStarterAutostart", { clear = true }),
-        callback = function()
-          -- Only open if no arguments were passed (no files to open)
-          if vim.fn.argc() == 0 then
-            starter.open()
-          end
-        end,
-      })
-    end,
-  },
-
-  {
-    "echasnovski/mini.animate",
-    version = "*",
-    config = function()
-      require("mini.animate").setup({
-        cursor = {
-          enable = true,
-          timing = require("mini.animate").gen_timing.linear({ duration = 100, unit = "total" }),
-        },
-        scroll = {
-          enable = true,
-          timing = require("mini.animate").gen_timing.linear({ duration = 150, unit = "total" }),
-        },
-        resize = {
-          enable = true,
-          timing = require("mini.animate").gen_timing.linear({ duration = 100, unit = "total" }),
-        },
-        open = {
-          enable = true,
-          timing = require("mini.animate").gen_timing.linear({ duration = 150, unit = "total" }),
-        },
-        close = {
-          enable = true,
-          timing = require("mini.animate").gen_timing.linear({ duration = 150, unit = "total" }),
-        },
-      })
-    end,
-  },
-
+  -- mini.starter and mini.animate removed - replaced by snacks.nvim dashboard and scroll
+  
   {
     "echasnovski/mini.cursorword",
     version = "*",
