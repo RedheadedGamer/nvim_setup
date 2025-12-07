@@ -367,17 +367,6 @@ return {
     end,
   },
 
-  {
-    "Mofiqul/vscode.nvim",
-    lazy = true,
-    config = function()
-      require("vscode").setup({
-        transparent = true,
-        italic_comments = true,
-        disable_nvimtree_bg = true,
-      })
-    end,
-  },
 
   {
     "projekt0n/github-nvim-theme",
@@ -428,505 +417,105 @@ return {
     end,
   },
 
-  {
-    "lunarvim/darkplus.nvim",
-    lazy = true,
-  },
 
-  {
-    "ray-x/aurora",
-    lazy = true,
-  },
 
   -- ============================================================================ 
   -- ADDITIONAL PREMIUM THEMES (20+ new high-quality themes)
   -- ============================================================================
 
   -- Monokai Pro family - Professional themes
-  {
-    "loctvl842/monokai-pro.nvim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 995,
-    config = function()
-      require("monokai-pro").setup({
-        transparent_background = true,
-        filter = "pro", -- pro, classic, machine, octagon, ristretto, spectrum
-      })
-    end,
-  },
 
   -- Solarized - Classic and beloved
-  {
-    "maxmx03/solarized.nvim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 994,
-    config = function()
-      require("solarized").setup({
-        transparent = {
-          enabled = true,
-          pmenu = true,
-          normal = true,
-          normalfloat = true,
-          neotree = true,
-          nvimtree = true,
-          whichkey = true,
-          telescope = true,
-          lazy = true,
-        },
-        palette = "solarized", -- solarized, selenized
-        styles = {
-          comments = { italic = true },
-          functions = { italic = false },
-          variables = { italic = false },
-        },
-        highlights = {},
-        colors = {},
-        theme = "neo", -- or "default"
-      })
-    end,
-  },
 
   -- Ayu - Elegant minimal themes
-  {
-    "Shatur/neovim-ayu",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 993,
-    config = function()
-      require("ayu").setup({
-        mirage = true,
-        terminal = false,
-        overrides = {},
-      })
-    end,
-  },
 
   -- Oceanic Next - Beautiful blue theme
-  {
-    "mhartington/oceanic-next",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 992,
-  },
 
   -- Palenight - Material inspired
-  {
-    "drewtempelmeyer/palenight.vim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 991,
-  },
 
   -- Gruvbox Baby - Modern Gruvbox
-  {
-    "luisiacc/gruvbox-baby",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 990,
-    config = function()
-      vim.g.gruvbox_baby_transparent_mode = 1
-      vim.g.gruvbox_baby_function_style = "NONE"
-      vim.g.gruvbox_baby_keyword_style = "italic"
-    end,
-  },
 
   -- Tender - Gentle purple theme
-  {
-    "jacoborus/tender.vim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 989,
-  },
 
   -- Spaceduck - Retro space theme
-  {
-    "pineapplegiant/spaceduck",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 988,
-  },
 
   -- Deep Space - Cosmic dark theme
-  {
-    "tyrannicaltoucan/vim-deep-space",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 987,
-  },
 
   -- Moonfly - Dark blue theme
-  {
-    "bluz71/vim-moonfly-colors",
-    name = "moonfly",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 986,
-  },
 
   -- Nightowl - Dark theme for night owls
-  {
-    "bluz71/vim-nightfly-colors",
-    name = "nightfly",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 985,
-  },
 
   -- Zephyr - Modern dark theme
-  {
-    "glepnir/zephyr-nvim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 984,
-  },
 
   -- Onedark Vivid - Enhanced OneDark
-  {
-    "navarasu/onedark.nvim",
-    name = "onedark-nvim", -- Avoid name conflict
-    lazy = false, -- Load immediately for theme switcher
-    priority = 983,
-    config = function()
-      require("onedark").setup({
-        style = "vivid", -- dark, darker, cool, deep, warm, warmer, vivid
-        transparent = true,
-        code_style = {
-          comments = "italic",
-          keywords = "bold",
-          functions = "bold",
-          strings = "italic",
-          variables = "NONE"
-        },
-      })
-    end,
-  },
 
   -- Oxocarbon - Modern IBM inspired
-  {
-    "nyoom-engineering/oxocarbon.nvim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 982,
-  },
 
   -- Melange - Warm color palette
-  {
-    "savq/melange-nvim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 981,
-  },
 
   -- Flow - Minimal and clean
-  {
-    "0xstepit/flow.nvim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 980,
-    config = function()
-      require("flow").setup({
-        transparent = true,
-        fluo_color = "pink",
-        mode = "normal",
-        aggressive_spell = false,
-      })
-    end,
-  },
 
   -- Cyberdream - Futuristic theme
-  {
-    "scottmckendry/cyberdream.nvim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 979,
-    config = function()
-      require("cyberdream").setup({
-        transparent = true,
-        italic_comments = true,
-        hide_fillchars = true,
-        borderless_telescope = true,
-      })
-    end,
-  },
 
   -- Vesper - Dark purple theme
-  {
-    "datsfilipe/vesper.nvim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 978,
-  },
 
   -- Bamboo - Natural green theme
-  {
-    "ribru17/bamboo.nvim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 977,
-    config = function()
-      require("bamboo").setup({
-        transparent = true,
-        style = "vulgaris", -- vulgaris, multiplex
-      })
-    end,
-  },
 
   -- Flexoki - Modern neutral theme
-  {
-    "kepano/flexoki-neovim",
-    name = "flexoki",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 975,
-  },
 
   -- Lackluster - Deliberately muted
-  {
-    "slugbyte/lackluster.nvim",
-    lazy = false, -- Load immediately for theme switcher
-    priority = 974,
-  },
 
   -- ============================================================================
   -- ADDITIONAL COOL THEMES (20+ more popular and modern themes)
   -- ============================================================================
 
   -- Fluoromachine - Modern neon themes
-  {
-    "maxmx03/fluoromachine.nvim",
-    lazy = false,
-    priority = 973,
-    config = function()
-      require("fluoromachine").setup({
-        glow = false,
-        brightness = 0.05,
-        transparent = true,
-      })
-    end,
-  },
 
   -- Lualine themes for variety
-  {
-    "nvim-lualine/lualine.nvim",
-    lazy = true,
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-  },
 
   -- Nightfox family - More fox themes
-  {
-    "EdenEast/nightfox.nvim",
-    name = "nightfox-extended",
-    lazy = false,
-    priority = 972,
-    config = function()
-      require("nightfox").setup({
-        options = {
-          transparent = true,
-          terminal_colors = true,
-          inverse = {
-            match_paren = false,
-            visual = false,
-            search = false,
-          },
-        },
-        palettes = {},
-        specs = {},
-        groups = {},
-      })
-    end,
-  },
 
   -- Doom themes family
-  {
-    "NTBBloodbath/doom-one.nvim",
-    lazy = false,
-    priority = 971,
-    config = function()
-      vim.g.doom_one_cursor_coloring = false
-      vim.g.doom_one_terminal_colors = true
-      vim.g.doom_one_italic_comments = true
-      vim.g.doom_one_enable_treesitter = true
-      vim.g.doom_one_diagnostics_text_color = false
-      vim.g.doom_one_transparent_background = true
-    end,
-  },
 
   -- Tokyo Night variants
-  {
-    "folke/tokyonight.nvim",
-    name = "tokyonight-extended",
-    lazy = false,
-    priority = 970,
-    config = function()
-      require("tokyonight").setup({
-        style = "storm", -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
-        light_style = "day",
-        transparent = true,
-        terminal_colors = true,
-        styles = {
-          comments = { italic = true },
-          keywords = { italic = true },
-          functions = {},
-          variables = {},
-          sidebars = "transparent",
-          floats = "transparent",
-        },
-        sidebars = { "qf", "help" },
-        day_brightness = 0.3,
-        hide_inactive_statusline = false,
-        dim_inactive = false,
-        lualine_bold = false,
-      })
-    end,
-  },
 
   -- PaperColor theme
-  {
-    "NLKNguyen/papercolor-theme",
-    lazy = false,
-    priority = 969,
-  },
 
   -- Codedark theme (VS Code inspired)
-  {
-    "tomasiser/vim-code-dark",
-    lazy = false,
-    priority = 968,
-  },
 
   -- One themes
-  {
-    "rakr/vim-one",
-    lazy = false,
-    priority = 967,
-  },
 
   -- Lush - dependency for apprentice theme
-  {
-    "rktjmp/lush.nvim",
-    lazy = false,
-    priority = 967,
-  },
 
   -- Apprentice-inspired theme (replacement for problematic romainl/Apprentice)
-  {
-    "adisen99/apprentice.nvim",
-    dependencies = { "rktjmp/lush.nvim" },
-    lazy = false,
-    priority = 966,
-    config = function()
-      require("apprentice").setup({
-        style = "dark", -- "dark" or "light"
-        transparent = true,
-        terminal_colors = true,
-        styles = {
-          comments = { italic = true },
-          keywords = { italic = false },
-          functions = { italic = false },
-          variables = { italic = false },
-        },
-      })
-    end,
-  },
 
   -- Zenburn theme
-  {
-    "jnurmine/Zenburn",
-    lazy = false,
-    priority = 965,
-  },
 
   -- Base16 alternatives - Arctic themes
-  {
-    "rockerBOO/boo-colorscheme-nvim",
-    lazy = false,
-    priority = 964,
-  },
 
   -- Rigel theme
-  {
-    "Rigellute/rigel",
-    lazy = false,
-    priority = 963,
-  },
 
   -- Blue Moon theme
-  {
-    "kyazdani42/blue-moon",
-    lazy = false,
-    priority = 962,
-  },
 
   -- Horizon theme
-  {
-    "akinsho/horizon.nvim",
-    lazy = false,
-    priority = 961,
-    config = function()
-      vim.g.horizon_italic_comments = true
-      vim.g.horizon_italic_keywords = true
-      vim.g.horizon_italic_functions = false
-      vim.g.horizon_italic_variables = false
-      vim.g.horizon_contrast = true
-      vim.g.horizon_borders = false
-      vim.g.horizon_disable_background = true
-    end,
-  },
 
   -- Embark theme
-  {
-    "embark-theme/vim",
-    name = "embark",
-    lazy = false,
-    priority = 960,
-  },
 
   -- Forest Night theme
-  {
-    "sainnhe/forest-night",
-    lazy = false,
-    priority = 959,
-    config = function()
-      vim.g.forest_night_style = "default"
-      vim.g.forest_night_enable_italic = 1
-      vim.g.forest_night_disable_italic_comment = 0
-      vim.g.forest_night_transparent_background = 1
-    end,
-  },
 
   -- Iceberg theme
-  {
-    "cocopon/iceberg.vim",
-    lazy = false,
-    priority = 958,
-  },
 
   -- Challenger Deep theme
-  {
-    "challenger-deep-theme/vim",
-    name = "challenger-deep",
-    lazy = false,
-    priority = 957,
-  },
 
   -- Jellybeans theme
-  {
-    "nanotech/jellybeans.vim",
-    lazy = false,
-    priority = 956,
-  },
 
   -- Srcery theme
-  {
-    "srcery-colors/srcery-vim",
-    lazy = false,
-    priority = 955,
-  },
 
   -- PaperColor improved
-  {
-    "NLKNguyen/papercolor-theme",
-    name = "papercolor-improved",
-    lazy = false,
-    priority = 954,
-  },
 
   -- Miramare theme
-  {
-    "franbach/miramare",
-    lazy = false,
-    priority = 953,
-  },
 
   -- Artify theme
-  {
-    "RRethy/vim-illuminate", -- This includes some nice themes
-    lazy = false,
-    priority = 952,
-  },
 
   -- Essential dependencies
   {
