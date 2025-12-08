@@ -1405,14 +1405,13 @@ return {
         installer.setup({
         ensure_installed = {
           -- LSP servers (managed by mason-lspconfig)
-          "clangd",       -- C/C++ LSP (PHASE 5 FIX #28: handled by clangd_extensions plugin, not mason-lspconfig)
+		  "clangd",
           "lua_ls",       -- Lua LSP
           "pyright",      -- Python LSP
           "ts_ls",        -- TypeScript LSP
           "html",         -- HTML LSP
           "cssls",        -- CSS LSP
           "jsonls",       -- JSON LSP
-          "asm_lsp",      -- Assembly LSP server for NASM/GAS/MASM/TASM
           
           -- Formatters
           "stylua",       -- Lua formatter
@@ -1448,6 +1447,7 @@ return {
       else
         lspconfig.setup({
         ensure_installed = {
+		  "clangd",
           "lua_ls",
           "pyright", 
           "ts_ls",
@@ -1458,7 +1458,6 @@ return {
           "cmake",      -- CMake LSP
           "bashls",     -- Bash LSP (useful for build scripts)
           "marksman",   -- Markdown LSP
-          "asm_lsp",    -- Assembly LSP server (NASM/GAS/MASM/TASM)
         },
         automatic_installation = true,
         })
@@ -1584,6 +1583,36 @@ return {
 
       -- Configure LSP servers with shared setup
       local servers = {
+		clangd = {
+		  cmd = {
+		    "clangd",
+			"--background-index",
+			"--clang-tidy",
+			"--header-insertion=iwyu",
+			"--completion-style=detailed",
+			"--function-arg-placeholders",
+			"--fallback-style=llvm",
+			"--query-driver=" .. table.concat({
+			  "/usr/bin/gcc",
+			  "/usr/bin/g++",
+			  "/usr/bin/clang",
+			  "/usr/bin/clang++",
+			  "/usr/local/bin/gcc*",
+			  "/usr/local/bin/g++*",
+			  "/usr/local/bin/clang*",
+			  "C:/msys64/mingw64/bin/gcc.exe",
+			  "C:/Users/*/scoop/apps/gcc/*/bin/gcc.exe",
+			  "C:/Users/*/scoop/apps/gcc/*/bin/g++.exe",
+			  "C:/msys64/mingw64/bin/g++.exe",
+			  "C:/Program Files/LLVM/bin/clang.exe",
+			  "C:/Program Files/LLVM/bin/clang++.exe",
+			  }, ","),
+		  },
+		  filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
+		  init_options = {
+			clangdFileStatus = true,
+		  },
+		},
         lua_ls = {
           settings = {
             Lua = {
@@ -1609,43 +1638,6 @@ return {
         cmake = {},
         bashls = {
           filetypes = { "sh", "bash" },
-        },
-        -- Assembly Language Server (supports NASM, GAS, MASM, TASM)
-        asm_lsp = {
-          cmd = { 
-            "asm-lsp",
-            "--config",
-            -- SECURITY FIX: Use stdpath and normalize path to prevent traversal
-            vim.fs.normalize((vim.fn.stdpath("config"):match("^(.+)/nvim") or vim.env.HOME or vim.fn.expand("~")) .. "/.asm-lsp.toml")
-          },
-          filetypes = { "asm", "s", "S", "nasm" },
-          settings = {
-            asm_lsp = {
-              -- Configure for NASM and Intel x86 (IA32) syntax
-              assembler = "nasm",           -- NASM assembler
-              instruction_set = "x86",      -- x86/IA32 instruction set (32-bit)
-              -- Additional options for better IntelliSense
-              case_insensitive_instructions = true,
-              case_insensitive_registers = true,
-              case_insensitive_directives = true,
-            },
-          },
-          root_dir = function(fname)
-            -- PHASE 5 FIX #29: Better root_dir fallback
-            -- Look for common assembly project indicators
-            local start_path = vim.fn.fnamemodify(fname, ":p:h")
-            local found = vim.fs.find({
-              "Makefile",
-              "makefile", 
-              ".git"
-            }, { upward = true, path = start_path })
-            
-            if found and found[1] then
-              return vim.fs.dirname(found[1])
-            end
-            -- Better fallback: directory of current file instead of getcwd()
-            return start_path
-          end,
         },
       }
 
@@ -2643,82 +2635,6 @@ return {
     dependencies = { "neovim/nvim-lspconfig" },
     config = function()
       require("clangd_extensions").setup({
-        server = {
-          -- Let this plugin handle clangd entirely to avoid conflicts
-          cmd = { 
-            "clangd", 
-            "--background-index",
-            "--clang-tidy",
-            "--header-insertion=iwyu",
-            "--completion-style=detailed",
-            "--function-arg-placeholders",
-            "--fallback-style=llvm",
-            -- PHASE 10 FIX #54: Restricted query-driver for security
-            -- Instead of "**/*gcc*" which allows ANY matching binary in system,
-            -- use explicit common compiler paths for cross-platform support
-            -- Users can add custom paths if needed via LSP config
-            "--query-driver=" .. table.concat({
-              "/usr/bin/gcc",
-              "/usr/bin/g++",
-              "/usr/bin/clang",
-              "/usr/bin/clang++",
-              "/usr/local/bin/gcc*",
-              "/usr/local/bin/g++*",
-              "/usr/local/bin/clang*",
-              "/opt/homebrew/bin/gcc*",  -- macOS Homebrew
-              "/opt/homebrew/bin/g++*",
-              "/opt/homebrew/bin/clang*",
-              "C:/msys64/mingw64/bin/gcc.exe",  -- Windows MSYS2
-              "C:/msys64/mingw64/bin/g++.exe",
-              "C:/Program Files/LLVM/bin/clang.exe",  -- Windows LLVM
-              "C:/Program Files/LLVM/bin/clang++.exe",
-            }, ","),
-          },
-          filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
-          root_dir = function(fname)
-            -- PHASE 5 FIX #29: Better root_dir fallback
-            -- Use vim.fs.find for root directory detection (nvim 0.11+)
-            local start_path = vim.fn.fnamemodify(fname, ":p:h")
-            local found = vim.fs.find({
-              "Makefile",
-              "configure.ac", 
-              "configure.in",
-              "config.h.in",
-              "meson.build",
-              "meson_options.txt",
-              "build.ninja",
-              "compile_commands.json",
-              "compile_flags.txt",
-              ".git"
-            }, { upward = true, path = start_path })
-            
-            if found and found[1] then
-              return vim.fs.dirname(found[1])
-            end
-            -- Better fallback: directory of current file instead of getcwd()
-            return start_path
-          end,
-          init_options = {
-            usePlaceholders = true,
-            completeUnimported = true,
-            clangdFileStatus = true,
-          },
-          capabilities = require("cmp_nvim_lsp").default_capabilities(),
-          on_attach = function(client, bufnr)
-            -- Standard LSP keymaps
-            local keymap = vim.keymap
-            local opts = { buffer = bufnr, silent = true }
-            
-            keymap.set("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go to definition" }))
-            keymap.set("n", "gy", vim.lsp.buf.type_definition, vim.tbl_extend("force", opts, { desc = "Go to type definition" }))
-            keymap.set("n", "gi", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "Go to implementation" }))
-            keymap.set("n", "gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { desc = "Find references" }))
-            keymap.set("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
-            -- PHASE 6 FIX #15: Removed duplicate diagnostic keymaps
-            -- These are already defined in the main LSP on_attach function (lines 1537-1539)
-            -- Keeping only clangd-specific keymaps here
-          end,
-        },
         extensions = {
           -- Automatically set inlay hints (type hints)
           autoSetHints = true,
