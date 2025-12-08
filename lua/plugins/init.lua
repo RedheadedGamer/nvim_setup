@@ -228,6 +228,10 @@ return {
       { "<leader>nd", function() require("snacks").notifier.dismiss() end, desc = "Dismiss Notifications" },
       
       -- Terminal
+      -- PHASE 9 FIX #51: Terminal key mappings with cross-platform compatibility notes
+      -- <C-/> works in most terminals (Linux, macOS with modern terminals)
+      -- <C-_> is a fallback for terminals that map Ctrl+/ to Ctrl+_
+      -- Both mappings ensure terminal toggle works across different terminal emulators
       { "<leader>tt", function() require("snacks").terminal.toggle() end, desc = "Toggle Terminal" },
       { "<leader>tg", function() require("snacks").terminal("lazygit") end, desc = "LazyGit" },
       { "<C-/>", function() require("snacks").terminal.toggle() end, desc = "Toggle Terminal", mode = { "n", "t" } },
@@ -1658,6 +1662,8 @@ return {
 
       -- PHASE 5 FIX #18: Remove LSP double initialization
       -- PHASE 5 FIX #34: Add executable checks before configuring LSP
+      -- PHASE 9 FIX #49: vim.fn.executable() is cross-platform compatible
+      -- It checks PATH on Linux/macOS and PATH + PATHEXT on Windows (.exe, .cmd, .bat)
       -- Using only vim.lsp.config API (nvim 0.11+) without manual vim.lsp.start
       for server, config in pairs(servers) do
         -- Check if server executable exists before configuring
@@ -2208,6 +2214,8 @@ return {
         end
         
         -- Check Mason install directory
+        -- PHASE 9 FIX #50: Forward slashes work on Windows too (Neovim normalizes paths)
+        -- vim.fn.stdpath returns OS-appropriate paths, and Neovim handles path separators
         local mason_path = vim.fn.stdpath("data") .. "/mason/bin/" .. formatter
         if vim.fn.executable(mason_path) == 1 then
           formatter_cache[formatter] = true
@@ -2492,6 +2500,8 @@ return {
         end
         
         -- Check Mason install directory
+        -- PHASE 9 FIX #50: Path separators are cross-platform compatible
+        -- vim.fn.stdpath and Neovim's path handling work on Windows, Linux, macOS
         local mason_path = vim.fn.stdpath("data") .. "/mason/bin/" .. linter
         if vim.fn.executable(mason_path) == 1 then
           linter_cache[linter] = true
