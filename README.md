@@ -1003,7 +1003,7 @@ Auto-formatting on save has been **permanently disabled** to prevent automatic f
 |-----|--------|-------------|
 | `<leader>ss` | Select Session | Load existing session |
 | `<leader>sw` | Write Session | Save current session |
-| `<leader>sD` | Delete Session | Delete saved session (changed from sd to avoid conflict with snacks dashboard) |
+| `<leader>sD` | Delete Session | Delete saved session |
 
 ### 🗺️ Minimap & Navigation
 | Key | Action | Description |

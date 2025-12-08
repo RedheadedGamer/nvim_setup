@@ -1361,8 +1361,6 @@ return {
       -- Theme switcher keymaps
       -- KEYBIND FIX: Changed <leader>tt to <leader>th to avoid clash with terminal toggle
       keymap.set("n", "<leader>th", theme_switcher, { desc = "Theme switcher" })
-      -- Keep <leader>tt as secondary binding for muscle memory (will show warning)
-      -- Users should migrate to <leader>th over time
     end,
   },
 
