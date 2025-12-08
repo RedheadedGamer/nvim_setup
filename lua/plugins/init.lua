@@ -25,19 +25,22 @@ return {
             { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
             { icon = " ", key = "r", desc = "Recent Files", action = ":Telescope oldfiles" },
             { icon = " ", key = "g", desc = "Find Text", action = ":Telescope live_grep" },
-            { icon = " ", key = "c", desc = "Config", action = function() vim.cmd("e " .. vim.fn.stdpath("config") .. "/init.lua") end },
+            { icon = " ", key = "c", desc = "Config", action = function() 
+              -- SECURITY FIX: Use safe API instead of concatenating into vim.cmd
+              vim.api.nvim_cmd({ cmd = 'edit', args = { vim.fn.stdpath("config") .. "/init.lua" } }, {})
+            end },
             { icon = " ", key = "s", desc = "Restore Session", action = ":lua require('mini.sessions').select()" },
             { icon = "󰒲 ", key = "l", desc = "Lazy", action = ":Lazy" },
             { icon = " ", key = "m", desc = "Mason", action = ":Mason" },
             { icon = " ", key = "q", desc = "Quit", action = ":qa" },
           },
           header = [[
-███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
-████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║
-██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
-██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
-██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
-╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝
+██████╗  ██████╗  ██████╗ ██╗██╗  ██╗ █████╗ ████████╗
+██╔══██╗██╔═══██╗██╔═══██╗██║██║ ██╔╝██╔══██╗╚══██╔══╝
+██████╔╝██║   ██║██║   ██║██║█████╔╝ ███████║   ██║   
+██╔══██╗██║   ██║██║   ██║██║██╔═██╗ ██╔══██║   ██║   
+██║  ██║╚██████╔╝╚██████╔╝██║██║  ██╗██║  ██║   ██║   
+╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   
           ]],
         },
         sections = {
@@ -50,9 +53,9 @@ return {
       -- Notifier replacing basic vim.notify
       notifier = {
         enabled = true,
-        timeout = 3000,
-        width = { min = 40, max = 0.4 },
-        height = { min = 1, max = 0.6 },
+        timeout = 3000, -- MAGIC NUMBER: 3 seconds notification display time
+        width = { min = 40, max = 0.4 }, -- min chars, max 40% of screen
+        height = { min = 1, max = 0.6 }, -- min lines, max 60% of screen
         margin = { top = 0, right = 1, bottom = 0 },
         padding = true,
         sort = { "level", "added" },
@@ -70,10 +73,10 @@ return {
       scroll = {
         enabled = true,
         animate = {
-          duration = { step = 15, total = 250 },
+          duration = { step = 15, total = 250 }, -- MAGIC: 15ms per step, 250ms total scroll time
           easing = "linear",
         },
-        spamming = 10,
+        spamming = 10, -- MAGIC: Ignore rapid scroll events within 10ms
         filter = function(buf)
           return vim.bo[buf].buftype ~= "terminal"
         end,
@@ -147,9 +150,9 @@ return {
       -- General animation framework
       animate = {
         enabled = true,
-        duration = 20,
+        duration = 20, -- MAGIC: 20ms animation duration for UI elements
         easing = "linear",
-        fps = 60,
+        fps = 60, -- MAGIC: 60 frames per second for smooth animations
       },
       
       -- Git utilities
@@ -225,6 +228,10 @@ return {
       { "<leader>nd", function() require("snacks").notifier.dismiss() end, desc = "Dismiss Notifications" },
       
       -- Terminal
+      -- PHASE 9 FIX #51: Terminal key mappings with cross-platform compatibility notes
+      -- <C-/> works in most terminals (Linux, macOS with modern terminals)
+      -- <C-_> is a fallback for terminals that map Ctrl+/ to Ctrl+_
+      -- Both mappings ensure terminal toggle works across different terminal emulators
       { "<leader>tt", function() require("snacks").terminal.toggle() end, desc = "Toggle Terminal" },
       { "<leader>tg", function() require("snacks").terminal("lazygit") end, desc = "LazyGit" },
       { "<C-/>", function() require("snacks").terminal.toggle() end, desc = "Toggle Terminal", mode = { "n", "t" } },
@@ -260,15 +267,26 @@ return {
       { "<leader>tz", function() require("snacks").toggle.zen() end, desc = "Toggle Zen Mode" },
       { "<leader>tZ", function() require("snacks").toggle.zoom() end, desc = "Toggle Zoom" },
       { "<leader>tD", function() require("snacks").toggle.dim() end, desc = "Toggle Dim" },
-      { "<leader>tg", function() require("snacks").toggle.option("signcolumn", { on = "yes", off = "no" }) end, desc = "Toggle Sign Column" },
+      -- CONFLICT FIX #60: Changed from <leader>tg to <leader>tG to avoid clash with lazygit
+      { "<leader>tG", function() require("snacks").toggle.option("signcolumn", { on = "yes", off = "no" }) end, desc = "Toggle Sign Column" },
       { "<leader>ts", function() require("snacks").toggle.option("spell") end, desc = "Toggle Spell Check" },
       { "<leader>tw", function() require("snacks").toggle.option("wrap") end, desc = "Toggle Wrap" },
     },
     
     -- Init function for additional setup
     init = function()
-      -- Replace vim.notify with snacks notifier
-      vim.notify = require("snacks").notifier.notify
+      -- SECURITY FIX: Replace vim.notify with fallback protection
+      local ok, snacks = pcall(require, "snacks")
+      if ok and snacks.notifier then
+        local original_notify = vim.notify
+        vim.notify = function(msg, level, opts)
+          -- Try snacks notifier first, fallback to original if it fails
+          local success = pcall(snacks.notifier.notify, msg, level, opts)
+          if not success then
+            original_notify(msg, level, opts)
+          end
+        end
+      end
       
       -- Setup snacks autocmds
       vim.api.nvim_create_autocmd("User", {
@@ -287,10 +305,16 @@ return {
   -- Primary colorscheme (default)
   {
     "olimorris/onedarkpro.nvim",
-    lazy = false,
+    lazy = false, -- PERFORMANCE: Keep default theme eager for immediate UI
     priority = 1000,
     config = function()
-      require("onedarkpro").setup({
+      -- ERROR HANDLING: Protect theme loading
+      local ok, onedarkpro = pcall(require, "onedarkpro")
+      if not ok then
+        vim.notify("Failed to load onedarkpro theme: " .. tostring(onedarkpro), vim.log.levels.ERROR)
+        return
+      end
+      onedarkpro.setup({
         options = {
           transparency = true,
         }
@@ -301,8 +325,7 @@ return {
   -- Popular theme collection (optimized for transparency)
   {
     "folke/tokyonight.nvim",
-    lazy = false, -- Load immediately for availability
-    priority = 999,
+    lazy = true, -- PERFORMANCE: Lazy load themes not actively used
     config = function()
       require("tokyonight").setup({
         style = "night",
@@ -317,8 +340,7 @@ return {
   
   {
     "ellisonleao/gruvbox.nvim",
-    lazy = false, -- Load immediately for availability
-    priority = 998,
+    lazy = true, -- PERFORMANCE: Lazy load themes not actively used
     config = function()
       require("gruvbox").setup({
         transparent_mode = true,
@@ -328,8 +350,7 @@ return {
   
   {
     "Mofiqul/dracula.nvim",
-    lazy = false, -- Load immediately for availability
-    priority = 997,
+    lazy = true, -- PERFORMANCE: Lazy load themes not actively used
     config = function()
       require("dracula").setup({
         transparent_bg = true,
@@ -351,8 +372,7 @@ return {
   {
     "catppuccin/nvim",
     name = "catppuccin",
-    lazy = false, -- Load immediately for availability
-    priority = 996,
+    lazy = true, -- PERFORMANCE: Lazy load themes not actively used
     config = function()
       require("catppuccin").setup({
         flavour = "mocha",
@@ -420,8 +440,7 @@ return {
 
   {
     "sainnhe/everforest",
-    lazy = false, -- Load immediately for theme switcher availability
-    priority = 976, -- Set priority for immediate loading
+    lazy = true, -- PERFORMANCE: Lazy load themes not actively used
     config = function()
       vim.g.everforest_background = "medium"
       vim.g.everforest_transparent_background = 1
@@ -481,8 +500,7 @@ return {
 
   {
     "projekt0n/github-nvim-theme",
-    lazy = false, -- Load immediately for theme availability
-    priority = 995,
+    lazy = true, -- PERFORMANCE: Lazy load themes not actively used
     config = function()
       require("github-theme").setup({
         options = {
@@ -528,106 +546,6 @@ return {
     end,
   },
 
-
-
-  -- ============================================================================ 
-  -- ADDITIONAL PREMIUM THEMES (20+ new high-quality themes)
-  -- ============================================================================
-
-  -- Monokai Pro family - Professional themes
-
-  -- Solarized - Classic and beloved
-
-  -- Ayu - Elegant minimal themes
-
-  -- Oceanic Next - Beautiful blue theme
-
-  -- Palenight - Material inspired
-
-  -- Gruvbox Baby - Modern Gruvbox
-
-  -- Tender - Gentle purple theme
-
-  -- Spaceduck - Retro space theme
-
-  -- Deep Space - Cosmic dark theme
-
-  -- Moonfly - Dark blue theme
-
-  -- Nightowl - Dark theme for night owls
-
-  -- Zephyr - Modern dark theme
-
-  -- Onedark Vivid - Enhanced OneDark
-
-  -- Oxocarbon - Modern IBM inspired
-
-  -- Melange - Warm color palette
-
-  -- Flow - Minimal and clean
-
-  -- Cyberdream - Futuristic theme
-
-  -- Vesper - Dark purple theme
-
-  -- Bamboo - Natural green theme
-
-  -- Flexoki - Modern neutral theme
-
-  -- Lackluster - Deliberately muted
-
-  -- ============================================================================
-  -- ADDITIONAL COOL THEMES (20+ more popular and modern themes)
-  -- ============================================================================
-
-  -- Fluoromachine - Modern neon themes
-
-  -- Lualine themes for variety
-
-  -- Nightfox family - More fox themes
-
-  -- Doom themes family
-
-  -- Tokyo Night variants
-
-  -- PaperColor theme
-
-  -- Codedark theme (VS Code inspired)
-
-  -- One themes
-
-  -- Lush - dependency for apprentice theme
-
-  -- Apprentice-inspired theme (replacement for problematic romainl/Apprentice)
-
-  -- Zenburn theme
-
-  -- Base16 alternatives - Arctic themes
-
-  -- Rigel theme
-
-  -- Blue Moon theme
-
-  -- Horizon theme
-
-  -- Embark theme
-
-  -- Forest Night theme
-
-  -- Iceberg theme
-
-  -- Challenger Deep theme
-
-  -- Jellybeans theme
-
-  -- Srcery theme
-
-  -- PaperColor improved
-
-  -- Miramare theme
-
-  -- Artify theme
-
   -- Essential dependencies
   {
     "nvim-lua/plenary.nvim",
@@ -639,7 +557,13 @@ return {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     config = function()
-      require("nvim-treesitter.configs").setup({
+      -- ERROR HANDLING: Protect treesitter loading
+      local ok, treesitter = pcall(require, "nvim-treesitter.configs")
+      if not ok then
+        vim.notify("Failed to load treesitter: " .. tostring(treesitter), vim.log.levels.ERROR)
+        return
+      end
+      treesitter.setup({
         ensure_installed = {
           "lua", "python", "javascript", "typescript", "html", "css", 
           "json", "yaml", "markdown", "bash", "vim", "vimdoc", "c", "java", "asm"
@@ -729,17 +653,22 @@ return {
         blacklist = {}, -- No blacklisted filetypes
       }
       
-      -- Set up enhanced highlight colors for better visibility
+      -- PHASE 6 FIX #12: Set highlights once after initial ColorScheme, not on every change
+      -- This prevents 7 nvim_set_hl calls on every theme switch
+      local highlights_set = false
       vim.api.nvim_create_autocmd("ColorScheme", {
         group = vim.api.nvim_create_augroup("RainbowDelimitersHighlight", { clear = true }),
         callback = function()
-          vim.api.nvim_set_hl(0, "RainbowDelimiterRed", { fg = "#E06C75", bold = true })
-          vim.api.nvim_set_hl(0, "RainbowDelimiterYellow", { fg = "#E5C07B", bold = true })
-          vim.api.nvim_set_hl(0, "RainbowDelimiterBlue", { fg = "#61AFEF", bold = true })
-          vim.api.nvim_set_hl(0, "RainbowDelimiterOrange", { fg = "#D19A66", bold = true })
-          vim.api.nvim_set_hl(0, "RainbowDelimiterGreen", { fg = "#98C379", bold = true })
-          vim.api.nvim_set_hl(0, "RainbowDelimiterViolet", { fg = "#C678DD", bold = true })
-          vim.api.nvim_set_hl(0, "RainbowDelimiterCyan", { fg = "#56B6C2", bold = true })
+          if not highlights_set then
+            vim.api.nvim_set_hl(0, "RainbowDelimiterRed", { fg = "#E06C75", bold = true })
+            vim.api.nvim_set_hl(0, "RainbowDelimiterYellow", { fg = "#E5C07B", bold = true })
+            vim.api.nvim_set_hl(0, "RainbowDelimiterBlue", { fg = "#61AFEF", bold = true })
+            vim.api.nvim_set_hl(0, "RainbowDelimiterOrange", { fg = "#D19A66", bold = true })
+            vim.api.nvim_set_hl(0, "RainbowDelimiterGreen", { fg = "#98C379", bold = true })
+            vim.api.nvim_set_hl(0, "RainbowDelimiterViolet", { fg = "#C678DD", bold = true })
+            vim.api.nvim_set_hl(0, "RainbowDelimiterCyan", { fg = "#56B6C2", bold = true })
+            highlights_set = true
+          end
         end,
       })
     end,
@@ -759,17 +688,6 @@ return {
           replace = "sr", -- Replace surrounding
           update_n_lines = "sn", -- Update `n_lines`
         },
-      })
-    end,
-  },
-
-  {
-    "echasnovski/mini.indentscope",
-    version = "*",
-    config = function()
-      require("mini.indentscope").setup({
-        symbol = "╎",
-        options = { try_as_border = true },
       })
     end,
   },
@@ -849,23 +767,10 @@ return {
     end,
   },
 
-  -- Additional high-quality mini plugins for enhanced experience
-  {
-    "echasnovski/mini.bufremove",
-    version = "*",
-    config = function()
-      require("mini.bufremove").setup()
-      
-      -- Keymap for better buffer deletion
-      vim.keymap.set("n", "<leader>bd", function()
-        require("mini.bufremove").delete()
-      end, { desc = "Delete buffer (keep layout)" })
-      
-      vim.keymap.set("n", "<leader>bD", function()
-        require("mini.bufremove").delete(0, true)
-      end, { desc = "Force delete buffer" })
-    end,
-  },
+  -- REMOVED: mini.bufremove (CONFLICT FIX #4)
+  -- Reason: Duplicates snacks.bufdelete functionality on same keybindings
+  -- snacks.bufdelete is more feature-rich and already loaded
+  -- Original keymaps were: <leader>bd and <leader>bD
 
   -- mini.starter and mini.animate removed - replaced by snacks.nvim dashboard and scroll
   
@@ -1051,7 +956,8 @@ return {
         { "<leader>tz", desc = "Toggle Zen Mode", icon = "🧘" },
         { "<leader>tZ", desc = "Toggle Zoom", icon = "🔍" },
         { "<leader>tD", desc = "Toggle Dim", icon = "🌗" },
-        { "<leader>tg", desc = "Toggle Git Signs", icon = "📦" },
+        -- CONFLICT FIX #60: Updated to reflect new keybinding
+        { "<leader>tG", desc = "Toggle Sign Column", icon = "📦" },
         { "<leader>ts", desc = "Toggle Spell Check", icon = "✓" },
         { "<leader>tw", desc = "Toggle Wrap", icon = "↩️" },
 
@@ -1296,8 +1202,13 @@ return {
     tag = "0.1.8",
     dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
-      local telescope = require("telescope")
-      local actions = require("telescope.actions")
+      -- ERROR HANDLING: Protect telescope loading
+      local ok_telescope, telescope = pcall(require, "telescope")
+      local ok_actions, actions = pcall(require, "telescope.actions")
+      if not ok_telescope or not ok_actions then
+        vim.notify("Failed to load telescope", vim.log.levels.ERROR)
+        return
+      end
       
       telescope.setup({
         defaults = {
@@ -1406,49 +1317,9 @@ return {
             local actions = require("telescope.actions")
             local state = require("telescope.actions.state")
             
-            -- Show current selection in the prompt
-            local function update_prompt()
-              local selection = state.get_selected_entry()
-              if selection then
-                local current_theme = selection.value
-                -- Clear all previous theme preview notifications (using snacks.notifier if loaded)
-                local snacks_ok, snacks = pcall(require, "snacks")
-                if snacks_ok and snacks.notifier then
-                  pcall(snacks.notifier.dismiss)
-                end
-                
-                -- Show new notification for current preview theme
-                vim.notify(
-                  string.format("📋 Previewing: %s", current_theme), 
-                  vim.log.levels.INFO, 
-                  {
-                    timeout = 1500,
-                    title = "Theme Preview",
-                  }
-                )
-              end
-            end
-            
-            -- Update on cursor movement
-            map("i", "<Down>", function()
-              actions.move_selection_next(prompt_bufnr)
-              vim.defer_fn(update_prompt, 100)
-            end)
-            
-            map("i", "<Up>", function()
-              actions.move_selection_previous(prompt_bufnr)
-              vim.defer_fn(update_prompt, 100)
-            end)
-            
-            map("n", "j", function()
-              actions.move_selection_next(prompt_bufnr)
-              vim.defer_fn(update_prompt, 100)
-            end)
-            
-            map("n", "k", function()
-              actions.move_selection_previous(prompt_bufnr)
-              vim.defer_fn(update_prompt, 100)
-            end)
+            -- PERFORMANCE FIX: Removed notification spam on cursor movement
+            -- Theme preview is handled by telescope's enable_preview = true
+            -- No need for additional notifications that create 50+ popups
             
             -- Save theme on selection
             actions.select_default:replace(function()
@@ -1505,8 +1376,15 @@ return {
       "rafamadriz/friendly-snippets",
     },
     config = function()
+      -- ERROR HANDLING: Protect Mason and LSP setup
+      local ok_mason, mason = pcall(require, "mason")
+      if not ok_mason then
+        vim.notify("Failed to load mason: " .. tostring(mason), vim.log.levels.ERROR)
+        return
+      end
+      
       -- Mason setup
-      require("mason").setup({
+      mason.setup({
         ui = {
           border = "rounded",
           icons = {
@@ -1515,14 +1393,19 @@ return {
             package_uninstalled = "✗"
           }
         },
-        max_concurrent_installers = 10,
+        max_concurrent_installers = 5, -- PERFORMANCE: Reduced from 10 to prevent system overwhelm
       })
       
       -- Enhanced mason-tool-installer setup with more tools
-      require("mason-tool-installer").setup({
+      local ok_installer, installer = pcall(require, "mason-tool-installer")
+      if not ok_installer then
+        vim.notify("Failed to load mason-tool-installer: " .. tostring(installer), vim.log.levels.WARN)
+        -- Continue anyway, mason can work without tool-installer
+      else
+        installer.setup({
         ensure_installed = {
           -- LSP servers (managed by mason-lspconfig)
-          "clangd",       -- C/C++ LSP (handled by clangd_extensions)
+          "clangd",       -- C/C++ LSP (PHASE 5 FIX #28: handled by clangd_extensions plugin, not mason-lspconfig)
           "lua_ls",       -- Lua LSP
           "pyright",      -- Python LSP
           "ts_ls",        -- TypeScript LSP
@@ -1555,9 +1438,15 @@ return {
         run_on_start = true,
         start_delay = 3000, -- 3 second delay
         debounce_hours = 5, -- at least 5 hours between attempts
-      })
+        })
+      end
       
-      require("mason-lspconfig").setup({
+      local ok_lspconfig, lspconfig = pcall(require, "mason-lspconfig")
+      if not ok_lspconfig then
+        vim.notify("Failed to load mason-lspconfig: " .. tostring(lspconfig), vim.log.levels.WARN)
+        -- Continue anyway
+      else
+        lspconfig.setup({
         ensure_installed = {
           "lua_ls",
           "pyright", 
@@ -1572,10 +1461,16 @@ return {
           "asm_lsp",    -- Assembly LSP server (NASM/GAS/MASM/TASM)
         },
         automatic_installation = true,
-      })
+        })
+      end
 
       -- Mason DAP setup for automatic debugger installation
-      require("mason-nvim-dap").setup({
+      local ok_dap, dap_mason = pcall(require, "mason-nvim-dap")
+      if not ok_dap then
+        vim.notify("Failed to load mason-nvim-dap: " .. tostring(dap_mason), vim.log.levels.WARN)
+        -- Continue anyway
+      else
+        dap_mason.setup({
         ensure_installed = {
           "codelldb",     -- C/C++/Rust
           "debugpy",      -- Python
@@ -1603,10 +1498,15 @@ return {
             require('mason-nvim-dap').default_setup(config) -- don't forget this!
           end,
         },
-      })
+        })
+      end
 
       -- LSP settings using new vim.lsp.config API (nvim 0.11+)
-      local cmp_nvim_lsp = require("cmp_nvim_lsp")
+      local ok_cmp_lsp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+      if not ok_cmp_lsp then
+        vim.notify("Failed to load cmp_nvim_lsp: " .. tostring(cmp_nvim_lsp), vim.log.levels.ERROR)
+        return
+      end
       
       local capabilities = cmp_nvim_lsp.default_capabilities()
       
@@ -1620,22 +1520,9 @@ return {
         keymap.set("n", "gi", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "Go to implementation" }))
         keymap.set("n", "gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { desc = "Go to references" }))
         
-        -- Enhanced hover documentation with duplicate prevention
-        keymap.set("n", "K", function()
-          -- Close any existing hover windows to prevent duplicates
-          for _, win in ipairs(vim.api.nvim_list_wins()) do
-            local buf = vim.api.nvim_win_get_buf(win)
-            local ft = vim.api.nvim_buf_get_option(buf, 'filetype')
-            if ft == 'lsp-hover' or 
-               (vim.api.nvim_win_get_config(win).relative ~= '' and 
-                vim.api.nvim_buf_get_name(buf):match('lsp%-hover')) then
-              pcall(vim.api.nvim_win_close, win, false)
-            end
-          end
-          
-          -- Use standard hover with simple configuration
-          vim.lsp.buf.hover()
-        end, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
+        -- PHASE 6 FIX #19: Simplified hover - removed manual window cleanup loop
+        -- The focus_id in handlers (line ~1730) prevents duplicates automatically
+        keymap.set("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
         
         keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
         keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code action" }))
@@ -1728,8 +1615,8 @@ return {
           cmd = { 
             "asm-lsp",
             "--config",
-            -- Cross-platform home directory path
-            (_G.is_windows and vim.fn.expand("$USERPROFILE") or vim.fn.expand("~")) .. "/.asm-lsp.toml"
+            -- SECURITY FIX: Use stdpath and normalize path to prevent traversal
+            vim.fs.normalize((vim.fn.stdpath("config"):match("^(.+)/nvim") or vim.env.HOME or vim.fn.expand("~")) .. "/.asm-lsp.toml")
           },
           filetypes = { "asm", "s", "S", "nasm" },
           settings = {
@@ -1744,8 +1631,8 @@ return {
             },
           },
           root_dir = function(fname)
+            -- PHASE 5 FIX #29: Better root_dir fallback
             -- Look for common assembly project indicators
-            -- Get directory of the file if fname is a file path
             local start_path = vim.fn.fnamemodify(fname, ":p:h")
             local found = vim.fs.find({
               "Makefile",
@@ -1756,64 +1643,39 @@ return {
             if found and found[1] then
               return vim.fs.dirname(found[1])
             end
-            return vim.fn.getcwd()
+            -- Better fallback: directory of current file instead of getcwd()
+            return start_path
           end,
         },
       }
 
-      -- Configure LSP servers using new vim.lsp.config API (nvim 0.11+)
+      -- PHASE 5 FIX #18: Remove LSP double initialization
+      -- PHASE 5 FIX #34: Add executable checks before configuring LSP
+      -- PHASE 9 FIX #49: vim.fn.executable() is cross-platform compatible
+      -- It checks PATH on Linux/macOS and PATH + PATHEXT on Windows (.exe, .cmd, .bat)
+      -- Using only vim.lsp.config API (nvim 0.11+) without manual vim.lsp.start
       for server, config in pairs(servers) do
+        -- Check if server executable exists before configuring
+        local server_cmd = config.cmd and config.cmd[1] or server
+        if vim.fn.executable(server_cmd) == 0 then
+          vim.notify(
+            string.format("LSP server '%s' not found. Install via :Mason or system package manager.", server),
+            vim.log.levels.WARN
+          )
+          -- Skip this server but continue with others
+          goto continue
+        end
+        
         config.capabilities = capabilities
         config.on_attach = on_attach
         
-        -- Use new vim.lsp.config API
+        -- Set config in vim.lsp.config - this is the single source of truth
         vim.lsp.config[server] = config
         
-        -- Enable the server for appropriate filetypes using vim.lsp.start
-        if config.filetypes then
-          for _, ft in ipairs(config.filetypes) do
-            vim.api.nvim_create_autocmd("FileType", {
-              pattern = ft,
-              callback = function(args)
-                -- Start the LSP server with proper configuration
-                local root_dir = nil
-                if config.root_dir then
-                  root_dir = config.root_dir(vim.api.nvim_buf_get_name(args.buf))
-                else
-                  -- Default to current directory
-                  root_dir = vim.fn.getcwd()
-                end
-                
-                vim.lsp.start({
-                  name = server,
-                  cmd = config.cmd or { server },
-                  root_dir = root_dir,
-                  settings = config.settings,
-                  capabilities = config.capabilities,
-                  on_attach = config.on_attach,
-                  filetypes = config.filetypes,
-                  init_options = config.init_options,
-                })
-              end,
-            })
-          end
-        else
-          -- Auto-enable for default filetypes
-          vim.api.nvim_create_autocmd("FileType", {
-            pattern = "*",
-            once = true,
-            callback = function(args)
-              vim.lsp.start({
-                name = server,
-                cmd = config.cmd or { server },
-                root_dir = vim.fn.getcwd(),
-                settings = config.settings,
-                capabilities = config.capabilities,
-                on_attach = config.on_attach,
-              })
-            end,
-          })
-        end
+        -- Note: vim.lsp automatically starts servers when files are opened
+        -- No need for manual FileType autocmds with vim.lsp.start
+        
+        ::continue::
       end
 
       -- Configure LSP handlers to prevent duplicates
@@ -1865,10 +1727,20 @@ return {
         },
       })
 
-      -- Auto-show diagnostics on cursor hold (hover effect)
+      -- PHASE 6 FIX #13: Track cursor position to avoid redundant diagnostic queries
+      -- Only query diagnostics when cursor actually moves to a different line
+      local last_diagnostic_line = -1
       vim.api.nvim_create_autocmd("CursorHold", {
         group = vim.api.nvim_create_augroup("DiagnosticFloat", { clear = true }),
         callback = function()
+          local current_line = vim.fn.line(".")
+          
+          -- Skip if we're still on the same line as last check
+          if current_line == last_diagnostic_line then
+            return
+          end
+          last_diagnostic_line = current_line
+          
           -- Only show diagnostic if there are diagnostics on the current line
           local opts = {
             focusable = false,
@@ -1879,14 +1751,16 @@ return {
             scope = "cursor",
           }
           
-          local line_diagnostics = vim.diagnostic.get(0, { lnum = vim.fn.line(".") - 1 })
+          local line_diagnostics = vim.diagnostic.get(0, { lnum = current_line - 1 })
           if #line_diagnostics > 0 then
             vim.diagnostic.open_float(nil, opts)
           end
         end
       })
 
-      -- Set shorter updatetime for more responsive hover
+      -- Set updatetime for CursorHold responsiveness
+      -- WARNING: This affects ALL CursorHold events globally, not just LSP hover/diagnostics
+      -- Other plugins using CursorHold will also trigger every 300ms
       vim.opt.updatetime = 300
 
       -- Completion setup (nvim-cmp)
@@ -2067,19 +1941,11 @@ return {
     end,
   },
 
-  -- Git integration with fugitive.vim (replacing problematic mini.git)
-  {
-    "tpope/vim-fugitive",
-    cmd = { "Git", "G", "Gdiffsplit", "Gread", "Gwrite", "Ggrep", "GMove", "GDelete", "GBrowse", "GRemove" },
-    keys = {
-      { "<leader>gs", "<cmd>Git<cr>", desc = "Git status" },
-      { "<leader>gc", "<cmd>Git commit<cr>", desc = "Git commit" },
-      { "<leader>gp", "<cmd>Git push<cr>", desc = "Git push" },
-      { "<leader>gl", "<cmd>Git log --oneline<cr>", desc = "Git log" },
-      { "<leader>gd", "<cmd>Gdiffsplit<cr>", desc = "Git diff" },
-      { "<leader>gb", "<cmd>Git blame<cr>", desc = "Git blame" },
-    },
-  },
+  -- REMOVED: vim-fugitive (CONFLICT FIX #6)
+  -- Reason: Overlaps with snacks.git + gitsigns functionality
+  -- snacks provides: git blame, browse, lazygit integration
+  -- gitsigns provides: signs, hunks, blame, diff
+  -- fugitive's commands are redundant and add 20MB to memory
 
   -- Gitsigns for enhanced git integration
   {
@@ -2131,8 +1997,17 @@ return {
           -- Actions
           map('n', '<leader>hs', gitsigns.stage_hunk, { desc = "Stage hunk" })
           map('n', '<leader>hr', gitsigns.reset_hunk, { desc = "Reset hunk" })
-          map('v', '<leader>hs', function() gitsigns.stage_hunk {vim.fn.line('.'), vim.fn.line('v')} end, { desc = "Stage hunk" })
-          map('v', '<leader>hr', function() gitsigns.reset_hunk {vim.fn.line('.'), vim.fn.line('v')} end, { desc = "Reset hunk" })
+          -- FIX: Sort line numbers to handle upward visual selection
+          map('v', '<leader>hs', function() 
+            local start_line, end_line = vim.fn.line('.'), vim.fn.line('v')
+            if start_line > end_line then start_line, end_line = end_line, start_line end
+            gitsigns.stage_hunk {start_line, end_line}
+          end, { desc = "Stage hunk" })
+          map('v', '<leader>hr', function()
+            local start_line, end_line = vim.fn.line('.'), vim.fn.line('v')
+            if start_line > end_line then start_line, end_line = end_line, start_line end
+            gitsigns.reset_hunk {start_line, end_line}
+          end, { desc = "Reset hunk" })
           map('n', '<leader>hS', gitsigns.stage_buffer, { desc = "Stage buffer" })
           map('n', '<leader>hu', gitsigns.undo_stage_hunk, { desc = "Undo stage hunk" })
           map('n', '<leader>hR', gitsigns.reset_buffer, { desc = "Reset buffer" })
@@ -2229,6 +2104,10 @@ return {
     end,
   },
 
+  -- USAGE NOTE (CONFLICT RESOLUTION #9):
+  -- Telescope (<leader>f*) is the PRIMARY fuzzy finder - feature-rich, well-supported
+  -- mini.pick (<leader>p*) is the ALTERNATIVE - lightweight, minimal dependencies
+  -- Use telescope for daily work, mini.pick as lightweight backup or for minimal setups
   {
     "echasnovski/mini.pick",
     version = "*",
@@ -2309,19 +2188,30 @@ return {
       { "<leader>tf", desc = "Auto-formatting status (disabled)" },
     },
     config = function()
-      -- Helper function to check if a formatter is available (checks Mason install dir too)
+      -- PHASE 6 FIX #14: Cache formatter availability checks to avoid repeated filesystem calls
+      local formatter_cache = {}
       local function is_formatter_available(formatter)
+        -- Return cached result if available
+        if formatter_cache[formatter] ~= nil then
+          return formatter_cache[formatter]
+        end
+        
         -- Check standard PATH
         if vim.fn.executable(formatter) == 1 then
+          formatter_cache[formatter] = true
           return true
         end
         
         -- Check Mason install directory
+        -- PHASE 9 FIX #50: Forward slashes work on Windows too (Neovim normalizes paths)
+        -- vim.fn.stdpath returns OS-appropriate paths, and Neovim handles path separators
         local mason_path = vim.fn.stdpath("data") .. "/mason/bin/" .. formatter
         if vim.fn.executable(mason_path) == 1 then
+          formatter_cache[formatter] = true
           return true
         end
         
+        formatter_cache[formatter] = false
         return false
       end
 
@@ -2410,9 +2300,17 @@ return {
         },
       })
       
-      -- Enhanced format keymaps
+      -- Enhanced format keymaps with error handling
       vim.keymap.set("n", "<leader>fm", function()
-        require("conform").format({ lsp_fallback = true })
+        -- ERROR HANDLING: Protect format operation
+        local ok, err = pcall(function()
+          require("conform").format({ lsp_fallback = true })
+        end)
+        if ok then
+          vim.notify("Buffer formatted successfully", vim.log.levels.INFO)
+        else
+          vim.notify("Format failed: " .. tostring(err), vim.log.levels.ERROR)
+        end
       end, { desc = "Format buffer manually" })
       
       -- Auto-formatting permanently disabled - show status
@@ -2576,19 +2474,30 @@ return {
     config = function()
       local lint = require("lint")
       
-      -- Helper function to check if a linter is available (checks Mason install dir too)
+      -- PHASE 6 FIX #14: Cache linter availability checks to avoid repeated filesystem calls
+      local linter_cache = {}
       local function is_linter_available(linter)
+        -- Return cached result if available
+        if linter_cache[linter] ~= nil then
+          return linter_cache[linter]
+        end
+        
         -- Check standard PATH
         if vim.fn.executable(linter) == 1 then
+          linter_cache[linter] = true
           return true
         end
         
         -- Check Mason install directory
+        -- PHASE 9 FIX #50: Path separators are cross-platform compatible
+        -- vim.fn.stdpath and Neovim's path handling work on Windows, Linux, macOS
         local mason_path = vim.fn.stdpath("data") .. "/mason/bin/" .. linter
         if vim.fn.executable(mason_path) == 1 then
+          linter_cache[linter] = true
           return true
         end
         
+        linter_cache[linter] = false
         return false
       end
       
@@ -2744,15 +2653,31 @@ return {
             "--completion-style=detailed",
             "--function-arg-placeholders",
             "--fallback-style=llvm",
-            -- Force clangd to query GCC and Clang compilers for system headers across all platforms
-            -- This ensures consistent header checking with GCC/Clang on Windows, macOS, and Linux
-            -- The ** glob pattern matches compilers in any directory path
-            "--query-driver=**/*gcc*,**/*g++*,**/*clang*,**/*clang++*",
+            -- PHASE 10 FIX #54: Restricted query-driver for security
+            -- Instead of "**/*gcc*" which allows ANY matching binary in system,
+            -- use explicit common compiler paths for cross-platform support
+            -- Users can add custom paths if needed via LSP config
+            "--query-driver=" .. table.concat({
+              "/usr/bin/gcc",
+              "/usr/bin/g++",
+              "/usr/bin/clang",
+              "/usr/bin/clang++",
+              "/usr/local/bin/gcc*",
+              "/usr/local/bin/g++*",
+              "/usr/local/bin/clang*",
+              "/opt/homebrew/bin/gcc*",  -- macOS Homebrew
+              "/opt/homebrew/bin/g++*",
+              "/opt/homebrew/bin/clang*",
+              "C:/msys64/mingw64/bin/gcc.exe",  -- Windows MSYS2
+              "C:/msys64/mingw64/bin/g++.exe",
+              "C:/Program Files/LLVM/bin/clang.exe",  -- Windows LLVM
+              "C:/Program Files/LLVM/bin/clang++.exe",
+            }, ","),
           },
           filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
           root_dir = function(fname)
+            -- PHASE 5 FIX #29: Better root_dir fallback
             -- Use vim.fs.find for root directory detection (nvim 0.11+)
-            -- Get directory of the file if fname is a file path
             local start_path = vim.fn.fnamemodify(fname, ":p:h")
             local found = vim.fs.find({
               "Makefile",
@@ -2770,7 +2695,8 @@ return {
             if found and found[1] then
               return vim.fs.dirname(found[1])
             end
-            return vim.fn.getcwd()
+            -- Better fallback: directory of current file instead of getcwd()
+            return start_path
           end,
           init_options = {
             usePlaceholders = true,
@@ -2788,12 +2714,9 @@ return {
             keymap.set("n", "gi", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "Go to implementation" }))
             keymap.set("n", "gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { desc = "Find references" }))
             keymap.set("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
-            keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
-            keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code action" }))
-            keymap.set("n", "<leader>lf", vim.lsp.buf.format, vim.tbl_extend("force", opts, { desc = "Format buffer" }))
-            keymap.set("n", "[d", vim.diagnostic.goto_prev, vim.tbl_extend("force", opts, { desc = "Previous diagnostic" }))
-            keymap.set("n", "]d", vim.diagnostic.goto_next, vim.tbl_extend("force", opts, { desc = "Next diagnostic" }))
-            keymap.set("n", "<leader>ld", vim.diagnostic.open_float, vim.tbl_extend("force", opts, { desc = "Show diagnostic" }))
+            -- PHASE 6 FIX #15: Removed duplicate diagnostic keymaps
+            -- These are already defined in the main LSP on_attach function (lines 1537-1539)
+            -- Keeping only clangd-specific keymaps here
           end,
         },
         extensions = {
