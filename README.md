@@ -437,7 +437,9 @@ mv init.vim.legacy init.vim
 | `<leader>mm` | Normal | Toggle minimap |
 | `<leader>mr` | Normal | Refresh minimap |
 | `<leader>mf` | Normal | Focus minimap |
-| `<leader>z` | Normal | Zoom current window |
+| `<leader>mz` | Normal | Zoom current window (mini.misc) |
+| `<leader>z` | Normal | Zen Mode (snacks) |
+| `<leader>Z` | Normal | Zen Zoom (snacks) |
 | `<leader>pf` | Normal | Pick files |
 | `<leader>pg` | Normal | Pick grep live |
 | `<leader>pb` | Normal | Pick buffers |
@@ -839,7 +841,7 @@ Edit `lua/plugins/init.lua` and add your plugin specification:
 **Enhanced Theme Switcher** (Completely Redesigned!)
 
 Use the enhanced Telescope-based theme switcher:
-- Press `<leader>th` or `<leader>tt` to open the **live preview** theme selector
+- Press `<leader>th` to open the **live preview** theme selector
 - **🔭 Telescope Integration**: No more infinite indenting issues!
 - **📱 Live Preview**: See themes instantly as you browse
 - Choose from **45+ premium themes** including material, sonokai, edge, everforest, enhanced GitHub collection, and more
@@ -906,7 +908,7 @@ Auto-formatting on save has been **permanently disabled** to prevent automatic f
 - **No automatic changes**: Files will never be modified automatically on save
 
 ### 🎨 Enhanced Theme Switcher
-- **Telescope Integration**: `<leader>th` or `<leader>tt` opens **live preview** theme selector
+- **Telescope Integration**: `<leader>th` opens **live preview** theme selector
 - **38+ premium themes**: Including material, sonokai, edge, everforest, gruvbox-material, and more
 - **Fixed UI Issues**: No more infinite indenting! Smooth navigation with fuzzy search
 - **Live Preview**: See themes instantly as you browse with real-time preview
@@ -988,7 +990,9 @@ Auto-formatting on save has been **permanently disabled** to prevent automatic f
 ### 🎨 Theme & Toggles
 | Key | Action | Description |
 |-----|--------|-------------|
-| `<leader>tt` | Theme Switcher | Open theme selector |
+| `<leader>th` | Theme Switcher | Open theme selector |
+| `<leader>t;` | Toggle Terminal | Toggle terminal window |
+| `<leader>tp` | Toggle Wrap | Toggle line wrapping |
 | `<leader>tw` | Trim Whitespace | Remove trailing whitespace |
 | `<leader>tl` | Trim Lines | Remove empty lines at EOF |
 | `<leader>tn` | Toggle Line Numbers | Toggle line numbers |
@@ -999,7 +1003,7 @@ Auto-formatting on save has been **permanently disabled** to prevent automatic f
 |-----|--------|-------------|
 | `<leader>ss` | Select Session | Load existing session |
 | `<leader>sw` | Write Session | Save current session |
-| `<leader>sd` | Delete Session | Delete saved session |
+| `<leader>sD` | Delete Session | Delete saved session |
 
 ### 🗺️ Minimap & Navigation
 | Key | Action | Description |
@@ -1007,7 +1011,7 @@ Auto-formatting on save has been **permanently disabled** to prevent automatic f
 | `<leader>mm` | Toggle Minimap | Show/hide code minimap |
 | `<leader>mr` | Refresh Minimap | Refresh minimap display |
 | `<leader>mf` | Focus Minimap | Focus on minimap window |
-| `<leader>z` | Zoom Window | Zoom current window |
+| `<leader>mz` | Zoom Window | Zoom current window (mini.misc) |
 
 ### 🔔 Notifications
 | Key | Action | Description |

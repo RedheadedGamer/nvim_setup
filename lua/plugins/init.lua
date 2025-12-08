@@ -232,7 +232,8 @@ return {
       -- <C-/> works in most terminals (Linux, macOS with modern terminals)
       -- <C-_> is a fallback for terminals that map Ctrl+/ to Ctrl+_
       -- Both mappings ensure terminal toggle works across different terminal emulators
-      { "<leader>tt", function() require("snacks").terminal.toggle() end, desc = "Toggle Terminal" },
+      -- KEYBIND FIX: Changed from <leader>tt to <leader>t; to avoid clash with theme switcher
+      { "<leader>t;", function() require("snacks").terminal.toggle() end, desc = "Toggle Terminal" },
       { "<leader>tg", function() require("snacks").terminal("lazygit") end, desc = "LazyGit" },
       { "<C-/>", function() require("snacks").terminal.toggle() end, desc = "Toggle Terminal", mode = { "n", "t" } },
       { "<C-_>", function() require("snacks").terminal.toggle() end, desc = "Toggle Terminal", mode = { "n", "t" } },
@@ -270,7 +271,8 @@ return {
       -- CONFLICT FIX #60: Changed from <leader>tg to <leader>tG to avoid clash with lazygit
       { "<leader>tG", function() require("snacks").toggle.option("signcolumn", { on = "yes", off = "no" }) end, desc = "Toggle Sign Column" },
       { "<leader>ts", function() require("snacks").toggle.option("spell") end, desc = "Toggle Spell Check" },
-      { "<leader>tw", function() require("snacks").toggle.option("wrap") end, desc = "Toggle Wrap" },
+      -- KEYBIND FIX: Changed from <leader>tw to <leader>tp to avoid clash with trim whitespace
+      { "<leader>tp", function() require("snacks").toggle.option("wrap") end, desc = "Toggle Wrap" },
     },
     
     -- Init function for additional setup
@@ -823,6 +825,7 @@ return {
       require("mini.trailspace").setup()
       
       -- Keymap to remove trailing whitespace
+      -- KEYBIND FIX: Using <leader>tw as this is the primary trim function
       vim.keymap.set("n", "<leader>tw", function()
         require("mini.trailspace").trim()
         vim.notify("Trailing whitespace removed", vim.log.levels.INFO)
@@ -895,7 +898,8 @@ return {
         end
       end, { desc = "Write session" })
       
-      vim.keymap.set("n", "<leader>sd", function()
+      -- KEYBIND FIX: Changed from <leader>sd to <leader>sD to avoid clash with snacks dashboard
+      vim.keymap.set("n", "<leader>sD", function()
         require("mini.sessions").select("delete")
       end, { desc = "Delete session" })
     end,
@@ -959,7 +963,8 @@ return {
         -- CONFLICT FIX #60: Updated to reflect new keybinding
         { "<leader>tG", desc = "Toggle Sign Column", icon = "📦" },
         { "<leader>ts", desc = "Toggle Spell Check", icon = "✓" },
-        { "<leader>tw", desc = "Toggle Wrap", icon = "↩️" },
+        -- KEYBIND FIX: Updated to reflect new keybinding (changed from tw to tp)
+        { "<leader>tp", desc = "Toggle Wrap", icon = "↩️" },
 
         -- Git hunk actions (gitsigns)
         { "<leader>hs", desc = "Stage hunk", icon = "+" },
@@ -977,10 +982,11 @@ return {
         { "<leader>td", desc = "Toggle deleted", icon = "🗑️" },
         { "<leader>tw", desc = "Trim trailing whitespace", icon = "✂️" },
         { "<leader>tl", desc = "Trim trailing empty lines", icon = "📝" },
-        { "<leader>tt", desc = "Theme switcher", icon = "🎨" },
+        -- KEYBIND FIX: Updated from <leader>tt to <leader>th to avoid clash with terminal toggle
+        { "<leader>th", desc = "Theme switcher", icon = "🎨" },
         { "<leader>tn", desc = "Toggle line numbers", icon = "🔢" },
         { "<leader>tr", desc = "Toggle relative numbers", icon = "🔢" },
-        { "<leader>te", desc = "Open terminal", icon = "💻" },
+        { "<leader>t;", desc = "Toggle terminal", icon = "💻" },
         
         -- Enhanced keymap discovery
         { "<leader>fK", desc = "All keymaps browser", icon = "🗝️" },
@@ -1353,8 +1359,8 @@ return {
       end
       
       -- Theme switcher keymaps
+      -- KEYBIND FIX: Changed <leader>tt to <leader>th to avoid clash with terminal toggle
       keymap.set("n", "<leader>th", theme_switcher, { desc = "Theme switcher" })
-      keymap.set("n", "<leader>tt", theme_switcher, { desc = "Theme switcher" })
     end,
   },
 
@@ -2090,9 +2096,11 @@ return {
       require("mini.misc").setup()
       
       -- Set up some useful mini.misc functions
-      vim.keymap.set("n", "<leader>z", function()
+      -- KEYBIND FIX: Changed from <leader>z to <leader>mz to avoid clash with snacks zen mode
+      -- mini.misc.zoom is for window zoom, while snacks.zen is for zen mode (different features)
+      vim.keymap.set("n", "<leader>mz", function()
         require("mini.misc").zoom()
-      end, { desc = "Zoom current window" })
+      end, { desc = "Zoom current window (mini.misc)" })
     end,
   },
 
