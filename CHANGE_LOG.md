@@ -727,12 +727,82 @@ end
 
 ---
 
+## Phase 6: Performance Optimizations - CONTINUED ✅
+
+### Changes Made (Additional):
+
+#### 2025-12-08 06:10 | PERFORMANCE | lua/plugins/init.lua:1736-1765 | Optimize diagnostic CursorHold (Issue #13)
+**BEFORE:**
+```lua
+vim.api.nvim_create_autocmd("CursorHold", {
+  callback = function()
+    -- Query diagnostics on EVERY CursorHold, even if on same line
+    local line_diagnostics = vim.diagnostic.get(0, { lnum = vim.fn.line(".") - 1 })
+    if #line_diagnostics > 0 then
+      vim.diagnostic.open_float(nil, opts)
+    end
+  end
+})
+```
+**AFTER:**
+```lua
+local last_diagnostic_line = -1
+vim.api.nvim_create_autocmd("CursorHold", {
+  callback = function()
+    local current_line = vim.fn.line(".")
+    -- Skip if we're still on the same line as last check
+    if current_line == last_diagnostic_line then
+      return
+    end
+    last_diagnostic_line = current_line
+    -- Only query diagnostics when line actually changed
+    local line_diagnostics = vim.diagnostic.get(0, { lnum = current_line - 1 })
+    ...
+  end
+})
+```
+**Impact:** 
+- Eliminates redundant diagnostic queries when cursor hasn't moved
+- Reduces CPU usage on CursorHold events
+- Smoother scrolling/navigation experience
+**Status:** ✅ Optimized
+
+#### 2025-12-08 06:10 | REMOVE | lua/plugins/init.lua:2718-2723 | Remove duplicate diagnostic keymaps (Issue #15)
+**BEFORE:**
+```lua
+-- In clangd_extensions on_attach:
+keymap.set("n", "<leader>rn", vim.lsp.buf.rename, ...)
+keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, ...)
+keymap.set("n", "<leader>lf", vim.lsp.buf.format, ...)
+keymap.set("n", "[d", vim.diagnostic.goto_prev, ...)
+keymap.set("n", "]d", vim.diagnostic.goto_next, ...)
+keymap.set("n", "<leader>ld", vim.diagnostic.open_float, ...)
+```
+**AFTER:**
+```lua
+-- Removed duplicate keymaps (already defined in main LSP on_attach at lines 1535-1539)
+-- Comment added explaining removal
+```
+**Impact:** 
+- Eliminated duplicate keymap definitions
+- Cleaner code, single source of truth for LSP keymaps
+- Prevents potential keymap conflicts
+- Removed 6 lines
+**Status:** ✅ Deduplicated
+
+### Summary:
+- ✅ Optimized diagnostic CursorHold (skip redundant queries)
+- ✅ Removed 6 duplicate keymap definitions
+- ✅ Combined impact: Smoother operation, cleaner code
+
+---
+
 ## Statistics
 
 **Total Changes Planned:** 72 issues to fix
-**Completed:** 36 (35 + 1 from Phase 10)
+**Completed:** 38 (36 + 2 from Phase 6 continuation)
 **In Progress:** 0
-**Pending:** 36
+**Pending:** 34
 
 **Code to Remove:** ~200 lines
 **Code to Add:** ~150 lines

@@ -1732,10 +1732,20 @@ return {
         },
       })
 
-      -- Auto-show diagnostics on cursor hold (hover effect)
+      -- PHASE 6 FIX #13: Track cursor position to avoid redundant diagnostic queries
+      -- Only query diagnostics when cursor actually moves to a different line
+      local last_diagnostic_line = -1
       vim.api.nvim_create_autocmd("CursorHold", {
         group = vim.api.nvim_create_augroup("DiagnosticFloat", { clear = true }),
         callback = function()
+          local current_line = vim.fn.line(".")
+          
+          -- Skip if we're still on the same line as last check
+          if current_line == last_diagnostic_line then
+            return
+          end
+          last_diagnostic_line = current_line
+          
           -- Only show diagnostic if there are diagnostics on the current line
           local opts = {
             focusable = false,
@@ -1746,7 +1756,7 @@ return {
             scope = "cursor",
           }
           
-          local line_diagnostics = vim.diagnostic.get(0, { lnum = vim.fn.line(".") - 1 })
+          local line_diagnostics = vim.diagnostic.get(0, { lnum = current_line - 1 })
           if #line_diagnostics > 0 then
             vim.diagnostic.open_float(nil, opts)
           end
@@ -2705,12 +2715,9 @@ return {
             keymap.set("n", "gi", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "Go to implementation" }))
             keymap.set("n", "gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { desc = "Find references" }))
             keymap.set("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
-            keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
-            keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code action" }))
-            keymap.set("n", "<leader>lf", vim.lsp.buf.format, vim.tbl_extend("force", opts, { desc = "Format buffer" }))
-            keymap.set("n", "[d", vim.diagnostic.goto_prev, vim.tbl_extend("force", opts, { desc = "Previous diagnostic" }))
-            keymap.set("n", "]d", vim.diagnostic.goto_next, vim.tbl_extend("force", opts, { desc = "Next diagnostic" }))
-            keymap.set("n", "<leader>ld", vim.diagnostic.open_float, vim.tbl_extend("force", opts, { desc = "Show diagnostic" }))
+            -- PHASE 6 FIX #15: Removed duplicate diagnostic keymaps
+            -- These are already defined in the main LSP on_attach function (lines 1537-1539)
+            -- Keeping only clangd-specific keymaps here
           end,
         },
         extensions = {
