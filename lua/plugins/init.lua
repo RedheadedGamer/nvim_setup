@@ -216,6 +216,64 @@ return {
       win = {
         enabled = true,
       },
+      
+      -- ============================================================================
+      -- ADDITIONAL SNACKS MODULES (22-31)
+      -- ============================================================================
+      
+      -- Input - Enhanced vim.ui.input replacement
+      input = {
+        enabled = true,
+        icon = " ",
+        icon_pos = "left",
+        prompt_pos = "title",
+      },
+      
+      -- Scope - Scope highlighting and management
+      scope = {
+        enabled = true,
+        -- Automatically enable scope for supported buffers
+        filter = function(buf)
+          return vim.bo[buf].buftype == ""
+        end,
+      },
+      
+      -- Profiler - Performance profiling utilities
+      profiler = {
+        enabled = true,
+        -- Runtime profiling for performance analysis
+      },
+      
+      -- Debug - Debug utilities and helpers
+      debug = {
+        enabled = true,
+        -- Debug tools for plugin development
+      },
+      
+      -- Styles - UI styling and theming utilities
+      styles = {
+        enabled = true,
+        -- Consistent styling across snacks components
+      },
+      
+      -- Backdrop - Background dimming for focused windows
+      backdrop = {
+        enabled = true,
+        transparent = true,
+        blend = 60,
+      },
+      
+      -- Notifier history as separate feature
+      -- (Already included in notifier, but exposing as dedicated module)
+      
+      -- Util - General utility functions
+      -- (Internal module, enabled by default)
+      
+      -- Config - Configuration management
+      -- (Internal module, enabled by default)
+      
+      -- Health - Health check system
+      -- (Accessible via :checkhealth snacks)
     },
     
     -- Keybindings for all snacks features
@@ -273,6 +331,25 @@ return {
       { "<leader>ts", function() require("snacks").toggle.option("spell") end, desc = "Toggle Spell Check" },
       -- KEYBIND FIX: Changed from <leader>tw to <leader>tp to avoid clash with trim whitespace
       { "<leader>tp", function() require("snacks").toggle.option("wrap") end, desc = "Toggle Wrap" },
+      
+      -- ============================================================================
+      -- ADDITIONAL MODULE KEYBINDINGS (22-31)
+      -- ============================================================================
+      
+      -- Profiler keybindings
+      { "<leader>dp", function() require("snacks").profiler.toggle() end, desc = "Toggle Profiler" },
+      { "<leader>dP", function() require("snacks").profiler.report() end, desc = "Profiler Report" },
+      
+      -- Debug utilities
+      { "<leader>di", function() require("snacks").debug.inspect() end, desc = "Inspect Object" },
+      { "<leader>dh", function() require("snacks").debug.health() end, desc = "Debug Health" },
+      
+      -- Backdrop toggle
+      { "<leader>tB", function() require("snacks").toggle.backdrop() end, desc = "Toggle Backdrop" },
+      
+      -- Scope navigation
+      { "<leader>sj", function() require("snacks").scope.jump_next() end, desc = "Next Scope" },
+      { "<leader>sk", function() require("snacks").scope.jump_prev() end, desc = "Previous Scope" },
     },
     
     -- Init function for additional setup
@@ -930,10 +1007,10 @@ return {
         { "<leader>w", group = "window", icon = "🪟" },
         { "<leader>b", group = "buffer/snacks", icon = "📄" },
         { "<leader>v", group = "visits/mini.visits", icon = "📍" },
-        { "<leader>s", group = "session/snacks", icon = "💾" },
+        { "<leader>s", group = "session/snacks/scope", icon = "💾" },
         { "<leader>m", group = "map/minimap", icon = "🗺️" },
         { "<leader>r", group = "refactor/rename", icon = "♻️" },
-        { "<leader>d", group = "diagnostics", icon = "🩺" },
+        { "<leader>d", group = "debug/diagnostics/profiler", icon = "🩺" },
         { "<leader>h", group = "git hunks", icon = "📊" },
         { "<leader>l", group = "lsp", icon = "🔧" },
         { "<leader>n", group = "notifications/snacks", icon = "🔔" },
@@ -965,6 +1042,15 @@ return {
         { "<leader>ts", desc = "Toggle Spell Check", icon = "✓" },
         -- KEYBIND FIX: Updated to reflect new keybinding (changed from tw to tp)
         { "<leader>tp", desc = "Toggle Wrap", icon = "↩️" },
+        { "<leader>tB", desc = "Toggle Backdrop (snacks)", icon = "🌫️" },
+
+        -- Additional snacks modules (22-31)
+        { "<leader>dp", desc = "Toggle Profiler (snacks)", icon = "⚡" },
+        { "<leader>dP", desc = "Profiler Report (snacks)", icon = "📊" },
+        { "<leader>di", desc = "Inspect Object (snacks)", icon = "🔍" },
+        { "<leader>dh", desc = "Debug Health (snacks)", icon = "🏥" },
+        { "<leader>sj", desc = "Next Scope (snacks)", icon = "⬇️" },
+        { "<leader>sk", desc = "Previous Scope (snacks)", icon = "⬆️" },
 
         -- Git hunk actions (gitsigns)
         { "<leader>hs", desc = "Stage hunk", icon = "+" },
