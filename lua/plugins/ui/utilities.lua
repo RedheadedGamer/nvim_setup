@@ -9,7 +9,12 @@ return {
     "folke/which-key.nvim",
     event = "VeryLazy",
     opts = {
-      preset = "helix", -- Changed from "modern" to "helix" for better theme
+      -- Using "helix" preset provides:
+      -- - Better organized layout with categories
+      -- - Improved visual hierarchy
+      -- - More intuitive navigation
+      -- - Better support for nested keybindings
+      preset = "helix",
       -- Delay before showing the popup
       delay = function(ctx)
         return ctx.plugin and 0 or 200
@@ -287,7 +292,13 @@ return {
       end, { desc = "Insert mode keymaps" })
       
       -- Theme switcher
-      local theme_config = require("config.theme")
+      -- Depends on config.theme module for theme management
+      local ok_theme, theme_config = pcall(require, "config.theme")
+      if not ok_theme then
+        vim.notify("Theme configuration module not found", vim.log.levels.ERROR)
+        return
+      end
+      
       local theme_switcher = function()
         local themes = theme_config.get_available_themes()
         local original_theme = _G.nvim_current_theme or vim.g.current_theme or vim.g.colors_name or "default"

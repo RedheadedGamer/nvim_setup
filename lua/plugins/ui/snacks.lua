@@ -1,6 +1,27 @@
 -- plugins/ui/snacks.lua
 -- Snacks.nvim - Modern all-in-one plugin by folke
 
+-- Utility: Detect appropriate shell for terminal
+local function detect_shell()
+  local is_windows = vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1
+  
+  if is_windows then
+    -- Prefer PowerShell Core; fall back to Windows PowerShell
+    if vim.fn.executable("pwsh") == 1 then
+      return { "pwsh", "-NoLogo" }
+    else
+      return { "powershell.exe", "-NoLogo" }
+    end
+  else
+    -- Prefer fish; fall back to user's default shell
+    if vim.fn.executable("fish") == 1 then
+      return { "fish", "-i" }
+    else
+      return vim.env.SHELL or vim.o.shell or "sh"
+    end
+  end
+end
+
 return {
   {
     "folke/snacks.nvim",
@@ -103,40 +124,19 @@ return {
       },
       
       -- Terminal management
-      terminal = (function()
-		local is_windows = vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1
-
-		local shell
-		if is_windows then
-			-- Prefer PowerShell Core; fall back to Windows PowerShell
-			if vim.fn.executable("pwsh") == 1 then
-				shell = { "pwsh", "-NoLogo" }
-			else
-				shell = { "powershell.exe", "-NoLogo" }
-			end
-		else
-			-- Prefer fish; fall back to user's default shell
-			if vim.fn.executable("fish") == 1 then
-				shell = { "fish", "-i" }
-			else
-				shell = vim.env.SHELL or vim.o.shell or "sh"
-			end
-		end
-
-		return {
-		  enabled = true,
-		  shell = shell,
-		  win = {
-		    style = "terminal",
-		    position = "bottom",
-		    width = 1.0,
-		    height = 0.4,
-		    border = "single",
-		    title = " Terminal ",
-		    title_pos = "center",
-		  },
-	    }
-	  end)(),
+      terminal = {
+        enabled = true,
+        shell = detect_shell(),
+        win = {
+          style = "terminal",
+          position = "bottom",
+          width = 1.0,
+          height = 0.4,
+          border = "single",
+          title = " Terminal ",
+          title_pos = "center",
+        },
+      },
 
       -- Enhanced statuscolumn
       statuscolumn = {

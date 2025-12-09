@@ -13,39 +13,56 @@
 local function load_plugin_modules()
   local plugins = {}
   
-  -- Helper function to merge plugin tables
-  local function merge(t)
-    for _, plugin in ipairs(t) do
+  -- Helper function to merge plugin tables with error handling
+  local function merge(module_name)
+    local ok, module = pcall(require, module_name)
+    if not ok then
+      vim.notify(
+        string.format("Failed to load plugin module '%s': %s", module_name, tostring(module)),
+        vim.log.levels.ERROR
+      )
+      return
+    end
+    
+    if type(module) ~= "table" then
+      vim.notify(
+        string.format("Plugin module '%s' did not return a table", module_name),
+        vim.log.levels.ERROR
+      )
+      return
+    end
+    
+    for _, plugin in ipairs(module) do
       table.insert(plugins, plugin)
     end
   end
   
   -- UI plugins
-  merge(require("plugins.ui.themes"))
-  merge(require("plugins.ui.snacks"))
-  merge(require("plugins.ui.utilities"))
+  merge("plugins.ui.themes")
+  merge("plugins.ui.snacks")
+  merge("plugins.ui.utilities")
   
   -- Editor plugins
-  merge(require("plugins.editor.treesitter"))
-  merge(require("plugins.editor.mini-text"))
-  merge(require("plugins.editor.mini-ui"))
-  merge(require("plugins.editor.mini-navigation"))
+  merge("plugins.editor.treesitter")
+  merge("plugins.editor.mini-text")
+  merge("plugins.editor.mini-ui")
+  merge("plugins.editor.mini-navigation")
   
   -- Git plugins
-  merge(require("plugins.git.gitsigns"))
+  merge("plugins.git.gitsigns")
   
   -- LSP plugins
-  merge(require("plugins.lsp.lspconfig"))
+  merge("plugins.lsp.lspconfig")
   
   -- Development tools
-  merge(require("plugins.dev.formatting"))
-  merge(require("plugins.dev.linting"))
-  merge(require("plugins.dev.debugging"))
+  merge("plugins.dev.formatting")
+  merge("plugins.dev.linting")
+  merge("plugins.dev.debugging")
   
   -- Language-specific plugins
-  merge(require("plugins.lang.c-cpp"))
-  merge(require("plugins.lang.java"))
-  merge(require("plugins.lang.latex"))
+  merge("plugins.lang.c-cpp")
+  merge("plugins.lang.java")
+  merge("plugins.lang.latex")
   
   return plugins
 end
