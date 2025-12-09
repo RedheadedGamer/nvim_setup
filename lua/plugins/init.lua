@@ -1044,6 +1044,7 @@ return {
         { "<leader>l", group = "lsp", icon = "🔧" },
         { "<leader>n", group = "notifications/snacks", icon = "🔔" },
         { "<leader>z", group = "zen/snacks", icon = "🧘" },
+        { "<leader>j", group = "java/jdtls", icon = "☕" },
 
         -- Snacks-specific groups and actions
         { "<leader>sd", desc = "Dashboard (snacks)", icon = "🏠" },
@@ -1081,6 +1082,14 @@ return {
         { "<leader>sj", desc = "Next Scope (snacks)", icon = "⬇️" },
         { "<leader>sk", desc = "Previous Scope (snacks)", icon = "⬆️" },
         { "<leader>E", desc = "Explorer (snacks)", icon = "📁" },
+
+        -- Java-specific actions (nvim-jdtls)
+        { "<leader>jo", desc = "Organize imports (Java)", icon = "📦" },
+        { "<leader>jv", desc = "Extract variable (Java)", icon = "🔤" },
+        { "<leader>jc", desc = "Extract constant (Java)", icon = "🔒" },
+        { "<leader>jm", desc = "Extract method (Java)", icon = "🔧" },
+        { "<leader>jt", desc = "Test class (Java)", icon = "🧪" },
+        { "<leader>jn", desc = "Test nearest method (Java)", icon = "🎯" },
 
         -- Git hunk actions (gitsigns)
         { "<leader>hs", desc = "Stage hunk", icon = "+" },
@@ -1752,14 +1761,8 @@ return {
         cssls = {},
         jsonls = {},
 
-        jdtls = {
-          settings = {
-            java = {
-              signatureHelp = { enabled = true },
-              contentProvider = { preferred = "fernflower" },
-            },
-          },
-        },
+        -- Note: jdtls (Java LSP) is configured separately via ftplugin/java.lua
+        -- This is required for proper workspace management and project-specific settings
         cmake = {},
         bashls = {
           filetypes = { "sh", "bash" },
@@ -1955,6 +1958,21 @@ return {
     config = function()
       vim.g.vimtex_view_general_viewer = "okular"
       vim.g.vimtex_view_general_options = "--unique file:@pdf\\#src:@line@tex"
+    end,
+  },
+
+  -- Java LSP support with nvim-jdtls
+  {
+    "mfussenegger/nvim-jdtls",
+    ft = "java",
+    dependencies = {
+      "neovim/nvim-lspconfig",
+      "williamboman/mason.nvim",
+      "hrsh7th/nvim-cmp",
+    },
+    config = function()
+      -- nvim-jdtls is configured via ftplugin/java.lua
+      -- This ensures proper per-project workspace management
     end,
   },
 
