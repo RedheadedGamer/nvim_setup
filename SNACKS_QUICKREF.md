@@ -1,6 +1,6 @@
 # snacks.nvim Quick Reference Card
 
-## All 31 Modules - At a Glance
+## All 32 Modules - At a Glance
 
 ### Core Features (1-10)
 | # | Module | Description | Key Feature |
@@ -35,7 +35,7 @@
 | 20 | win | Window utils | Internal utilities |
 | 21 | picker | Fuzzy finder | Alternative to Telescope |
 
-### Additional Features (22-27) ⭐ NEW
+### Additional Features (22-28) ⭐ NEW
 | # | Module | Description | Key Feature |
 |---|--------|-------------|-------------|
 | 22 | input | Input UI | Automatic styling |
@@ -44,14 +44,15 @@
 | 25 | debug | Debug tools | `<leader>di` inspect |
 | 26 | styles | UI styling | Consistent theme |
 | 27 | backdrop | Backdrop | `<leader>tB` dim |
+| 28 | explorer | File explorer | `<leader>E` open |
 
-### Internal/Utility (28-31)
+### Internal/Utility (29-32)
 | # | Module | Description | Access |
 |---|--------|-------------|--------|
-| 28 | util | Utilities | Auto-enabled |
-| 29 | config | Config mgmt | Auto-enabled |
-| 30 | health | Health check | `:checkhealth snacks` |
-| 31 | Internal | Core APIs | Auto-enabled |
+| 29 | util | Utilities | Auto-enabled |
+| 30 | config | Config mgmt | Auto-enabled |
+| 31 | health | Health check | `:checkhealth snacks` |
+| 32 | Internal | Core APIs | Auto-enabled |
 
 ---
 
@@ -121,6 +122,7 @@
 <leader>rn   Rename with preview
 <leader>bd   Delete buffer
 <leader>bD   Force delete buffer
+<leader>E    Open explorer (snacks)
 ```
 
 ---
@@ -180,6 +182,15 @@ terminal, git, gitbrowse, lazygit
 **Focus & Productivity (5):**
 zen, dim, scratch, toggle, backdrop
 
+**Editing & Navigation (5):**
+words, rename, bufdelete, scope, explorer
+
+**Terminal & Git (4):**
+terminal, git, gitbrowse, lazygit
+
+**Focus & Productivity (5):**
+zen, dim, scratch, toggle, backdrop
+
 **Performance (2):**
 bigfile, quickfile
 
@@ -196,11 +207,12 @@ util, config, health, internal APIs
 
 ## Color Legend
 
-⭐ NEW - Recently implemented modules (22-27)
+⭐ NEW - Recently implemented modules (22-28)
 🏠 Core - Essential features (1-10)
 📦 Git - Git integration (11-13)
 🧘 Focus - Productivity & focus (17-19, 27)
 ⚡ Dev - Development tools (24-25)
+📁 Explorer - File navigation (28)
 
 ---
 
@@ -219,11 +231,11 @@ Implementation details: `SNACKS_IMPLEMENTATION.md`
 
 ## Statistics
 
-- **Total Modules:** 31
-- **User-Facing Modules:** 27
+- **Total Modules:** 32
+- **User-Facing Modules:** 28
 - **Internal Modules:** 4
-- **Total Keybindings:** 39
-- **New Keybindings:** 7
+- **Total Keybindings:** 40
+- **New Keybindings:** 8
 - **Feature Coverage:** 100%
 
 ---

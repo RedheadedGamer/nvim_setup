@@ -2,7 +2,7 @@
 
 ## Overview
 
-**snacks.nvim** is a comprehensive, modern plugin collection by **folke** that provides 31 high-quality features for Neovim. This setup has all features enabled and configured.
+**snacks.nvim** is a comprehensive, modern plugin collection by **folke** that provides 32 high-quality features for Neovim. This setup has all features enabled and configured.
 
 **Author:** folke (creator of lazy.nvim, which-key.nvim, trouble.nvim, tokyonight.nvim)  
 **Repository:** https://github.com/folke/snacks.nvim  
@@ -675,14 +675,40 @@
 
 ---
 
-### 28-31. 🔧 Internal Modules
+### 28. 📁 snacks.explorer - File Explorer
+
+**What it does:** Provides a file explorer with tree view for navigating directories and files.
+
+**Features:**
+- Tree-based file navigation
+- File and directory operations
+- Integration with snacks UI
+- Alternative to mini.files or nvim-tree
+- Lightweight and fast
+
+**Keybindings:**
+- `<leader>E` - Open explorer (capital E)
+
+**How to improve:**
+- Customize tree view appearance
+- Add file operation shortcuts
+- Configure preview options
+- Set custom filters
+
+**Configuration location:** Line 266-270 in `lua/plugins/init.lua`
+
+**Note:** This coexists with mini.files (`<leader>e`). Use `<leader>e` for mini.files or `<leader>E` for snacks.explorer based on preference.
+
+---
+
+### 29-32. 🔧 Internal Modules
 
 The following modules are internal/utility modules that work behind the scenes:
 
-**28. snacks.util** - General utility functions (enabled by default)
-**29. snacks.config** - Configuration management (enabled by default)
-**30. snacks.health** - Health check system (accessible via `:checkhealth snacks`)
-**31. Internal APIs** - Core functionality used by other modules
+**29. snacks.util** - General utility functions (enabled by default)
+**30. snacks.config** - Configuration management (enabled by default)
+**31. snacks.health** - Health check system (accessible via `:checkhealth snacks`)
+**32. Internal APIs** - Core functionality used by other modules
 
 These modules don't have direct user-facing features but provide essential infrastructure for all other snacks modules.
 
@@ -690,7 +716,7 @@ These modules don't have direct user-facing features but provide essential infra
 
 ## Updated Feature Count
 
-All **31** snacks.nvim features are now documented and available:
+All **32** snacks.nvim features are now documented and available:
 
 **Core Features (1-10):**
 1. dashboard, 2. notifier, 3. scroll, 4. indent, 5. terminal
@@ -702,11 +728,11 @@ All **31** snacks.nvim features are now documented and available:
 **UI & Productivity (16-21):**
 16. toggle, 17. zen, 18. dim, 19. scratch, 20. win, 21. picker
 
-**Additional Features (22-27):**
-22. input, 23. scope, 24. profiler, 25. debug, 26. styles, 27. backdrop
+**Additional Features (22-28):**
+22. input, 23. scope, 24. profiler, 25. debug, 26. styles, 27. backdrop, 28. explorer
 
-**Internal/Utility (28-31):**
-28. util, 29. config, 30. health, 31. internal APIs
+**Internal/Utility (29-32):**
+29. util, 30. config, 31. health, 32. internal APIs
 
 ---
 
@@ -749,14 +775,15 @@ All **31** snacks.nvim features are now documented and available:
 | `<leader>dh` | debug | Debug health |
 | `<leader>sj` | scope | Next scope |
 | `<leader>sk` | scope | Previous scope |
+| `<leader>E` | explorer | Open explorer |
 
 ### Feature Categories
 
 **Visual Enhancements (8):**
 - dashboard, notifier, scroll, indent, statuscolumn, animate, styles, backdrop
 
-**Editing & Navigation (4):**
-- words, rename, bufdelete, scope
+**Editing & Navigation (5):**
+- words, rename, bufdelete, scope, explorer
 
 **Terminal & Git (4):**
 - terminal, git, gitbrowse, lazygit
@@ -928,9 +955,9 @@ snacks.nvim works well with:
 
 ## Summary
 
-All **31** snacks.nvim features are now active and documented in this setup:
-- ✅ **31 modules** configured and enabled
-- ✅ **39 keybindings** for snacks features
+All **32** snacks.nvim features are now active and documented in this setup:
+- ✅ **32 modules** configured and enabled
+- ✅ **40 keybindings** for snacks features
 - ✅ which-key integration complete
 - ✅ No redundant plugins remaining
 - ✅ All features documented
@@ -940,7 +967,7 @@ All **31** snacks.nvim features are now active and documented in this setup:
 - **Core Features:** 10 essential modules (dashboard, notifier, scroll, etc.)
 - **Git & LSP:** 5 development-focused modules
 - **UI & Productivity:** 6 workflow enhancement modules
-- **Additional Features:** 6 advanced modules (input, scope, profiler, debug, styles, backdrop)
+- **Additional Features:** 7 advanced modules (input, scope, profiler, debug, styles, backdrop, explorer)
 - **Internal/Utility:** 4 infrastructure modules
 
 Use `<leader>` in Neovim and which-key will show all available snacks commands with descriptions and icons.

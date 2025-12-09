@@ -263,6 +263,12 @@ return {
         blend = 60,
       },
       
+      -- Explorer - File explorer (alternative to mini.files)
+      explorer = {
+        enabled = true,
+        -- File explorer with tree view
+      },
+      
       -- Notifier history as separate feature
       -- (Already included in notifier, but exposing as dedicated module)
       
@@ -350,6 +356,9 @@ return {
       -- Scope navigation
       { "<leader>sj", function() require("snacks").scope.jump_next() end, desc = "Next Scope" },
       { "<leader>sk", function() require("snacks").scope.jump_prev() end, desc = "Previous Scope" },
+      
+      -- Explorer
+      { "<leader>E", function() require("snacks").explorer() end, desc = "Explorer (snacks)" },
     },
     
     -- Init function for additional setup
@@ -1051,6 +1060,7 @@ return {
         { "<leader>dh", desc = "Debug Health (snacks)", icon = "🏥" },
         { "<leader>sj", desc = "Next Scope (snacks)", icon = "⬇️" },
         { "<leader>sk", desc = "Previous Scope (snacks)", icon = "⬆️" },
+        { "<leader>E", desc = "Explorer (snacks)", icon = "📁" },
 
         -- Git hunk actions (gitsigns)
         { "<leader>hs", desc = "Stage hunk", icon = "+" },
