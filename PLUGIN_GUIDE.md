@@ -228,6 +228,182 @@ Get detailed symbol information:
 <leader>cS  # Show symbol details
 ```
 
+## ☕ Java Development Guide
+
+### Overview
+This configuration provides comprehensive Java development support through nvim-jdtls (Eclipse JDT Language Server), offering intelligent code completion, refactoring, debugging, and project management.
+
+### Core Features
+- **nvim-jdtls** - Full-featured Java LSP with Eclipse JDT Language Server
+- **Workspace Management** - Per-project workspace configuration
+- **Maven/Gradle Support** - Automatic project detection and configuration
+- **Advanced Refactoring** - Extract method, variable, constant, and more
+- **Code Actions** - Organize imports, generate code, quick fixes
+- **Smart Completion** - Context-aware completion integrated with nvim-cmp
+- **Testing Support** - Run tests directly from editor
+- **Debugging** - Debug Adapter Protocol (DAP) support for Java
+
+### 🛠️ Java-Specific Keybindings
+
+#### Java Refactoring (nvim-jdtls)
+| Key | Command | Description |
+|-----|---------|-------------|
+| `<leader>jo` | OrganizeImports | Organize and clean up imports |
+| `<leader>jv` | ExtractVariable | Extract selection to variable |
+| `<leader>jc` | ExtractConstant | Extract selection to constant |
+| `<leader>jm` | ExtractMethod | Extract selection to method (visual mode) |
+
+#### Java Testing
+| Key | Command | Description |
+|-----|---------|-------------|
+| `<leader>jt` | TestClass | Run all tests in current class |
+| `<leader>jn` | TestNearest | Run test method at cursor |
+
+#### Standard LSP Features
+| Key | Command | Description |
+|-----|---------|-------------|
+| `gd` | GoToDefinition | Go to symbol definition |
+| `gi` | GoToImplementation | Go to implementation |
+| `gr` | GoToReferences | Show all references |
+| `K` | HoverDoc | Show hover documentation |
+| `<leader>rn` | Rename | Rename symbol |
+| `<leader>ca` | CodeAction | Show code actions |
+| `<leader>lf` | Format | Format buffer |
+| `[d` / `]d` | PrevNextDiagnostic | Navigate diagnostics |
+
+### 🔧 Configuration Details
+
+#### Project Structure
+nvim-jdtls automatically detects Java projects by looking for:
+- `.git` directory (Git repository)
+- `pom.xml` (Maven project)
+- `build.gradle` or `build.gradle.kts` (Gradle project)
+- `mvnw` or `gradlew` (wrapper scripts)
+
+#### Workspace Management
+Each Java project gets its own workspace directory at:
+```
+~/.local/share/eclipse/<project-name>
+```
+
+This ensures proper project isolation and prevents conflicts between different projects.
+
+#### Completion Integration
+nvim-jdtls is fully integrated with nvim-cmp, providing:
+- Method signatures
+- Parameter hints
+- Import suggestions
+- Documentation popups
+- Snippet expansion
+
+### 📦 Setup Instructions
+
+#### 1. Install Java Development Kit (JDK)
+Ensure you have Java 17 or later installed:
+```bash
+# Check Java version
+java -version
+
+# Linux (Ubuntu/Debian)
+sudo apt install openjdk-17-jdk
+
+# macOS
+brew install openjdk@17
+
+# Windows (with Scoop)
+scoop install openjdk17
+```
+
+#### 2. Install jdtls via Mason
+```bash
+# In Neovim
+:Mason
+# Search for "jdtls" and install it
+# Or it will be installed automatically when you open a Java file
+```
+
+#### 3. Open a Java Project
+```bash
+# Navigate to your Java project directory
+cd /path/to/your/java/project
+
+# Open a Java file
+nvim src/main/java/com/example/Main.java
+```
+
+The LSP will automatically start and configure itself for your project.
+
+### 🔍 Troubleshooting Java Development
+
+#### LSP Not Starting
+1. Check Java installation: `java -version`
+2. Ensure Java 17+ is installed
+3. Check LSP status: `:LspInfo`
+4. Verify jdtls installation: `:Mason`
+5. Check workspace directory permissions
+
+#### Completion Not Working
+1. Ensure nvim-cmp is loaded
+2. Check capabilities in `:LspInfo`
+3. Restart LSP: `<leader>lr`
+4. Clear workspace cache: Delete `~/.local/share/eclipse/<project-name>`
+
+#### Imports Not Resolving
+1. Ensure project has proper build file (pom.xml or build.gradle)
+2. Build the project with Maven/Gradle first
+3. Use organize imports: `<leader>jo`
+4. Check classpath in project configuration
+
+#### Slow Performance
+1. Increase Java heap size in ftplugin/java.lua (modify `-Xms1g`)
+2. Exclude large directories from indexing
+3. Use project-specific .jdtlsignore file
+4. Clear and rebuild workspace cache
+
+### 📈 Best Practices
+
+#### Project Organization
+- Use standard Maven or Gradle project structure
+- Keep source and test directories separate
+- Maintain proper package hierarchy
+- Use version control (.git) for project detection
+
+#### Code Quality
+- Use organize imports regularly (`<leader>jo`)
+- Apply suggested code actions (`<leader>ca`)
+- Fix diagnostics as they appear (`[d`, `]d`)
+- Format code before committing (`<leader>lf`)
+
+#### Performance
+- Close unused projects to free memory
+- Use workspace per project (automatic)
+- Keep JDK up to date
+- Monitor Java process memory usage
+
+### 🎯 Advanced Features
+
+#### Code Generation
+Java LSP provides automatic code generation through code actions (`<leader>ca`):
+- Generate getters/setters
+- Generate constructors
+- Generate toString/equals/hashCode
+- Implement interface methods
+- Override superclass methods
+
+#### Debugging Support
+While the basic configuration includes jdtls, full debugging support requires:
+1. Installing java-debug-adapter via Mason
+2. Installing java-test extensions
+3. Configuration will be added in future updates
+
+#### Custom Code Style
+To use custom formatting, place a formatter XML file at:
+```
+~/.config/nvim/lang_servers/intellij-java-google-style.xml
+```
+
+The configuration references this in the format settings.
+
 ## 🚀 Quick Start
 
 ### Essential Commands to Know
