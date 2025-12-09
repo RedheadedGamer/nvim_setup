@@ -283,7 +283,11 @@ nvim-jdtls automatically detects Java projects by looking for:
 #### Workspace Management
 Each Java project gets its own workspace directory at:
 ```
-~/.local/share/eclipse/<project-name>
+# Linux/macOS
+~/.local/share/nvim/eclipse/<project-name>
+
+# Windows
+%LOCALAPPDATA%\nvim-data\eclipse\<project-name>
 ```
 
 This ensures proper project isolation and prevents conflicts between different projects.
@@ -346,7 +350,7 @@ The LSP will automatically start and configure itself for your project.
 1. Ensure nvim-cmp is loaded
 2. Check capabilities in `:LspInfo`
 3. Restart LSP: `<leader>lr`
-4. Clear workspace cache: Delete `~/.local/share/eclipse/<project-name>`
+4. Clear workspace cache: Delete workspace directory (use `:lua print(vim.fn.stdpath("data") .. "/eclipse")` to find location)
 
 #### Imports Not Resolving
 1. Ensure project has proper build file (pom.xml or build.gradle)

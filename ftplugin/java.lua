@@ -13,7 +13,10 @@ end
 local is_windows = vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1
 local home = os.getenv("HOME") or os.getenv("USERPROFILE")
 local jdtls_path = vim.fn.stdpath("data") .. "/mason/packages/jdtls"
-local workspace_dir = home .. "/.local/share/eclipse/" .. vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
+
+-- Cross-platform workspace directory (using vim.fn.fnamemodify for proper path handling)
+local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
+local workspace_dir = vim.fn.stdpath("data") .. "/eclipse/" .. project_name
 
 -- Get the platform-specific configuration
 local config_dir = is_windows and "config_win" or (vim.fn.has("mac") == 1 and "config_mac" or "config_linux")
@@ -87,10 +90,11 @@ local config = {
       },
       format = {
         enabled = true,
-        settings = {
+        -- Only set custom formatter if the file exists
+        settings = vim.fn.filereadable(vim.fn.stdpath("config") .. "/lang_servers/intellij-java-google-style.xml") == 1 and {
           url = vim.fn.stdpath("config") .. "/lang_servers/intellij-java-google-style.xml",
           profile = "GoogleStyle",
-        },
+        } or {},
       },
       signatureHelp = { enabled = true },
       contentProvider = { preferred = "fernflower" },
@@ -144,16 +148,7 @@ local config = {
     local keymap = vim.keymap
     local opts = { buffer = bufnr, silent = true }
 
-    -- Standard LSP keymaps (already set in main config, but adding Java-specific ones)
-    keymap.set("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go to definition" }))
-    keymap.set("n", "gi", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "Go to implementation" }))
-    keymap.set("n", "gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { desc = "Go to references" }))
-    keymap.set("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
-    keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
-    keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code action" }))
-    keymap.set("n", "<leader>lf", vim.lsp.buf.format, vim.tbl_extend("force", opts, { desc = "Format buffer" }))
-
-    -- Java-specific keybindings
+    -- Java-specific keybindings (standard LSP bindings are already set in main config)
     keymap.set("n", "<leader>jo", jdtls.organize_imports, vim.tbl_extend("force", opts, { desc = "Organize imports" }))
     keymap.set("n", "<leader>jv", jdtls.extract_variable, vim.tbl_extend("force", opts, { desc = "Extract variable" }))
     keymap.set("v", "<leader>jv", function()
