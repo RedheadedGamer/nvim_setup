@@ -373,7 +373,13 @@ return {
       vim.api.nvim_create_autocmd("User", {
         pattern = "VeryLazy",
         callback = function()
-          -- Add custom snacks configuration here
+          -- Enable dim by default on startup
+          local ok_snacks, snacks_module = pcall(require, "snacks")
+          if ok_snacks and snacks_module.dim then
+            vim.schedule(function()
+              snacks_module.dim.enable()
+            end)
+          end
         end,
       })
     end,
