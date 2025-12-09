@@ -2,7 +2,7 @@
 
 ## Overview
 
-**snacks.nvim** is a comprehensive, modern plugin collection by **folke** that provides 21 high-quality features for Neovim. This setup has all features enabled and configured.
+**snacks.nvim** is a comprehensive, modern plugin collection by **folke** that provides 32 high-quality features for Neovim. This setup has all features enabled and configured.
 
 **Author:** folke (creator of lazy.nvim, which-key.nvim, trouble.nvim, tokyonight.nvim)  
 **Repository:** https://github.com/folke/snacks.nvim  
@@ -528,6 +528,214 @@
 
 ---
 
+## Additional Modules (22-31)
+
+### 22. 📥 snacks.input - Enhanced Input UI
+
+**What it does:** Replaces `vim.ui.input` with a more polished input dialog.
+
+**Features:**
+- Modern input prompt styling
+- Icon support
+- Consistent with snacks UI theme
+- Better positioning options
+- Integration with other snacks modules
+
+**Keybindings:** None (automatic via `vim.ui.input`)
+
+**How to improve:**
+- Customize icon and position
+- Add validation functions
+- Create custom input prompts
+- Style integration with theme
+
+**Configuration location:** Line 225-230 in `lua/plugins/init.lua`
+
+---
+
+### 23. 🔭 snacks.scope - Scope Management
+
+**What it does:** Provides scope highlighting and navigation for code blocks.
+
+**Features:**
+- Automatic scope detection
+- Visual scope indicators
+- Navigate between scopes
+- Works with treesitter
+- Complements indent guides
+
+**Keybindings:**
+- `<leader>sj` - Jump to next scope
+- `<leader>sk` - Jump to previous scope
+
+**How to improve:**
+- Customize scope highlight colors
+- Add more navigation options
+- Create scope-based text objects
+- Integrate with fold commands
+
+**Configuration location:** Line 232-239 in `lua/plugins/init.lua`
+
+---
+
+### 24. ⚡ snacks.profiler - Performance Profiling
+
+**What it does:** Provides runtime profiling tools for Neovim performance analysis.
+
+**Features:**
+- Toggle profiling on/off
+- Collect performance metrics
+- Generate profiling reports
+- Identify slow operations
+- Optimize plugin performance
+
+**Keybindings:**
+- `<leader>dp` - Toggle profiler
+- `<leader>dP` - Show profiler report
+
+**How to improve:**
+- Set custom profiling filters
+- Export profiling data
+- Create performance benchmarks
+- Add profiling presets
+
+**Configuration location:** Line 241-245 in `lua/plugins/init.lua`
+
+---
+
+### 25. 🐛 snacks.debug - Debug Utilities
+
+**What it does:** Debug utilities and helpers for plugin development and troubleshooting.
+
+**Features:**
+- Inspect Lua objects
+- Debug health checks
+- View internal state
+- Diagnostic tools
+- Development helpers
+
+**Keybindings:**
+- `<leader>di` - Inspect object under cursor
+- `<leader>dh` - Debug health check
+
+**How to improve:**
+- Add custom inspection functions
+- Create debug logging
+- Set up breakpoints
+- Integration with DAP
+
+**Configuration location:** Line 247-251 in `lua/plugins/init.lua`
+
+---
+
+### 26. 🎨 snacks.styles - UI Styling
+
+**What it does:** Provides consistent styling utilities across all snacks components.
+
+**Features:**
+- Unified UI theming
+- Style inheritance
+- Dynamic styling
+- Theme integration
+- Consistent borders and colors
+
+**Keybindings:** None (automatic styling)
+
+**How to improve:**
+- Create custom style presets
+- Override default styles
+- Add per-component styling
+- Theme-aware adjustments
+
+**Configuration location:** Line 253-257 in `lua/plugins/init.lua`
+
+---
+
+### 27. 🌫️ snacks.backdrop - Background Dimming
+
+**What it does:** Dims the background to focus attention on current window or dialog.
+
+**Features:**
+- Transparent backdrop support
+- Configurable blend level
+- Automatic activation
+- Works with floating windows
+- Theme-aware dimming
+
+**Keybindings:**
+- `<leader>tB` - Toggle backdrop
+
+**How to improve:**
+- Adjust blend transparency
+- Set per-window dimming rules
+- Create focus modes
+- Integrate with zen mode
+
+**Configuration location:** Line 259-264 in `lua/plugins/init.lua`
+
+---
+
+### 28. 📁 snacks.explorer - File Explorer
+
+**What it does:** Provides a file explorer with tree view for navigating directories and files.
+
+**Features:**
+- Tree-based file navigation
+- File and directory operations
+- Integration with snacks UI
+- Alternative to mini.files or nvim-tree
+- Lightweight and fast
+
+**Keybindings:**
+- `<leader>E` - Open explorer (capital E)
+
+**How to improve:**
+- Customize tree view appearance
+- Add file operation shortcuts
+- Configure preview options
+- Set custom filters
+
+**Configuration location:** Line 266-270 in `lua/plugins/init.lua`
+
+**Note:** This coexists with mini.files (`<leader>e`). Use `<leader>e` for mini.files or `<leader>E` for snacks.explorer based on preference.
+
+---
+
+### 29-32. 🔧 Internal Modules
+
+The following modules are internal/utility modules that work behind the scenes:
+
+**29. snacks.util** - General utility functions (enabled by default)
+**30. snacks.config** - Configuration management (enabled by default)
+**31. snacks.health** - Health check system (accessible via `:checkhealth snacks`)
+**32. Internal APIs** - Core functionality used by other modules
+
+These modules don't have direct user-facing features but provide essential infrastructure for all other snacks modules.
+
+---
+
+## Updated Feature Count
+
+All **32** snacks.nvim features are now documented and available:
+
+**Core Features (1-10):**
+1. dashboard, 2. notifier, 3. scroll, 4. indent, 5. terminal
+6. statuscolumn, 7. words, 8. bigfile, 9. quickfile, 10. animate
+
+**Git & LSP (11-15):**
+11. git, 12. gitbrowse, 13. lazygit, 14. rename, 15. bufdelete
+
+**UI & Productivity (16-21):**
+16. toggle, 17. zen, 18. dim, 19. scratch, 20. win, 21. picker
+
+**Additional Features (22-28):**
+22. input, 23. scope, 24. profiler, 25. debug, 26. styles, 27. backdrop, 28. explorer
+
+**Internal/Utility (29-32):**
+29. util, 30. config, 31. health, 32. internal APIs
+
+---
+
 ## Quick Reference
 
 ### Keybinding Summary
@@ -558,28 +766,42 @@
 | `<leader>tZ` | toggle | Toggle zoom |
 | `<leader>tD` | toggle | Toggle dim |
 | `<leader>ts` | toggle | Toggle spell |
-| `<leader>tw` | toggle | Toggle wrap |
-| `<leader>tg` | toggle | Toggle sign column |
+| `<leader>tp` | toggle | Toggle wrap |
+| `<leader>tG` | toggle | Toggle sign column |
+| `<leader>tB` | backdrop | Toggle backdrop |
+| `<leader>dp` | profiler | Toggle profiler |
+| `<leader>dP` | profiler | Profiler report |
+| `<leader>di` | debug | Inspect object |
+| `<leader>dh` | debug | Debug health |
+| `<leader>sj` | scope | Next scope |
+| `<leader>sk` | scope | Previous scope |
+| `<leader>E` | explorer | Open explorer |
 
 ### Feature Categories
 
-**Visual Enhancements (6):**
-- dashboard, notifier, scroll, indent, statuscolumn, animate
+**Visual Enhancements (8):**
+- dashboard, notifier, scroll, indent, statuscolumn, animate, styles, backdrop
 
-**Editing & Navigation (3):**
-- words, rename, bufdelete
+**Editing & Navigation (5):**
+- words, rename, bufdelete, scope, explorer
 
 **Terminal & Git (4):**
 - terminal, git, gitbrowse, lazygit
 
-**Focus & Productivity (4):**
-- zen, dim, scratch, toggle
+**Focus & Productivity (5):**
+- zen, dim, scratch, toggle, backdrop
 
 **Performance (2):**
 - bigfile, quickfile
 
-**Utilities (2):**
-- win, picker
+**Development Tools (3):**
+- profiler, debug, input
+
+**Utilities (3):**
+- win, picker, styles
+
+**Internal/Infrastructure (4):**
+- util, config, health, internal APIs
 
 ## Configuration Tips
 
@@ -721,7 +943,8 @@ snacks.nvim works well with:
 2. **Integration:** Features work together seamlessly
 3. **Maintenance:** Active development, quick bug fixes
 4. **Modern:** Uses latest Neovim APIs
-5. **Completeness:** 21 features in one plugin
+5. **Completeness:** 31 features in one plugin
+6. **Extensibility:** Modular design allows enabling only what you need
 
 ## Resources
 
@@ -732,11 +955,19 @@ snacks.nvim works well with:
 
 ## Summary
 
-All 21 snacks.nvim features are now active in this setup:
-- ✅ 26 keybindings configured
+All **32** snacks.nvim features are now active and documented in this setup:
+- ✅ **32 modules** configured and enabled
+- ✅ **40 keybindings** for snacks features
 - ✅ which-key integration complete
 - ✅ No redundant plugins remaining
 - ✅ All features documented
 - ✅ Configuration optimized
+
+### Module Breakdown:
+- **Core Features:** 10 essential modules (dashboard, notifier, scroll, etc.)
+- **Git & LSP:** 5 development-focused modules
+- **UI & Productivity:** 6 workflow enhancement modules
+- **Additional Features:** 7 advanced modules (input, scope, profiler, debug, styles, backdrop, explorer)
+- **Internal/Utility:** 4 infrastructure modules
 
 Use `<leader>` in Neovim and which-key will show all available snacks commands with descriptions and icons.

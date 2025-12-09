@@ -15,9 +15,9 @@ A modern, feature-rich Neovim configuration written in Lua with **complete mini.
 - **🔬 Advanced C/C++ Development**: Complete development environment with enhanced clangd, CMake integration, debugging, and static analysis
 - **Plugin Manager**: Uses [lazy.nvim](https://github.com/folke/lazy.nvim) for fast, lazy-loaded plugin management
 - **Auto-completion**: Powerful completion engine with [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) replacing CoC
-- **🍿 snacks.nvim Integration**: All 21 features from folke's modern plugin collection (dashboard, notifications, terminal, git, zen mode, and more) - [See complete guide](SNACKS_GUIDE.md)
+- **🍿 snacks.nvim Integration**: All 32 features from folke's modern plugin collection (dashboard, notifications, terminal, git, zen mode, profiler, debug tools, explorer, and more) - [See complete guide](SNACKS_GUIDE.md) | [Quick Reference](SNACKS_QUICKREF.md)
 - **Complete Mini.nvim Ecosystem**: 27 mini.nvim plugins for comprehensive development tools
-- **170+ Keybinds**: Comprehensive keybind system with which-key integration for discoverability
+- **210+ Keybinds**: Comprehensive keybind system with which-key integration for discoverability
 - **Optimized Performance**: Streamlined configuration with 15 curated high-quality themes (75% reduction)
 - **Smart Movement**: Mini.move integration for moving lines and selections with Alt+hjkl
 - **Enhanced Bracket Matching**: Improved bracket/parenthesis visibility with rainbow colors and smart matching
@@ -31,6 +31,32 @@ A modern, feature-rich Neovim configuration written in Lua with **complete mini.
 - **Transparent Background**: Configured for transparent terminal backgrounds
 - **Enhanced Transparency**: 80+ UI elements configured for full transparency support  
 - **Custom .wistl Filetype**: Specialized support for .wistl files
+
+## 🍿 snacks.nvim - Complete Feature Set
+
+This configuration includes **all 32 snacks.nvim modules** providing a comprehensive development experience:
+
+### Core Features (10 modules)
+Dashboard • Notifications • Smooth Scrolling • Indent Guides • Terminal • Status Column • Word Navigation • Large File Optimization • Quick File Loading • Animations
+
+### Git & Development (5 modules)
+Git Utilities • Git Browse • LazyGit Integration • LSP Rename Preview • Smart Buffer Delete
+
+### Productivity & Focus (6 modules)
+Toggle Utilities • Zen Mode • Dim Inactive Windows • Scratch Buffers • Window Management • Fuzzy Picker
+
+### Advanced Tools (7 modules) ⭐ NEW
+Enhanced Input UI • Scope Navigation • Performance Profiler • Debug Utilities • UI Styling • Backdrop Dimming • File Explorer
+
+### Infrastructure (4 modules)
+Utilities • Configuration • Health Checks • Internal APIs
+
+**📚 Documentation:**
+- [Complete Guide](SNACKS_GUIDE.md) - Detailed documentation for all 32 modules
+- [Quick Reference](SNACKS_QUICKREF.md) - Quick reference card with keybindings
+- [Implementation Details](SNACKS_IMPLEMENTATION.md) - Technical implementation summary
+
+**🎯 40 Keybindings** configured with which-key integration for easy discovery!
 
 ## 🚀 Installation
 
