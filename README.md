@@ -13,6 +13,7 @@ A modern, feature-rich Neovim configuration written in Lua with **complete mini.
 - **Modern Lua Configuration**: Fully migrated from VimScript to Lua for better performance and maintainability
 - **Native LSP Support**: Built-in Language Server Protocol with intelligent code completion, diagnostics, and navigation
 - **🔬 Advanced C/C++ Development**: Complete development environment with enhanced clangd, CMake integration, debugging, and static analysis
+- **☕ Java Development**: Full-featured Java LSP with nvim-jdtls, refactoring, testing, and Maven/Gradle support
 - **Plugin Manager**: Uses [lazy.nvim](https://github.com/folke/lazy.nvim) for fast, lazy-loaded plugin management
 - **Auto-completion**: Powerful completion engine with [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) replacing CoC
 - **🍿 snacks.nvim Integration**: All 32 features from folke's modern plugin collection (dashboard, notifications, terminal, git, zen mode, profiler, debug tools, explorer, and more) - [See complete guide](SNACKS_GUIDE.md) | [Quick Reference](SNACKS_QUICKREF.md)
