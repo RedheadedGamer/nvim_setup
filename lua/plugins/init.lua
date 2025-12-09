@@ -1083,6 +1083,7 @@ return {
         { "<leader>tn", desc = "Toggle line numbers", icon = "🔢" },
         { "<leader>tr", desc = "Toggle relative numbers", icon = "🔢" },
         { "<leader>t;", desc = "Toggle terminal", icon = "💻" },
+        { "<leader>tg", desc = "LazyGit in terminal (snacks)", icon = "💻" },
         
         -- Enhanced keymap discovery
         { "<leader>fK", desc = "All keymaps browser", icon = "🗝️" },
@@ -1122,6 +1123,8 @@ return {
         -- Navigation groups
         { "[", group = "previous (mini.bracketed)", icon = "⬅️" },
         { "]", group = "next (mini.bracketed)", icon = "➡️" },
+        { "[[", desc = "Previous reference (snacks.words)", icon = "⬅️" },
+        { "]]", desc = "Next reference (snacks.words)", icon = "➡️" },
       },
       icons = {
         breadcrumb = "»",
