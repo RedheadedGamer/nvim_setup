@@ -5,14 +5,14 @@
 -- |_| \_|\___|\___/ \_/ |_|_| |_| |_|
 --
 -- Modern Lua Configuration for Neovim
--- Converted from init.vim by Stephan Raabe (2023)
+-- Updated and modernized (2026)
 -- Cross-platform support: Linux, macOS, Windows
 -- -----------------------------------------------------
 
--- Detect OS for cross-platform compatibility
-local is_windows = vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1
-local is_mac = vim.fn.has("mac") == 1 or vim.fn.has("macunix") == 1
-local is_linux = vim.fn.has("unix") == 1 and not is_mac
+-- Detect OS for cross-platform compatibility (modernized)
+local is_windows = vim.fn.has("win32") == 1
+local is_mac = vim.fn.has("mac") == 1
+local is_linux = not is_windows and not is_mac
 
 -- Store OS detection globally for other modules
 _G.is_windows = is_windows
@@ -30,16 +30,13 @@ require("config.autocmds")
 
 -- Bootstrap lazy.nvim plugin manager
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
+-- Use vim.uv (modern API) instead of deprecated vim.loop
+local uv = vim.uv or vim.loop
+if not uv.fs_stat(lazypath) then
   -- Configure git to disable terminal prompts before cloning lazy.nvim
-  -- This prevents the "could not read Username for 'https://github.com'" error
   vim.env.GIT_TERMINAL_PROMPT = "0"
   vim.env.GIT_ASKPASS = "echo"
   vim.env.SSH_ASKPASS = "echo"
-  
-  -- Set git configs to prevent authentication prompts
-  os.execute("git config --global credential.helper store 2>/dev/null || true")
-  os.execute("git config --global core.askPass '' 2>/dev/null || true")
   
   vim.fn.system({
     "git",
@@ -53,7 +50,6 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -- Check for minimal setup and load appropriate plugins
-local config_path = vim.fn.stdpath("config")
 local is_minimal = vim.fn.filereadable(config_path .. "/.minimal_setup") == 1
 local plugins_module = is_minimal and "plugins.minimal" or "plugins"
 
@@ -103,12 +99,6 @@ require("lazy").setup(require(plugins_module), {
     },
   },
 })
-
--- Set environment variables to prevent git authentication prompts
--- This should prevent the mini.git clone error
-vim.env.GIT_TERMINAL_PROMPT = "0"
-vim.env.GIT_ASKPASS = "echo"
-vim.env.SSH_ASKPASS = "echo"
 
 -- Initialize theme system after plugins are loaded
 require("config.theme").init()

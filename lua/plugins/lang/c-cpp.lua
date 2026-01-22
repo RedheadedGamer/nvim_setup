@@ -67,7 +67,7 @@ return {
         extensions = {
           autoSetHints = true,
           inlay_hints = {
-            inline = vim.fn.has("nvim-0.10") == 1,
+            inline = true, -- Neovim 0.10+ is now standard
             only_current_line = false,
             only_current_line_autocmd = "CursorHold",
             show_parameter_hints = true,

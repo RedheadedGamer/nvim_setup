@@ -3,7 +3,7 @@
 
 -- Utility: Detect appropriate shell for terminal
 local function detect_shell()
-  local is_windows = vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1
+  local is_windows = vim.fn.has("win32") == 1
   
   if is_windows then
     -- Prefer PowerShell Core; fall back to Windows PowerShell

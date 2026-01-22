@@ -1,5 +1,5 @@
 -- config/autocmds.lua
--- Autocommands converted from init.vim
+-- Modern autocommands for Neovim
 
 local autocmd = vim.api.nvim_create_autocmd
 local augroup = vim.api.nvim_create_augroup
