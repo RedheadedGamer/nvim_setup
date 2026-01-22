@@ -16,6 +16,7 @@ This directory contains development notes, progress reports, and implementation 
 - **PROGRESS_SUMMARY.md** - Overall progress summary
 - **SESSION_SUMMARY.md** - Development session summaries
 - **SNACKS_IMPLEMENTATION.md** - Implementation details for snacks.nvim integration
+- **plugins_init.lua.old** - Original monolithic plugin configuration before modularization (2832 lines)
 
 These files are kept for historical reference and may be useful for understanding the evolution of the configuration or for contributors making future changes.
 

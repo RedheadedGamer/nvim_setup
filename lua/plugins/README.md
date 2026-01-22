@@ -7,7 +7,6 @@ This directory contains the modularized plugin configuration for the nvim_setup 
 ```
 lua/plugins/
 ├── init.lua                  # Main plugin loader (imports all modules)
-├── init.lua.backup           # Original monolithic configuration (backup)
 │
 ├── ui/                       # UI Enhancement Plugins
 │   ├── themes.lua           # Colorscheme plugins (15+ themes)
@@ -127,13 +126,7 @@ return {
 
 ## Reverting to Monolithic Configuration
 
-If you need to revert to the original configuration:
-
-```bash
-cd lua/plugins
-mv init.lua init-modular.lua
-mv init.lua.backup init.lua
-```
+The original monolithic configuration (2832 lines) has been moved to `docs/dev/plugins_init.lua.old` for historical reference.
 
 ## Configuration Files
 
