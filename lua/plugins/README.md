@@ -126,7 +126,7 @@ return {
 
 ## Reverting to Monolithic Configuration
 
-The original monolithic configuration (2832 lines) has been moved to `docs/dev/plugins_init.lua.old` for historical reference.
+The original monolithic configuration (2832 lines) has been moved to `docs/dev/plugins_init.lua.old` for historical reference. This file can be useful for understanding the evolution of the configuration or for extracting specific plugin setups that were used in earlier versions.
 
 ## Configuration Files
 
