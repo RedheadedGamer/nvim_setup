@@ -1,11 +1,11 @@
 -- config/options.lua
--- Editor settings converted from init.vim
+-- Modern editor settings for Neovim
 
 local opt = vim.opt
 local g = vim.g
 
--- Disable compatibility to old-time vi
-opt.compatible = false
+-- Disable compatibility to old-time vi (not needed in Neovim, kept for clarity)
+-- opt.compatible = false -- This is always false in Neovim
 
 -- Display settings
 opt.showmatch = true               -- show matching brackets
@@ -66,7 +66,7 @@ opt.wrap = false                  -- disable line wrapping by default
 opt.linebreak = true              -- break lines at word boundaries when wrap is enabled
 
 -- Better completion
-opt.completeopt = { "menuone", "noselect" } -- completion options
+opt.completeopt = { "menu", "menuone", "noselect" } -- modern completion options
 opt.shortmess:append("c")         -- avoid showing completion messages
 
 -- Undo settings
@@ -91,19 +91,22 @@ opt.foldlevelstart = 99           -- open all folds when opening files
 opt.textwidth = 80                -- set text width to 80 characters
 opt.formatoptions:append("t")     -- auto-wrap text using textwidth
 
--- Enable filetype detection
-vim.cmd("filetype plugin indent on")
-vim.cmd("syntax on")
+-- Enable filetype detection (modern API)
+vim.filetype.add({
+  pattern = {
+    [".*%.wistl"] = "wistl",
+  },
+})
 
--- Enhanced bracket matching with better visibility (no timeout for instant response)
-vim.cmd("highlight MatchParen cterm=bold ctermbg=yellow ctermfg=black guibg=#FFD700 guifg=#000000 gui=bold")
+-- Enhanced bracket matching with better visibility
+vim.api.nvim_set_hl(0, "MatchParen", {
+  bold = true,
+  bg = "#FFD700",
+  fg = "#000000",
+})
 
--- Cursor shape configuration
-vim.cmd([[
-  let &t_SI = "\e[5 q"
-  let &t_EI = "\e[2 q"  
-  let &t_SR = "\e[2 q"
-]])
+-- Cursor shape configuration (modern terminal codes)
+vim.opt.guicursor = "n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50"
 
 -- Grep settings (if ripgrep is available)
 if vim.fn.executable("rg") == 1 then

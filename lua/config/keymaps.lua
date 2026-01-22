@@ -1,5 +1,5 @@
 -- config/keymaps.lua
--- Key mappings converted from init.vim
+-- Modern key mappings for Neovim
 
 local keymap = vim.keymap
 
