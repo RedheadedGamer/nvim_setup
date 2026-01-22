@@ -4,9 +4,6 @@
 local opt = vim.opt
 local g = vim.g
 
--- Disable compatibility to old-time vi (not needed in Neovim, kept for clarity)
--- opt.compatible = false -- This is always false in Neovim
-
 -- Display settings
 opt.showmatch = true               -- show matching brackets
 opt.showcmd = true                 -- show command in status line
@@ -92,6 +89,9 @@ opt.textwidth = 80                -- set text width to 80 characters
 opt.formatoptions:append("t")     -- auto-wrap text using textwidth
 
 -- Enable filetype detection (modern API)
+vim.cmd("filetype plugin indent on")
+vim.cmd("syntax on")
+
 vim.filetype.add({
   pattern = {
     [".*%.wistl"] = "wistl",
