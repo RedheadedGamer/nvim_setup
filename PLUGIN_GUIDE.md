@@ -2,6 +2,22 @@
 
 This guide provides detailed instructions on how to use all the plugins in this Neovim configuration, including how to enable/disable features and configure them to your preferences.
 
+## 🔄 Potential Upgrades & Improved Alternatives (Quick Audit)
+
+The current setup is already modern and stable. If you want to iterate further, these are the safest high-value options:
+
+| Current Plugin | Suggested Upgrade / Alternative | Why Consider It | Risk |
+|---|---|---|---|
+| `nvim-telescope/telescope.nvim` (tag `0.1.8`) | Update to latest stable tag | Ongoing fixes/perf improvements while keeping current workflow | Low |
+| `numToStr/Comment.nvim` | `echasnovski/mini.comment` | Consolidates around existing mini.nvim ecosystem | Low |
+| `hrsh7th/nvim-cmp` | `Saghen/blink.cmp` (optional) | Faster modern completion stack on newer Neovim setups | Medium |
+| `theHamsta/nvim-dap-virtual-text` | Evaluate built-in DAP virtual text support first | Potentially reduces one dependency | Medium |
+
+Quick maintenance checks:
+- `:Lazy check` to inspect plugin health/version status
+- `:Lazy update` to apply plugin updates
+- `:checkhealth` after upgrades to verify runtime health
+
 ## 🔬 C/C++ Development Guide
 
 ### Overview
