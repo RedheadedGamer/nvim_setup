@@ -37,11 +37,23 @@ return {
     end,
   },
 
-  -- Comment functionality
+  -- Comment functionality (mini.comment - integrates with mini ecosystem)
   {
-    "numToStr/Comment.nvim",
+    "echasnovski/mini.comment",
+    version = "*",
     config = function()
-      require("Comment").setup()
+      require("mini.comment").setup({
+        options = {
+          -- Ignore blank lines when (un)commenting
+          ignore_blank_line = true,
+        },
+        mappings = {
+          comment = "gc",
+          comment_line = "gcc",
+          comment_visual = "gc",
+          textobject = "gc",
+        },
+      })
     end,
   },
 

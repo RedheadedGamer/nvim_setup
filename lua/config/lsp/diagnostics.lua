@@ -9,12 +9,10 @@ function M.setup()
     border = "rounded",
     max_width = 120,
     max_height = 30,
-    focus_id = "hover_handler",
   })
   
   vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
     border = "rounded",
-    focus_id = "signature_help_handler",
   })
 
   -- Enhanced diagnostic configuration

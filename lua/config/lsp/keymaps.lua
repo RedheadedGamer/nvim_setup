@@ -69,6 +69,13 @@ function M.on_attach(client, bufnr)
   
   keymap.set("n", "<leader>lr", "<cmd>LspRestart<cr>", vim.tbl_extend("force", opts, { desc = "Restart LSP" }))
   keymap.set("n", "<leader>li", "<cmd>LspInfo<cr>", vim.tbl_extend("force", opts, { desc = "LSP info" }))
+  
+  -- Toggle native inlay hints (Neovim 0.10+)
+  if vim.lsp.inlay_hint then
+    keymap.set("n", "<leader>ti", function()
+      vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }), { bufnr = bufnr })
+    end, vim.tbl_extend("force", opts, { desc = "Toggle inlay hints" }))
+  end
 end
 
 return M

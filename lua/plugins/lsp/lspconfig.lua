@@ -203,14 +203,13 @@ return {
   -- Trouble.nvim for diagnostics
   {
     "folke/trouble.nvim",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    dependencies = { "echasnovski/mini.icons" },
     config = function()
       require("trouble").setup({
         auto_close = false,
         auto_open = false,
         auto_preview = true,
         auto_refresh = true,
-        use_diagnostic_signs = true,
       })
       
       local keymap = vim.keymap

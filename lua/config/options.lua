@@ -80,7 +80,7 @@ opt.smartcase = true              -- smart case sensitivity (override ignorecase
 
 -- Folding improvements (better defaults)
 opt.foldmethod = "expr"           -- use expression for folding
-opt.foldexpr = "nvim_treesitter#foldexpr()" -- use treesitter for folding
+opt.foldexpr = "v:lua.vim.treesitter.foldexpr()" -- use treesitter for folding (Neovim 0.10+)
 opt.foldlevel = 99                -- open all folds by default
 opt.foldlevelstart = 99           -- open all folds when opening files
 

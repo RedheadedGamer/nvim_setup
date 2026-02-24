@@ -35,76 +35,41 @@ return {
     end,
   },
 
-  -- Enhanced C/C++ highlighting
-  {
-    "jackguo380/vim-lsp-cxx-highlight",
-    ft = { "c", "cpp" },
-    config = function()
-      vim.cmd([[
-        hi default LspCxxHlGroupEnumConstant ctermfg=155 guifg=#b5bd68
-        hi default LspCxxHlGroupNamespace ctermfg=170 guifg=#c678dd
-        hi default LspCxxHlGroupMemberVariable ctermfg=204 guifg=#e06c75
-      ]])
-    end,
-  },
-
-  -- Header/Source file switching
-  {
-    "ericcurtin/CurtineIncSw.vim",
-    ft = { "c", "cpp" },
-    config = function()
-      vim.keymap.set("n", "<leader>ch", "<cmd>call CurtineIncSw()<cr>", { desc = "Switch Header/Source" })
-    end,
-  },
-
   -- Enhanced clangd features
+  -- NOTE: jackguo380/vim-lsp-cxx-highlight removed - clangd semantic token highlighting
+  --       is built into Neovim's LSP client and is superior.
+  -- NOTE: ericcurtin/CurtineIncSw.vim removed - ClangdSwitchSourceHeader (<leader>ch) covers this.
   {
     "p00f/clangd_extensions.nvim",
     ft = { "c", "cpp" },
     dependencies = { "neovim/nvim-lspconfig" },
     config = function()
       require("clangd_extensions").setup({
-        extensions = {
-          autoSetHints = true,
-          inlay_hints = {
-            inline = true, -- Neovim 0.10+ is now standard
-            only_current_line = false,
-            only_current_line_autocmd = "CursorHold",
-            show_parameter_hints = true,
-            parameter_hints_prefix = "<- ",
-            other_hints_prefix = "=> ",
-            max_len_align = false,
-            max_len_align_padding = 1,
-            right_align = false,
-            right_align_padding = 7,
-            highlight = "Comment",
-            priority = 100,
+        -- inlay_hints removed: use native Neovim inlay hints via vim.lsp.inlay_hint
+        -- (toggle with <leader>ti from LSP keymaps)
+        ast = {
+          role_icons = {
+            type = "",
+            declaration = "",
+            expression = "",
+            specifier = "",
+            statement = "",
+            ["template argument"] = "",
           },
-          ast = {
-            role_icons = {
-              type = "",
-              declaration = "",
-              expression = "",
-              specifier = "",
-              statement = "",
-              ["template argument"] = "",
-            },
-            kind_icons = {
-              Compound = "",
-              Recovery = "",
-              TranslationUnit = "",
-              PackExpansion = "",
-              TemplateTypeParm = "",
-              TemplateTemplateParm = "",
-              TemplateParamObject = "",
-            },
+          kind_icons = {
+            Compound = "",
+            Recovery = "",
+            TranslationUnit = "",
+            PackExpansion = "",
+            TemplateTypeParm = "",
+            TemplateTemplateParm = "",
+            TemplateParamObject = "",
           },
         },
       })
       
       -- Clangd extension keybindings
-      vim.keymap.set("n", "<leader>cI", "<cmd>ClangdSwitchSourceHeader<cr>", { desc = "Switch Source/Header" })
-      vim.keymap.set("n", "<leader>cH", "<cmd>ClangdSetInlayHints<cr>", { desc = "Toggle Inlay Hints" })
+      vim.keymap.set("n", "<leader>ch", "<cmd>ClangdSwitchSourceHeader<cr>", { desc = "Switch Header/Source" })
       vim.keymap.set("n", "<leader>cA", "<cmd>ClangdAST<cr>", { desc = "Show AST" })
       vim.keymap.set("n", "<leader>cS", "<cmd>ClangdSymbolInfo<cr>", { desc = "Symbol Info" })
       vim.keymap.set("n", "<leader>cM", "<cmd>ClangdMemoryUsage<cr>", { desc = "Memory Usage" })

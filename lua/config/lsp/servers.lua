@@ -39,7 +39,10 @@ M.servers = {
     settings = {
       Lua = {
         diagnostics = { globals = { "vim" } },
-        workspace = { library = vim.api.nvim_get_runtime_file("", true) },
+        workspace = {
+          library = vim.api.nvim_get_runtime_file("", true),
+          checkThirdParty = false, -- prevent "Do you need to configure your work environment?" prompts
+        },
       },
     },
   },
@@ -52,6 +55,7 @@ M.servers = {
   bashls = {
     filetypes = { "sh", "bash" },
   },
+  marksman = {}, -- Markdown LSP
 }
 
 return M
