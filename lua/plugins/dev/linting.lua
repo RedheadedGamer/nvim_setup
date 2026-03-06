@@ -98,12 +98,12 @@ return {
       })
       
       -- Manual lint command
-      vim.keymap.set("n", "<leader>ll", function()
+      vim.keymap.set("n", "<leader>lL", function()
         lint.try_lint()
       end, { desc = "Lint current file" })
       
       -- Show linter info
-      vim.keymap.set("n", "<leader>li", function()
+      vim.keymap.set("n", "<leader>lI", function()
         local ft = vim.bo.filetype
         local linters = linters_by_ft[ft] or {}
         if #linters > 0 then

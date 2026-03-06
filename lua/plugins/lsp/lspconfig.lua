@@ -112,10 +112,8 @@ return {
       
       local capabilities = cmp_nvim_lsp.default_capabilities()
 
-      -- Configure LSP servers
-      -- NOTE: Uses vim.lsp.config API (Neovim 0.11+)
-      -- This is the recommended modern approach for LSP configuration
-      -- For older Neovim versions, use require('lspconfig')[server].setup(config)
+      -- Configure LSP servers using lspconfig
+      local lspconfig = require("lspconfig")
       for server, config in pairs(lsp_servers.servers) do
         local server_cmd = config.cmd and config.cmd[1] or server
         if vim.fn.executable(server_cmd) == 0 then
@@ -125,11 +123,11 @@ return {
           )
           goto continue
         end
-        
+
         config.capabilities = capabilities
         config.on_attach = lsp_keymaps.on_attach
-        vim.lsp.config[server] = config
-        
+        lspconfig[server].setup(config)
+
         ::continue::
       end
 

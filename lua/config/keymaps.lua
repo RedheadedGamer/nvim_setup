@@ -35,10 +35,6 @@ keymap.set("n", "<leader>q", "<cmd>q<cr>", { desc = "Quit" })
 keymap.set("n", "<leader>wq", "<cmd>wq<cr>", { desc = "Save and quit" })
 keymap.set("n", "<leader>qa", "<cmd>qa<cr>", { desc = "Quit all" })
 
--- Better indenting
-keymap.set("v", "<", "<gv", { desc = "Indent left" })
-keymap.set("v", ">", ">gv", { desc = "Indent right" })
-
 -- Toggle line numbers and relative numbers
 keymap.set("n", "<leader>tn", function()
   vim.opt.number = not vim.opt.number:get()
@@ -48,11 +44,8 @@ keymap.set("n", "<leader>tr", function()
   vim.opt.relativenumber = not vim.opt.relativenumber:get()
 end, { desc = "Toggle relative numbers" })
 
--- Quick theme access (additional shortcut)
-keymap.set("n", "<leader>ts", "<cmd>Telescope colorscheme<cr>", { desc = "Quick theme selector" })
-keymap.set("n", "<leader>tg", function()
-  require("config.theme").cycle_github_themes()
-end, { desc = "Cycle through GitHub themes" })
+-- Quick theme access (additional shortcut - use <leader>th for full theme switcher)
+keymap.set("n", "<leader>tC", "<cmd>Telescope colorscheme<cr>", { desc = "Colorscheme picker (Telescope)" })
 
 -- Buffer navigation improvements
 keymap.set("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Previous buffer" })

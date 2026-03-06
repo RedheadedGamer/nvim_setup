@@ -266,12 +266,6 @@ return {
         -- Debug tools for plugin development
       },
       
-      -- Styles - UI styling and theming utilities
-      styles = {
-        enabled = true,
-        -- Consistent styling across snacks components
-      },
-      
       -- Backdrop - Background dimming for focused windows
       backdrop = {
         enabled = true,
@@ -342,13 +336,6 @@ return {
       -- Debug utilities
       { "<leader>di", function() require("snacks").debug.inspect() end, desc = "Inspect Object" },
       { "<leader>dh", function() require("snacks").debug.health() end, desc = "Debug Health" },
-      
-      -- Backdrop toggle
-      { "<leader>tB", function() require("snacks").toggle.backdrop() end, desc = "Toggle Backdrop" },
-      
-      -- Scope navigation
-      { "<leader>sj", function() require("snacks").scope.jump_next() end, desc = "Next Scope" },
-      { "<leader>sk", function() require("snacks").scope.jump_prev() end, desc = "Previous Scope" },
       
       -- Explorer
       { "<leader>E", function() require("snacks").explorer() end, desc = "Explorer (snacks)" },

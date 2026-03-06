@@ -35,29 +35,10 @@ return {
     end,
   },
 
-  -- Enhanced C/C++ highlighting
-  {
-    "jackguo380/vim-lsp-cxx-highlight",
-    ft = { "c", "cpp" },
-    config = function()
-      vim.cmd([[
-        hi default LspCxxHlGroupEnumConstant ctermfg=155 guifg=#b5bd68
-        hi default LspCxxHlGroupNamespace ctermfg=170 guifg=#c678dd
-        hi default LspCxxHlGroupMemberVariable ctermfg=204 guifg=#e06c75
-      ]])
-    end,
-  },
-
-  -- Header/Source file switching
-  {
-    "ericcurtin/CurtineIncSw.vim",
-    ft = { "c", "cpp" },
-    config = function()
-      vim.keymap.set("n", "<leader>ch", "<cmd>call CurtineIncSw()<cr>", { desc = "Switch Header/Source" })
-    end,
-  },
-
   -- Enhanced clangd features
+  -- Note: vim-lsp-cxx-highlight is no longer needed as Neovim's built-in LSP
+  -- semantic tokens handle C/C++ syntax highlighting natively (Neovim 0.9+).
+  -- CurtineIncSw.vim is superseded by clangd_extensions' ClangdSwitchSourceHeader.
   {
     "p00f/clangd_extensions.nvim",
     ft = { "c", "cpp" },

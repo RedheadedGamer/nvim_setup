@@ -112,6 +112,6 @@ if vim.fn.argc() == 0 then
     print("📦 Setup: " .. setup_type)
     print("🎨 Current theme: " .. current_theme)
     print("💡 Use <leader>ff to find files, <leader>fg to grep, K for hover docs")
-    print("⚡ Theme shortcuts: <leader>th (switcher), <leader>ts (quick), <leader>tg (GitHub)")
+    print("⚡ Theme shortcuts: <leader>th (switcher), <leader>tC (colorscheme picker)")
   end, 100)
 end

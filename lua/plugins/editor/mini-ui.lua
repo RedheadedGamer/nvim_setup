@@ -69,6 +69,9 @@ return {
         lsp = {},
         os = {},
       })
+      -- Mock nvim-web-devicons so plugins that depend on it work without
+      -- needing to install that separate plugin.
+      require("mini.icons").mock_nvim_web_devicons()
     end,
   },
 
