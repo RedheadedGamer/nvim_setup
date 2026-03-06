@@ -216,7 +216,16 @@ return {
   {
     "nvim-telescope/telescope.nvim",
     tag = "0.1.8",
-    dependencies = { "nvim-lua/plenary.nvim" },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        build = "make",
+        cond = function()
+          return vim.fn.executable("make") == 1
+        end,
+      },
+    },
     config = function()
       -- ERROR HANDLING: Protect telescope loading
       local ok_telescope, telescope = pcall(require, "telescope")
@@ -249,7 +258,18 @@ return {
             },
           },
         },
+        extensions = {
+          fzf = {
+            fuzzy = true,
+            override_generic_sorter = true,
+            override_file_sorter = true,
+            case_mode = "smart_case",
+          },
+        },
       })
+
+      -- Load telescope-fzf-native when available
+      pcall(telescope.load_extension, "fzf")
       
       -- Telescope keymaps
       local keymap = vim.keymap
@@ -259,6 +279,13 @@ return {
       keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", { desc = "Help Tags" })
       keymap.set("n", "<leader>fc", "<cmd>Telescope commands<cr>", { desc = "Commands" })
       keymap.set("n", "<leader>fk", "<cmd>Telescope keymaps<cr>", { desc = "Keymaps" })
+      keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", { desc = "Recent Files" })
+      keymap.set("n", "<leader>f/", function()
+        require("telescope.builtin").current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
+          winblend = 10,
+          previewer = false,
+        }))
+      end, { desc = "Fuzzy search in current buffer" })
       
       -- Enhanced keymap discovery
       keymap.set("n", "<leader>fK", function()

@@ -33,6 +33,31 @@ A modern, feature-rich Neovim configuration written in Lua with **complete mini.
 - **Enhanced Transparency**: 80+ UI elements configured for full transparency support  
 - **Custom .wistl Filetype**: Specialized support for .wistl files
 
+## 🔄 Setup Refresh (Recommended Improvements)
+
+This repo is actively maintained, and these upgrades are now included to improve day-to-day UX with minimal overhead:
+
+- **Faster Telescope sorting** with optional `telescope-fzf-native.nvim` (auto-enabled when `make` is installed)
+- **Better navigation defaults** with quick access to:
+  - `<leader>fr` for recent files
+  - `<leader>f/` for in-buffer fuzzy search
+- **No hard dependency increase**: if `make` is unavailable, Telescope continues to work with default sorters
+
+### Optional local upgrade (recommended)
+
+Install `make` so Telescope can build and use the native FZF sorter:
+
+```bash
+# Ubuntu/Debian
+sudo apt install build-essential
+
+# Arch Linux
+sudo pacman -S base-devel
+
+# macOS
+xcode-select --install
+```
+
 ## 🍿 snacks.nvim - Complete Feature Set
 
 This configuration includes **all 32 snacks.nvim modules** providing a comprehensive development experience:
