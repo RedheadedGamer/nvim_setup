@@ -47,6 +47,14 @@ end, { desc = "Toggle relative numbers" })
 -- Quick theme access (additional shortcut - use <leader>th for full theme switcher)
 keymap.set("n", "<leader>tC", "<cmd>Telescope colorscheme<cr>", { desc = "Colorscheme picker (Telescope)" })
 
+-- Additional Telescope shortcuts not covered in utilities.lua
+keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>",                 { desc = "Recent Files" })
+keymap.set("n", "<leader>fd", "<cmd>Telescope diagnostics<cr>",               { desc = "Find Diagnostics" })
+keymap.set("n", "<leader>fs", "<cmd>Telescope lsp_document_symbols<cr>",      { desc = "Document Symbols" })
+keymap.set("n", "<leader>fS", "<cmd>Telescope lsp_workspace_symbols<cr>",     { desc = "Workspace Symbols" })
+keymap.set("n", "<leader>fw", "<cmd>Telescope grep_string<cr>",               { desc = "Find Word Under Cursor" })
+keymap.set("n", "<leader>fq", "<cmd>Telescope quickfix<cr>",                  { desc = "Find in Quickfix" })
+
 -- Buffer navigation improvements
 keymap.set("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
 keymap.set("n", "<S-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })

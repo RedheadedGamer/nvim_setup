@@ -38,8 +38,12 @@ M.servers = {
   lua_ls = {
     settings = {
       Lua = {
+        -- lazydev.nvim injects the Neovim runtime library automatically;
+        -- the old workspace.library approach added thousands of files and
+        -- was extremely slow. Keep only the minimal diagnostics override.
         diagnostics = { globals = { "vim" } },
-        workspace = { library = vim.api.nvim_get_runtime_file("", true) },
+        completion = { callSnippet = "Replace" },
+        telemetry = { enable = false },
       },
     },
   },
@@ -52,6 +56,7 @@ M.servers = {
   bashls = {
     filetypes = { "sh", "bash" },
   },
+  marksman = {},   -- Markdown LSP (link checking, headings, etc.)
 }
 
 return M

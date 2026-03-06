@@ -9,11 +9,11 @@ local general = augroup("General", { clear = true })
 local wistl_filetype = augroup("WistlFiletype", { clear = true })
 local asm_filetype = augroup("AsmFiletype", { clear = true })
 
--- Auto-generate ctags if not present
+-- Auto-generate ctags if not present and ctags is installed
 autocmd("VimEnter", {
   group = general,
   callback = function()
-    if vim.fn.filereadable("tags") == 0 then
+    if vim.fn.executable("ctags") == 1 and vim.fn.filereadable("tags") == 0 then
       vim.fn.system("ctags -R .")
     end
   end,
@@ -299,6 +299,47 @@ autocmd("BufEnter", {
       vim.defer_fn(function()
         vim.notify("Makefile project detected. Run :MakeCompileCommands to improve LSP support", vim.log.levels.INFO)
       end, 2000)
+    end
+  end,
+})
+
+-- ── Highlight yanked text briefly ─────────────────────────────────────────────
+autocmd("TextYankPost", {
+  group = augroup("YankHighlight", { clear = true }),
+  callback = function()
+    vim.highlight.on_yank({ higroup = "IncSearch", timeout = 150 })
+  end,
+})
+
+-- ── Restore last cursor position when reopening a file ────────────────────────
+-- Jumps back to where the cursor was when the file was last closed.
+autocmd("BufReadPost", {
+  group = augroup("RestoreCursor", { clear = true }),
+  callback = function(event)
+    local buf = event.buf
+    -- Skip special buffers (git commit messages, etc.)
+    if vim.bo[buf].filetype == "gitcommit" then
+      return
+    end
+    local mark = vim.api.nvim_buf_get_mark(buf, '"')
+    local line_count = vim.api.nvim_buf_line_count(buf)
+    if mark[1] > 0 and mark[1] <= line_count then
+      pcall(vim.api.nvim_win_set_cursor, 0, mark)
+    end
+  end,
+})
+
+-- ── Auto-create parent directories when saving a new file ─────────────────────
+autocmd("BufWritePre", {
+  group = augroup("AutoMkdir", { clear = true }),
+  callback = function(event)
+    -- Only for actual files (not protocol-based URIs like oil://, fugitive://)
+    if event.match:match("^%w+://") then
+      return
+    end
+    local dir = vim.fn.fnamemodify(event.match, ":h")
+    if dir and vim.fn.isdirectory(dir) == 0 then
+      vim.fn.mkdir(dir, "p")
     end
   end,
 })
