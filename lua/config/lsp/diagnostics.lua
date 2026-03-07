@@ -24,12 +24,12 @@ function M.setup()
       prefix = "●",
       spacing = 4,
       severity = {
-        min = vim.diagnostic.severity.HINT,
+        min = vim.diagnostic.severity.ERROR,
       },
     },
     signs = {
       severity = {
-        min = vim.diagnostic.severity.HINT,
+        min = vim.diagnostic.severity.ERROR,
       },
       text = {
         [vim.diagnostic.severity.ERROR] = "✘",
@@ -38,7 +38,11 @@ function M.setup()
         [vim.diagnostic.severity.INFO]  = "●",
       },
     },
-    underline = true,
+    underline = {
+      severity = {
+        min = vim.diagnostic.severity.ERROR,
+      },
+    },
     update_in_insert = false,
     severity_sort = true,
     float = {

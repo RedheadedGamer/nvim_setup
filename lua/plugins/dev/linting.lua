@@ -38,20 +38,6 @@ return {
         linters_by_ft.cpp = { "cppcheck" }
       end
       
-      if is_linter_available("cpplint") then
-        if linters_by_ft.c then
-          table.insert(linters_by_ft.c, "cpplint")
-        else
-          linters_by_ft.c = { "cpplint" }
-        end
-        
-        if linters_by_ft.cpp then
-          table.insert(linters_by_ft.cpp, "cpplint")
-        else
-          linters_by_ft.cpp = { "cpplint" }
-        end
-      end
-      
       if is_linter_available("pylint") then
         linters_by_ft.python = { "pylint" }
       end
@@ -117,9 +103,9 @@ return {
       vim.api.nvim_create_autocmd("FileType", {
         pattern = { "c", "cpp" },
         callback = function()
-          if not is_linter_available("cppcheck") and not is_linter_available("cpplint") then
+          if not is_linter_available("cppcheck") then
             vim.notify(
-              "No C/C++ linters found. Mason can install cpplint, or install cppcheck manually:\n" ..
+              "No C/C++ linter found. Install cppcheck manually:\n" ..
               "• Arch Linux: sudo pacman -S cppcheck\n" ..
               "• Ubuntu: sudo apt install cppcheck\n" ..
               "• macOS: brew install cppcheck",

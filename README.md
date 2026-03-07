@@ -817,7 +817,6 @@ This configuration includes a comprehensive Mason setup that automatically insta
 **Linters:**
 - `pylint` - Python code analysis
 - `eslint_d` - Fast JavaScript/TypeScript linting
-- `cpplint` - C++ style checker
 - `markdownlint` - Markdown linting
 - `shellcheck` - Shell script analysis
 
