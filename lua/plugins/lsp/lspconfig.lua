@@ -82,7 +82,7 @@ return {
             -- Formatters
             "stylua", "black", "isort", "prettier", "clang-format", "asmfmt", "shfmt",
             -- Linters
-            "pylint", "eslint_d", "cpplint", "markdownlint", "shellcheck",
+            "pylint", "eslint_d", "markdownlint", "shellcheck",
           },
           auto_update = false,
           run_on_start = true,
@@ -255,4 +255,3 @@ return {
     end,
   },
 }
-
