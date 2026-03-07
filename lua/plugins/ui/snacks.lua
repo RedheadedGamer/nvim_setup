@@ -210,7 +210,7 @@ return {
           height = 0.9,
         },
         toggles = {
-          dim = true,
+          dim = false,
           git_signs = false,
           mini_diff = false,
           diagnostics = false,
@@ -356,19 +356,6 @@ return {
         end
       end
       
-      -- Setup snacks autocmds
-      vim.api.nvim_create_autocmd("User", {
-        pattern = "VeryLazy",
-        callback = function()
-          -- Enable dim by default on startup
-          local ok_snacks, snacks_module = pcall(require, "snacks")
-          if ok_snacks and snacks_module.dim then
-            vim.schedule(function()
-              snacks_module.dim.enable()
-            end)
-          end
-        end,
-      })
     end,
   },
 }

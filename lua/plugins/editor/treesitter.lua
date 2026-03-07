@@ -92,6 +92,30 @@ return {
     end,
   },
 
+  -- Treesitter context: shows the current function/class/block at the top of the screen
+  {
+    "nvim-treesitter/nvim-treesitter-context",
+    event = "VeryLazy",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    config = function()
+      require("treesitter-context").setup({
+        enable = true,
+        max_lines = 3,        -- show up to 3 lines of context
+        min_window_height = 20,
+        line_numbers = true,
+        multiline_threshold = 20,
+        trim_scope = "outer",
+        mode = "cursor",
+        separator = nil,
+        zindex = 20,
+      })
+
+      vim.keymap.set("n", "[C", function()
+        require("treesitter-context").go_to_context(vim.v.count1)
+      end, { desc = "Jump to treesitter context" })
+    end,
+  },
+
   -- Treesitter textobjects: select/move/swap functions, classes, parameters etc.
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
