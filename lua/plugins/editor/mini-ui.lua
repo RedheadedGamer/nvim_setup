@@ -38,7 +38,9 @@ return {
     end,
   },
 
-  -- Highlight patterns (TODO, FIXME, hex colors)
+  -- Highlight patterns
+  -- Note: TODO/FIXME/HACK/NOTE keywords are handled by todo-comments.nvim.
+  -- mini.hipatterns is kept solely for hex color highlighting.
   {
     "echasnovski/mini.hipatterns",
     version = "*",
@@ -46,10 +48,6 @@ return {
       local hipatterns = require("mini.hipatterns")
       require("mini.hipatterns").setup({
         highlighters = {
-          fixme = { pattern = '%f[%w]()FIXME()%f[%W]', group = 'MiniHipatternsFixme' },
-          hack  = { pattern = '%f[%w]()HACK()%f[%W]',  group = 'MiniHipatternsHack'  },
-          todo  = { pattern = '%f[%w]()TODO()%f[%W]',  group = 'MiniHipatternsTodo'  },
-          note  = { pattern = '%f[%w]()NOTE()%f[%W]',  group = 'MiniHipatternsNote'  },
           hex_color = hipatterns.gen_highlighter.hex_color(),
         },
       })
@@ -69,6 +67,9 @@ return {
         lsp = {},
         os = {},
       })
+      -- Mock nvim-web-devicons so plugins that depend on it work without
+      -- needing to install that separate plugin.
+      require("mini.icons").mock_nvim_web_devicons()
     end,
   },
 

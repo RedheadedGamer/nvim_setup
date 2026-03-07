@@ -32,10 +32,10 @@ function M.setup()
         min = vim.diagnostic.severity.HINT,
       },
       text = {
-        [vim.diagnostic.severity.ERROR] = "E",
-        [vim.diagnostic.severity.WARN] = "W",
-        [vim.diagnostic.severity.HINT] = "I",
-        [vim.diagnostic.severity.INFO] = "I"
+        [vim.diagnostic.severity.ERROR] = "✘",
+        [vim.diagnostic.severity.WARN]  = "▲",
+        [vim.diagnostic.severity.HINT]  = "⚑",
+        [vim.diagnostic.severity.INFO]  = "●",
       },
     },
     underline = true,

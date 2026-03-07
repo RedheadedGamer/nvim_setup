@@ -25,8 +25,7 @@ return {
         { "<leader>p", group = "pick/mini.pick", icon = "📋" },
         { "<leader>x", group = "trouble/diagnostics", icon = "🔧" },
         { "<leader>t", group = "theme/toggle/terminal", icon = "🎨" },
-        { "<leader>g", group = "git/snacks", icon = "📦" },
-        { "<leader>c", group = "code/lsp", icon = "💻" },
+        { "<leader>g", group = "git (snacks/gitsigns/diffview)", icon = "📦" },
         { "<leader>w", group = "window", icon = "🪟" },
         { "<leader>b", group = "buffer/snacks", icon = "📄" },
         { "<leader>v", group = "visits/mini.visits", icon = "📍" },
@@ -135,8 +134,7 @@ return {
     config = function()
       require("dressing").setup({
         input = {
-          enabled = true,
-          default_prompt = "Input:",
+          enabled = false, -- snacks.input replaces vim.ui.input; disable to avoid conflict
           prompt_align = "left",
           insert_only = true,
           start_in_insert = true,

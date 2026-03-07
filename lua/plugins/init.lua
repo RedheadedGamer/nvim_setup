@@ -47,9 +47,11 @@ local function load_plugin_modules()
   merge("plugins.editor.mini-text")
   merge("plugins.editor.mini-ui")
   merge("plugins.editor.mini-navigation")
+  merge("plugins.editor.extras")
   
   -- Git plugins
   merge("plugins.git.gitsigns")
+  merge("plugins.git.diffview")
   
   -- LSP plugins
   merge("plugins.lsp.lspconfig")
@@ -63,6 +65,7 @@ local function load_plugin_modules()
   merge("plugins.lang.c-cpp")
   merge("plugins.lang.java")
   merge("plugins.lang.latex")
+  merge("plugins.lang.lua")
   
   return plugins
 end

@@ -45,7 +45,6 @@ if vim.fn.isdirectory(backup_dir) == 0 then
 end
 
 -- Performance and UX
-opt.ttyfast = true                -- speed up scrolling in Vim
 opt.updatetime = 300              -- faster updatetime for better UX
 opt.spell = true                  -- enable spell check
 opt.signcolumn = "yes"            -- always show signcolumn for diagnostics
@@ -53,6 +52,7 @@ opt.scrolloff = 8                 -- keep 8 lines visible when scrolling
 opt.sidescrolloff = 8             -- keep 8 columns visible when scrolling horizontally
 opt.cmdheight = 1                 -- command line height
 opt.pumheight = 10                -- popup menu height
+opt.laststatus = 3                -- global statusline (single bar for all windows)
 opt.conceallevel = 0              -- show concealed text
 opt.fileencoding = "utf-8"        -- file encoding
 opt.timeoutlen = 1000             -- time to wait for mapped sequence to complete
@@ -80,13 +80,12 @@ opt.smartcase = true              -- smart case sensitivity (override ignorecase
 
 -- Folding improvements (better defaults)
 opt.foldmethod = "expr"           -- use expression for folding
-opt.foldexpr = "nvim_treesitter#foldexpr()" -- use treesitter for folding
+opt.foldexpr = "v:lua.vim.treesitter.foldexpr()" -- use modern treesitter fold API
 opt.foldlevel = 99                -- open all folds by default
 opt.foldlevelstart = 99           -- open all folds when opening files
 
 -- Text formatting
 opt.textwidth = 80                -- set text width to 80 characters
-opt.formatoptions:append("t")     -- auto-wrap text using textwidth
 
 -- Enable filetype detection (modern API)
 vim.cmd("filetype plugin indent on")

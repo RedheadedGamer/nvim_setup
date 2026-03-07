@@ -10,6 +10,7 @@ return {
       "rcarriga/nvim-dap-ui",
       "theHamsta/nvim-dap-virtual-text",
       "nvim-telescope/telescope-dap.nvim",
+      "mfussenegger/nvim-dap-python", -- Python debugging via debugpy
     },
     config = function()
       local dap = require("dap")
@@ -82,6 +83,16 @@ return {
       }
       
       dap.configurations.cpp = dap.configurations.c
+
+      -- ── Python debugging via debugpy ─────────────────────────────────────────
+      local ok_dap_python, dap_python = pcall(require, "dap-python")
+      if ok_dap_python then
+        -- Use debugpy from Mason if available, otherwise system python
+        local mason_bin = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python"
+        local python_path = vim.fn.executable(mason_bin) == 1 and mason_bin or "python3"
+        dap_python.setup(python_path)
+        dap_python.test_runner = "pytest"
+      end
       
       -- Auto open/close DAP UI
       dap.listeners.after.event_initialized["dapui_config"] = function()
