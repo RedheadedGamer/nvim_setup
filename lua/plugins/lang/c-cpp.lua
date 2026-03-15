@@ -39,16 +39,41 @@ return {
   -- Note: vim-lsp-cxx-highlight is no longer needed as Neovim's built-in LSP
   -- semantic tokens handle C/C++ syntax highlighting natively (Neovim 0.9+).
   -- CurtineIncSw.vim is superseded by clangd_extensions' ClangdSwitchSourceHeader.
+  --
+  -- clangd is set up HERE (not in the generic lspconfig loop) to avoid
+  -- duplicate LSP instances which cause double completions/warnings/hover.
   {
     "p00f/clangd_extensions.nvim",
-    ft = { "c", "cpp" },
+    ft = { "c", "cpp", "objc", "objcpp", "cuda" },
     dependencies = { "neovim/nvim-lspconfig" },
     config = function()
+      -- Pull in shared LSP config so clangd gets the same capabilities/keymaps
+      local lsp_servers = require("config.lsp.servers")
+      local lsp_keymaps = require("config.lsp.keymaps")
+
+      local ok_cmp_lsp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+      local capabilities = ok_cmp_lsp and cmp_nvim_lsp.default_capabilities() or vim.lsp.protocol.make_client_capabilities()
+
+      -- clangd needs utf-16 offset encoding to avoid spurious warnings
+      capabilities.offsetEncoding = { "utf-16" }
+
+      local server_config = vim.tbl_deep_extend("force", lsp_servers.servers.clangd or {}, {
+        capabilities = capabilities,
+        on_attach = function(client, bufnr)
+          -- Disable formatting — conform.nvim / clang-format handles it
+          client.server_capabilities.documentFormattingProvider = false
+          client.server_capabilities.documentRangeFormattingProvider = false
+          lsp_keymaps.on_attach(client, bufnr)
+        end,
+        single_file_support = true,
+      })
+
       require("clangd_extensions").setup({
+        server = server_config,
         extensions = {
           autoSetHints = true,
           inlay_hints = {
-            inline = true, -- Neovim 0.10+ is now standard
+            inline = true,
             only_current_line = false,
             only_current_line_autocmd = "CursorHold",
             show_parameter_hints = true,
@@ -79,6 +104,12 @@ return {
               TemplateTemplateParm = "",
               TemplateParamObject = "",
             },
+          },
+          memory_usage = {
+            border = "rounded",
+          },
+          symbol_info = {
+            border = "rounded",
           },
         },
       })
