@@ -112,3 +112,14 @@ if vim.fn.executable("rg") == 1 then
   opt.grepprg = "rg --vimgrep --hidden --smart-case"
   opt.grepformat = "%f:%l:%c:%m"
 end
+
+-- EditorConfig support (built into Neovim >= 0.9)
+-- Automatically reads .editorconfig files to enforce consistent formatting
+-- across editors in shared projects.
+vim.g.editorconfig = true
+
+-- Per-project configuration via .nvim.lua / .exrc files
+-- When Neovim opens a directory it will source a local .nvim.lua or .exrc
+-- file if one is found, enabling project-specific settings.
+opt.exrc = true     -- source .exrc / .nvim.lua in the working directory
+opt.secure = true   -- disallow dangerous commands in local config files

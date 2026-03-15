@@ -30,7 +30,7 @@ return {
         { "<leader>b", group = "buffer/snacks", icon = "📄" },
         { "<leader>v", group = "visits/mini.visits", icon = "📍" },
         { "<leader>s", group = "session/snacks/scope", icon = "💾" },
-        { "<leader>m", group = "map/minimap", icon = "🗺️" },
+        { "<leader>m", group = "map/minimap/markdown", icon = "🗺️" },
         { "<leader>r", group = "refactor/rename", icon = "♻️" },
         { "<leader>d", group = "debug/diagnostics/profiler", icon = "🩺" },
         { "<leader>h", group = "git hunks", icon = "📊" },
@@ -38,6 +38,7 @@ return {
         { "<leader>n", group = "notifications/snacks", icon = "🔔" },
         { "<leader>z", group = "zen/snacks", icon = "🧘" },
         { "<leader>j", group = "java/jdtls", icon = "☕" },
+        { "<leader>a", group = "harpoon", icon = "🪝" },
         
         -- Additional keymap documentation
         { "g", group = "goto/operators", icon = "🎯" },

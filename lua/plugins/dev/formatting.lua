@@ -1,14 +1,22 @@
 -- plugins/dev/formatting.lua
 -- Code formatting with conform.nvim
 
+-- Global auto-format state (off by default; toggle with <leader>tf / <leader>tF)
+vim.g.autoformat_enabled = false
+
 return {
   {
     "stevearc/conform.nvim",
+    -- Load early so auto-format is ready before the first save.
+    -- BufReadPre ensures the plugin is initialised when a file is opened;
+    -- BufWritePre is kept as a safety net for new (unsaved) buffers.
+    event = { "BufReadPre", "BufWritePre" },
     cmd = { "ConformInfo" },
     keys = {
       { "<leader>fm", desc = "Format buffer manually" },
       { "<leader>fi", desc = "Formatter info" },
-      { "<leader>tf", desc = "Auto-formatting status (disabled)" },
+      { "<leader>tf", desc = "Toggle auto-format (buffer)" },
+      { "<leader>tF", desc = "Toggle auto-format (global)" },
     },
     config = function()
       -- Cache formatter availability checks
@@ -104,9 +112,35 @@ return {
             prepend_args = { "--tab-width", "2" },
           },
         },
+        -- Auto-format on save is driven by the autocmd below rather than
+        -- conform's built-in format_on_save, so we can honour per-buffer flags.
+        format_on_save = false,
       })
-      
-      -- Format keymaps
+
+      -- ── Helpers ──────────────────────────────────────────────────────────────
+
+      -- Returns true when auto-format is enabled for the current buffer.
+      -- Buffer-local flag (vim.b.autoformat_enabled) overrides the global one.
+      local function autoformat_enabled_for_buf()
+        if vim.b.autoformat_enabled ~= nil then
+          return vim.b.autoformat_enabled
+        end
+        return vim.g.autoformat_enabled
+      end
+
+      -- ── Auto-format on save ───────────────────────────────────────────────────
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        group = vim.api.nvim_create_augroup("ConformAutoFormat", { clear = true }),
+        callback = function()
+          if autoformat_enabled_for_buf() then
+            require("conform").format({ lsp_fallback = true, timeout_ms = 500 })
+          end
+        end,
+      })
+
+      -- ── Keymaps ───────────────────────────────────────────────────────────────
+
+      -- Manual format
       vim.keymap.set("n", "<leader>fm", function()
         local ok, err = pcall(function()
           require("conform").format({ lsp_fallback = true })
@@ -117,11 +151,30 @@ return {
           vim.notify("Format failed: " .. tostring(err), vim.log.levels.ERROR)
         end
       end, { desc = "Format buffer manually" })
-      
+
+      -- Toggle auto-format for the current buffer only
       vim.keymap.set("n", "<leader>tf", function()
-        vim.notify("Auto-formatting is permanently disabled. Use <leader>fm for manual formatting.", vim.log.levels.INFO)
-      end, { desc = "Auto-formatting status (disabled)" })
-      
+        -- Determine current effective state and invert it for this buffer
+        local current = autoformat_enabled_for_buf()
+        vim.b.autoformat_enabled = not current
+        if vim.b.autoformat_enabled then
+          vim.notify("Auto-format ENABLED for this buffer", vim.log.levels.INFO)
+        else
+          vim.notify("Auto-format DISABLED for this buffer", vim.log.levels.WARN)
+        end
+      end, { desc = "Toggle auto-format (buffer)" })
+
+      -- Toggle auto-format globally (affects all buffers without a local override)
+      vim.keymap.set("n", "<leader>tF", function()
+        vim.g.autoformat_enabled = not vim.g.autoformat_enabled
+        if vim.g.autoformat_enabled then
+          vim.notify("Auto-format ENABLED globally", vim.log.levels.INFO)
+        else
+          vim.notify("Auto-format DISABLED globally", vim.log.levels.WARN)
+        end
+      end, { desc = "Toggle auto-format (global)" })
+
+      -- Show current formatter info
       vim.keymap.set("n", "<leader>fi", "<cmd>ConformInfo<cr>", { desc = "Formatter info" })
     end,
   },

@@ -52,9 +52,17 @@ A modern, feature-rich Neovim configuration written in Lua with **complete mini.
 - **Assembly Language** — NASM/x86 support with asm-lsp, syntax highlighting, and `.asm-lsp.toml` config
 - **LaTeX Support** — VimTeX integration for document editing
 - **Fuzzy Finding** — Telescope and mini.pick for file finding, searching, and more
-- **Syntax Highlighting** — Treesitter with rainbow brackets
+- **Syntax Highlighting** — Treesitter with rainbow brackets and context display
 - **Transparent Background** — 80+ UI elements configured for full transparency support
 - **Two Setup Modes** — Full IDE or lightweight Minimal configuration
+- **Auto-format Toggle** — Enable/disable code formatting per-buffer (`<leader>tf`) or globally (`<leader>tF`)
+- **Flash Navigation** — Jump to any visible location instantly with search labels (`gl` / `gL`)
+- **Harpoon File Marks** — Bookmark and instantly jump to your most-used files (`<leader>a`)
+- **Project Root Detection** — Automatic project root switching with project.nvim
+- **Refactoring Tools** — Extract functions/variables, inline variables, and debug prints (`<leader>r`)
+- **Markdown Preview** — Live browser preview of Markdown files (`<leader>mp`)
+- **EditorConfig** — Consistent editor settings enforced via `.editorconfig` files
+- **Per-project Config** — Project-specific settings via `.nvim.lua` / `.exrc` files
 
 ## 🚀 Quick Start
 
@@ -471,17 +479,17 @@ Here are some ideas for future enhancements to this setup:
 - **Reduce theme count** — Fewer themes means less disk space and faster initial install
 
 ### Features
-- **Add [nvim-treesitter-context](https://github.com/nvim-treesitter/nvim-treesitter-context)** — Show the current function/class context at the top of the screen
-- **Add [flash.nvim](https://github.com/folke/flash.nvim) or [leap.nvim](https://github.com/ggandor/leap.nvim)** — Faster navigation with search labels
-- **Add [harpoon](https://github.com/ThePrimeagen/harpoon)** — Quick file navigation for frequently used files
-- **Add [nvim-bqf](https://github.com/kevinhwang91/nvim-bqf)** — Better quickfix window for build errors and search results
+- ✅ **[nvim-treesitter-context](https://github.com/nvim-treesitter/nvim-treesitter-context)** — Shows the current function/class context at the top of the screen (`lua/plugins/editor/treesitter.lua`)
+- ✅ **[flash.nvim](https://github.com/folke/flash.nvim)** — Faster navigation with search labels; `gl` to jump, `gL` for treesitter (`lua/plugins/editor/navigation.lua`)
+- ✅ **[harpoon](https://github.com/ThePrimeagen/harpoon)** — Quick file navigation; `<leader>a` group (`lua/plugins/editor/navigation.lua`)
+- ✅ **[nvim-bqf](https://github.com/kevinhwang91/nvim-bqf)** — Better quickfix window with preview and fuzzy filtering (`lua/plugins/editor/extras.lua`)
 - **Add [neotest](https://github.com/nvim-neotest/neotest)** — Integrated test runner framework
-- **Add [refactoring.nvim](https://github.com/ThePrimeagen/refactoring.nvim)** — Code refactoring toolkit
-- **Add [markdown-preview.nvim](https://github.com/iamcco/markdown-preview.nvim)** — Live markdown preview in browser
+- ✅ **[refactoring.nvim](https://github.com/ThePrimeagen/refactoring.nvim)** — Code refactoring toolkit; `<leader>r` group (`lua/plugins/dev/refactoring.lua`)
+- ✅ **[markdown-preview.nvim](https://github.com/iamcco/markdown-preview.nvim)** — Live markdown preview in browser; `<leader>mp` (`lua/plugins/lang/markdown.lua`)
 
 ### Code Quality
-- **Enable auto-formatting** — Currently disabled; could be opt-in per filetype
-- **Add EditorConfig support** — Ensure consistent formatting across different editors in shared projects
+- ✅ **Auto-formatting toggle** — Enable per-buffer with `<leader>tf` or globally with `<leader>tF` (`lua/plugins/dev/formatting.lua`)
+- ✅ **EditorConfig support** — Reads `.editorconfig` files automatically (built into Neovim ≥ 0.9, enabled in `lua/config/options.lua`)
 - **Add [nvim-coverage](https://github.com/andythigpen/nvim-coverage)** — Code coverage visualization for test-driven development
 
 ### Language Support
@@ -491,13 +499,13 @@ Here are some ideas for future enhancements to this setup:
 - **Python** — Add [nvim-dap-python](https://github.com/mfussenegger/nvim-dap-python) for better Python debugging
 
 ### Project Management
-- **Add [project.nvim](https://github.com/ahmedkhalf/project.nvim)** — Automatic project root detection
+- ✅ **[project.nvim](https://github.com/ahmedkhalf/project.nvim)** — Automatic project root detection; `<leader>fp` for recent projects (`lua/plugins/editor/extras.lua`)
 - **Add [persistence.nvim](https://github.com/folke/persistence.nvim)** — Automated session management (complement to mini.sessions)
-- **Add [todo-comments.nvim](https://github.com/folke/todo-comments.nvim)** — Highlight and search TODO/FIXME/HACK comments across the project
+- ✅ **[todo-comments.nvim](https://github.com/folke/todo-comments.nvim)** — Highlight and search TODO/FIXME/HACK comments (`lua/plugins/editor/extras.lua`)
 
 ### User Experience
 - **Create a `:Setup` command** — Interactive wizard for first-time configuration
-- **Add per-project configuration** — Support `.nvim.lua` or `.exrc` files for project-specific settings
+- ✅ **Per-project configuration** — `.nvim.lua` / `.exrc` files are sourced automatically (`lua/config/options.lua`)
 - **Add [noice.nvim](https://github.com/folke/noice.nvim)** — Replace the command line and message UI with a modern interface
 - **Improve the dashboard** — Add project-specific shortcuts and recent project tracking
 
