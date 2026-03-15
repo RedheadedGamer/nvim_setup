@@ -57,7 +57,13 @@ return {
       -- clangd needs utf-16 offset encoding to avoid spurious warnings
       capabilities.offsetEncoding = { "utf-16" }
 
-      local server_config = vim.tbl_deep_extend("force", lsp_servers.servers.clangd or {}, {
+      local clangd_config = lsp_servers.servers.clangd
+      if not clangd_config then
+        vim.notify("clangd config missing from config.lsp.servers – using defaults", vim.log.levels.WARN)
+        clangd_config = {}
+      end
+
+      local server_config = vim.tbl_deep_extend("force", clangd_config, {
         capabilities = capabilities,
         on_attach = function(client, bufnr)
           -- Disable formatting — conform.nvim / clang-format handles it
