@@ -142,8 +142,17 @@ return {
       local capabilities = cmp_nvim_lsp.default_capabilities()
 
       -- ── Configure LSP servers ────────────────────────────────────────────────
+      -- Servers managed by dedicated language plugins (to avoid duplicate instances)
+      local externally_managed = {
+        clangd = true,  -- managed by clangd_extensions.nvim in plugins/lang/c-cpp.lua
+      }
+
       local lspconfig = require("lspconfig")
       for server, config in pairs(lsp_servers.servers) do
+        if externally_managed[server] then
+          goto continue
+        end
+
         local server_cmd = config.cmd and config.cmd[1] or server
         if vim.fn.executable(server_cmd) == 0 then
           vim.notify(
@@ -209,9 +218,22 @@ return {
           { name = "nvim_lsp_signature_help" }, -- function signature help in completion menu
           { name = "luasnip" },
         }, {
-          { name = "buffer" },
+          { name = "buffer",  keyword_length = 3 },
           { name = "path" },
         }),
+        -- De-duplicate completion entries from multiple sources
+        sorting = {
+          comparators = {
+            cmp.config.compare.offset,
+            cmp.config.compare.exact,
+            cmp.config.compare.score,
+            cmp.config.compare.recently_used,
+            cmp.config.compare.locality,
+            cmp.config.compare.kind,
+            cmp.config.compare.length,
+            cmp.config.compare.order,
+          },
+        },
         formatting = {
           -- lspkind adds VS Code-style kind icons to completion items
           format = lspkind.cmp_format({
