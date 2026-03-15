@@ -1,1194 +1,516 @@
 # Neovim Configuration
 
-A modern, feature-rich Neovim configuration written in Lua with **complete mini.nvim ecosystem integration** (28 plugins), LSP support, auto-completion, and optimized performance for enhanced development experience.
+A modern, feature-rich Neovim configuration written in Lua with **complete mini.nvim ecosystem integration** (27 plugins), **snacks.nvim** (32 modules), LSP support, auto-completion, and optimized performance.
 
-**🌍 Cross-Platform:** Works on Linux (Arch, Ubuntu, Debian, Fedora), macOS, and Windows with Scoop!
+**🌍 Cross-Platform:** Works on Linux (Arch, Ubuntu, Debian, Fedora), macOS, and Windows with Scoop.
 
-> **⚡ New to this config?** Start here: [QUICKSTART.md](QUICKSTART.md) - Get up and running in 5 minutes!
->
-> **🖥️ Platform-specific setup?** See [PLATFORM_SUPPORT.md](PLATFORM_SUPPORT.md) - Complete cross-platform guide!
+---
+
+## Table of Contents
+
+- [Features](#-features)
+- [Quick Start](#-quick-start)
+- [Installation](#-installation)
+  - [Automated Installation](#automated-installation)
+  - [Manual Installation](#manual-installation)
+  - [Prerequisites](#prerequisites)
+  - [Switching Between Setups](#switching-between-setups)
+- [Configuration Structure](#-configuration-structure)
+  - [Plugin Organization](#plugin-organization)
+- [Included Plugins](#-included-plugins)
+  - [Core & UI](#core--ui)
+  - [Mini.nvim Collection (27 plugins)](#mininvim-collection-27-plugins)
+  - [snacks.nvim (32 modules)](#snacksnvim-32-modules)
+  - [LSP & Completion](#lsp--completion)
+  - [Git Integration](#git-integration)
+  - [Development Tools](#development-tools)
+  - [Language Support](#language-support)
+  - [Themes (15 colorschemes)](#themes-15-colorschemes)
+- [Key Bindings](#-key-bindings)
+- [Customization](#-customization)
+- [Troubleshooting](#-troubleshooting)
+- [Possible Improvements](#-possible-improvements)
+- [Additional Documentation](#-additional-documentation)
+- [Resources](#-resources)
+- [Contributing](#-contributing)
+- [License](#-license)
+
+---
 
 ## ✨ Features
 
-- **Modern Lua Configuration**: Fully migrated from VimScript to Lua for better performance and maintainability
-- **Native LSP Support**: Built-in Language Server Protocol with intelligent code completion, diagnostics, and navigation
-- **🔬 Advanced C/C++ Development**: Complete development environment with enhanced clangd, CMake integration, debugging, and static analysis
-- **☕ Java Development**: Full-featured Java LSP with nvim-jdtls, refactoring, testing, and Maven/Gradle support
-- **Plugin Manager**: Uses [lazy.nvim](https://github.com/folke/lazy.nvim) for fast, lazy-loaded plugin management
-- **Auto-completion**: Powerful completion engine with [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) replacing CoC
-- **🍿 snacks.nvim Integration**: All 32 features from folke's modern plugin collection (dashboard, notifications, terminal, git, zen mode, profiler, debug tools, explorer, and more) - [See complete guide](SNACKS_GUIDE.md) | [Quick Reference](SNACKS_QUICKREF.md)
-- **Complete Mini.nvim Ecosystem**: 27 mini.nvim plugins for comprehensive development tools
-- **210+ Keybinds**: Comprehensive keybind system with which-key integration for discoverability
-- **Optimized Performance**: Streamlined configuration with 15 curated high-quality themes (75% reduction)
-- **Smart Movement**: Mini.move integration for moving lines and selections with Alt+hjkl
-- **Enhanced Bracket Matching**: Improved bracket/parenthesis visibility with rainbow colors and smart matching
-- **Advanced Text Objects**: Enhanced editing with mini.ai, mini.surround, and mini.operators
-- **Visual Enhancements**: Smooth animations, minimap, indent guides, and status indicators
-- **Tab-based Indentation**: Configured to use actual tabs (noexpandtab) for consistent formatting
-- **Fuzzy Finding**: Telescope integration for file finding, searching, and more
-- **Syntax Highlighting**: Enhanced syntax highlighting with Treesitter
-- **Multiple Themes**: 15 beautiful, actively-maintained colorschemes with ~40 variants
-- **LaTeX Support**: VimTeX integration for LaTeX document editing
-- **Transparent Background**: Configured for transparent terminal backgrounds
-- **Enhanced Transparency**: 80+ UI elements configured for full transparency support  
-- **Custom .wistl Filetype**: Specialized support for .wistl files
+- **Modern Lua Configuration** — Fully written in Lua for better performance and maintainability
+- **Native LSP Support** — Built-in Language Server Protocol with intelligent completion, diagnostics, and navigation
+- **Plugin Manager** — [lazy.nvim](https://github.com/folke/lazy.nvim) for fast, lazy-loaded plugin management
+- **Auto-completion** — [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) with snippet support via LuaSnip
+- **Complete Mini.nvim Ecosystem** — 27 mini.nvim plugins for comprehensive editing tools
+- **snacks.nvim Integration** — All 32 modules (dashboard, notifications, terminal, git, zen mode, profiler, and more) — [See complete guide](SNACKS_GUIDE.md)
+- **210+ Keybinds** — Comprehensive keybind system with which-key integration for discoverability
+- **15 Curated Themes** — Optimized colorschemes with transparency support and live preview switching
+- **C/C++ Development** — Complete environment with clangd, CMake integration, debugging, and static analysis
+- **Java Development** — Full-featured Java LSP with nvim-jdtls, refactoring, testing, and Maven/Gradle support
+- **Assembly Language** — NASM/x86 support with asm-lsp, syntax highlighting, and `.asm-lsp.toml` config
+- **LaTeX Support** — VimTeX integration for document editing
+- **Fuzzy Finding** — Telescope and mini.pick for file finding, searching, and more
+- **Syntax Highlighting** — Treesitter with rainbow brackets
+- **Transparent Background** — 80+ UI elements configured for full transparency support
+- **Two Setup Modes** — Full IDE or lightweight Minimal configuration
 
-## 🍿 snacks.nvim - Complete Feature Set
+## 🚀 Quick Start
 
-This configuration includes **all 32 snacks.nvim modules** providing a comprehensive development experience:
-
-### Core Features (10 modules)
-Dashboard • Notifications • Smooth Scrolling • Indent Guides • Terminal • Status Column • Word Navigation • Large File Optimization • Quick File Loading • Animations
-
-### Git & Development (5 modules)
-Git Utilities • Git Browse • LazyGit Integration • LSP Rename Preview • Smart Buffer Delete
-
-### Productivity & Focus (6 modules)
-Toggle Utilities • Zen Mode • Dim Inactive Windows • Scratch Buffers • Window Management • Fuzzy Picker
-
-### Advanced Tools (7 modules) ⭐ NEW
-Enhanced Input UI • Scope Navigation • Performance Profiler • Debug Utilities • UI Styling • Backdrop Dimming • File Explorer
-
-### Infrastructure (4 modules)
-Utilities • Configuration • Health Checks • Internal APIs
-
-**📚 Documentation:**
-- [Complete Guide](SNACKS_GUIDE.md) - Detailed documentation for all 32 modules
-- [Quick Reference](SNACKS_QUICKREF.md) - Quick reference card with keybindings
-- [Implementation Details](SNACKS_IMPLEMENTATION.md) - Technical implementation summary
-
-**🎯 40 Keybindings** configured with which-key integration for easy discovery!
-
-## 🚀 Installation
-
-> **📖 For detailed installation instructions, troubleshooting, and switching between setups, see [INSTALL.md](INSTALL.md)**
-> 
-> **📊 For a detailed comparison of Full vs Minimal setups, see [SETUP_COMPARISON.md](SETUP_COMPARISON.md)**
->
-> **🖥️ For platform-specific guides (Arch, Ubuntu, Windows, macOS), see [PLATFORM_SUPPORT.md](PLATFORM_SUPPORT.md)**
-
-This configuration offers **two installation modes** and works on **all major platforms**:
-
-### Installation Modes
-
-#### 🎯 **Full Setup** (Recommended for Development)
-Complete IDE experience with:
-- ✅ LSP support with Mason
-- ✅ Auto-completion with nvim-cmp  
-- ✅ Linters and formatters
-- ✅ C/C++ development tools
-- ✅ 50+ themes
-- ✅ All mini.nvim plugins (28 plugins)
-
-#### ⚡ **Minimal Setup** (Lightweight)
-Fast and efficient configuration with:
-- ✅ Essential editing features
-- ✅ Syntax highlighting with Treesitter
-- ✅ Core mini.nvim plugins
-- ✅ 5 popular themes
-- ✅ File finding with Telescope
-- ❌ No LSP, Mason, or C/C++ tools
-- 🚀 Faster startup time
-
-### Quick Installation (Recommended)
-
-Use the automated install script:
-
-**Linux/macOS:**
 ```bash
-# Download and run the installer directly
+# One command to install (interactive — will ask Full or Minimal)
 curl -fsSL https://raw.githubusercontent.com/RedheadedGamer/nvim_setup/main/install.sh | bash
 
-# Or clone first, then run (recommended - avoids double cloning)
-git clone git@github.com:RedheadedGamer/nvim_setup.git /tmp/nvim_setup_tmp
-cd /tmp/nvim_setup_tmp
-chmod +x install.sh
-./install.sh
+# Then start Neovim
+nvim
 ```
 
-**Windows (PowerShell):**
-```powershell
-# Clone the repository to a temporary location
-git clone https://github.com/RedheadedGamer/nvim_setup.git $env:TEMP\nvim_install
-cd $env:TEMP\nvim_install
+Wait for plugins to install, restart Neovim, and you're ready to go!
 
-# Run the installer
-.\install.ps1
-```
+> For a step-by-step walkthrough, see the **[Quick Start Guide](QUICKSTART.md)**.
 
-The installer will:
-1. Prompt you to choose between Full or Minimal setup
-2. Backup your existing configuration (if any)
-3. Copy files to `~/.config/nvim` (Linux/macOS) or `$env:LOCALAPPDATA\nvim` (Windows)
-4. Configure the setup based on your choice
-5. Clean up temporary files
-6. Provide next steps
+## 📦 Installation
 
-### Installation Options
+This configuration offers **two setup modes**:
+
+| | Full Setup | Minimal Setup |
+|---|---|---|
+| **LSP & Mason** | ✅ | ❌ |
+| **Auto-completion** | ✅ | ❌ |
+| **Linters & Formatters** | ✅ | ❌ |
+| **C/C++ & Java tools** | ✅ | ❌ |
+| **Mini.nvim plugins** | 27 | Core subset |
+| **Themes** | 15 | 5 |
+| **Startup time** | Standard | Faster |
+
+### Automated Installation
 
 **Linux/macOS:**
 ```bash
-# Full setup (with LSP, Mason, linters)
-./install.sh --full
+# Interactive
+curl -fsSL https://raw.githubusercontent.com/RedheadedGamer/nvim_setup/main/install.sh | bash
 
-# Minimal setup (without LSP features)
-./install.sh --minimal
-
-# Interactive mode (will prompt for choice)
-./install.sh
+# Direct
+./install.sh --full    # or --minimal
 ```
 
 **Windows (PowerShell):**
 ```powershell
-# Full setup (with LSP, Mason, linters)
-.\install.ps1 -Full
-
-# Minimal setup (without LSP features)
-.\install.ps1 -Minimal
-
-# Interactive mode (will prompt for choice)
-.\install.ps1
+git clone https://github.com/RedheadedGamer/nvim_setup.git $env:TEMP\nvim_install
+cd $env:TEMP\nvim_install
+.\install.ps1          # -Full or -Minimal
 ```
 
 ### Manual Installation
 
-If you prefer to install manually:
+**Linux/macOS:**
+```bash
+mv ~/.config/nvim ~/.config/nvim.backup
+git clone git@github.com:RedheadedGamer/nvim_setup.git ~/.config/nvim
+nvim
+```
 
-#### For Full Setup (Linux/macOS):
+**Windows:**
+```powershell
+Move-Item $env:LOCALAPPDATA\nvim $env:LOCALAPPDATA\nvim.backup -ErrorAction SilentlyContinue
+git clone https://github.com/RedheadedGamer/nvim_setup.git $env:LOCALAPPDATA\nvim
+nvim
+```
 
-1. **Backup existing configuration**:
-   ```bash
-   mv ~/.config/nvim ~/.config/nvim.backup
-   ```
-
-2. **Clone this repository**:
-   ```bash
-   git clone git@github.com:RedheadedGamer/nvim_setup.git ~/.config/nvim
-   ```
-
-3. **Start Neovim**:
-   ```bash
-   nvim
-   ```
-
-#### For Full Setup (Windows):
-
-1. **Backup existing configuration** (PowerShell):
-   ```powershell
-   Move-Item $env:LOCALAPPDATA\nvim $env:LOCALAPPDATA\nvim.backup -ErrorAction SilentlyContinue
-   ```
-
-2. **Clone this repository**:
-   ```powershell
-   git clone https://github.com/RedheadedGamer/nvim_setup.git $env:LOCALAPPDATA\nvim
-   ```
-
-3. **Start Neovim**:
-   ```powershell
-   nvim
-   ```
-
-#### For Minimal Setup (Linux/macOS):
-
-1. **Backup and clone** (same as above)
-
-2. **Create minimal setup marker**:
-   ```bash
-   touch ~/.config/nvim/.minimal_setup
-   ```
-
-3. **Start Neovim**:
-   ```bash
-   nvim
-   ```
-
-#### For Minimal Setup (Windows):
-
-1. **Backup and clone** (same as Full Setup Windows instructions above)
-
-2. **Create minimal setup marker**:
-   ```powershell
-   New-Item -ItemType File -Path $env:LOCALAPPDATA\nvim\.minimal_setup
-   ```
-
-3. **Start Neovim**:
-   ```powershell
-   nvim
-   ```
+For Minimal setup, create the marker file after cloning:
+```bash
+touch ~/.config/nvim/.minimal_setup   # Linux/macOS
+```
 
 ### Prerequisites
 
-#### Basic Requirements (Both Setups):
-- **Neovim >= 0.11.0** (for vim.lsp.config API support)
-- **Git**
-- **SSH Keys configured** (for cloning the repository)
-  - See [GitHub SSH Setup Guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh)
-  - Alternatively, clone manually using HTTPS: `git clone https://github.com/RedheadedGamer/nvim_setup.git ~/.config/nvim`
+| Requirement | Full Setup | Minimal Setup |
+|---|---|---|
+| Neovim >= 0.11.0 | Required | Required |
+| Git | Required | Required |
+| Node.js | Required | — |
+| Python | Required | — |
+| ripgrep | Recommended | — |
+| C/C++ toolchain | Optional | — |
 
-#### Additional for Full Setup:
-- **Node.js** (for LSP servers)
-- **Python** (for Python LSP support)
-- **ripgrep** (for better grep functionality)
-- **🔬 C/C++ Development** (optional):
-  - **build-essential** or equivalent (gcc, make, etc.)
-  - **cmake** (for CMake projects)
-  - **clang** and **clang-tools** (for enhanced LSP)
-  - **gdb** or **codelldb** (for debugging)
-  - **cppcheck** (for static analysis)
-
-#### System Package Installation:
-
-**Ubuntu/Debian:**
-```bash
-# Basic (for both setups)
-sudo apt update
-sudo apt install neovim git
-
-# Full setup additional packages
-sudo apt install nodejs npm python3 python3-pip ripgrep
-
-# C/C++ development (optional for full setup)
-sudo apt install build-essential cmake gdb clang clang-tools cppcheck bear ninja-build
-```
-
-**Arch Linux:**
-```bash
-# Basic (for both setups)
-sudo pacman -Syu neovim git
-
-# Full setup additional packages
-sudo pacman -S nodejs npm python python-pip ripgrep
-
-# C/C++ development (optional for full setup)
-sudo pacman -S base-devel cmake gdb clang cppcheck bear ninja
-```
-
-**macOS:**
-```bash
-# Basic (for both setups)
-brew install neovim git
-
-# Full setup additional packages
-brew install node python ripgrep
-
-# C/C++ development (optional for full setup)
-brew install cmake llvm cppcheck bear ninja
-```
-
-**Windows (with Scoop):**
-```powershell
-# Install Scoop if not already installed
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
-
-# Basic (for both setups)
-scoop install neovim git
-
-# Full setup additional packages
-scoop install nodejs python ripgrep
-
-# C/C++ development (optional for full setup)
-# IMPORTANT: Install mingw FIRST for complete C++ headers and toolchain
-scoop install mingw cmake
-# Optional: LLVM can be added alongside MinGW, but MinGW provides essential headers
-# Note: GDB comes with mingw, or install separately: scoop install gdb
-```
-
-> **🪟 Windows Users:** Having issues? See [WINDOWS_TROUBLESHOOTING.md](WINDOWS_TROUBLESHOOTING.md) for solutions to common problems like "codelldb already linked" or "stdio.h not found".
-
-### Post-Installation
-
-After installation:
-
-1. **Verify prerequisites** (optional but recommended):
-   - Linux/macOS: `./verify_setup.sh`
-   - Windows: `.\verify_setup.ps1`
-
-2. **Start Neovim** - The configuration will automatically install plugins
-3. **Wait for completion** - Let lazy.nvim finish downloading all plugins
-4. **Restart Neovim** - For best results
-5. **Check health** (optional): Run `:checkhealth` to verify setup
+> For platform-specific installation commands, see **[INSTALL.md](INSTALL.md)** and **[PLATFORM_SUPPORT.md](PLATFORM_SUPPORT.md)**.
+>
+> **Windows users:** See **[WINDOWS_TROUBLESHOOTING.md](WINDOWS_TROUBLESHOOTING.md)** for common issues.
 
 ### Switching Between Setups
 
-You can easily switch between Full and Minimal setups:
-
-**Switch to Minimal:**
 ```bash
-touch ~/.config/nvim/.minimal_setup
-# Then restart Neovim and run :Lazy sync
+# Switch to Minimal
+touch ~/.config/nvim/.minimal_setup && nvim  # then :Lazy sync
+
+# Switch to Full
+rm ~/.config/nvim/.minimal_setup && nvim     # then :Lazy sync
 ```
 
-**Switch to Full:**
-```bash
-rm ~/.config/nvim/.minimal_setup
-# Then restart Neovim and run :Lazy sync
-```
-
-After switching, restart Neovim and let lazy.nvim install/remove plugins as needed.
-
-### Legacy Fallback
-
-If you encounter issues with the new Lua configuration, you can fallback to the original VimScript configuration:
-
-```bash
-cd ~/.config/nvim
-mv init.lua init.lua.backup
-mv init.vim.legacy init.vim
-```
-
-## 🔧 Configuration Structure
+## 🗂️ Configuration Structure
 
 ```
 ~/.config/nvim/
-├── init.lua                 # Main configuration entry point
-├── init.vim.legacy         # Original VimScript configuration (fallback)
+├── init.lua                    # Entry point (OS detection, lazy.nvim bootstrap)
 ├── lua/
 │   ├── config/
-│   │   ├── options.lua     # Editor options and settings
-│   │   ├── keymaps.lua     # Key mappings
-│   │   └── autocmds.lua    # Autocommands
+│   │   ├── options.lua         # Editor options and settings
+│   │   ├── keymaps.lua         # Key mappings
+│   │   ├── autocmds.lua        # Autocommands
+│   │   ├── theme.lua           # Theme persistence
+│   │   └── lsp/
+│   │       ├── servers.lua     # LSP server configurations
+│   │       ├── keymaps.lua     # LSP keybindings
+│   │       └── diagnostics.lua # Diagnostic configuration
 │   └── plugins/
-│       └── init.lua        # Plugin specifications and configurations
+│       ├── init.lua            # Plugin loader (imports all modules)
+│       ├── minimal.lua         # Minimal setup plugins
+│       ├── ui/                 # Themes, snacks.nvim, utilities
+│       ├── editor/             # Treesitter, mini-text, mini-ui, mini-navigation, extras
+│       ├── lsp/                # LSP configuration
+│       ├── git/                # Gitsigns, diffview
+│       ├── dev/                # Formatting, linting, debugging
+│       └── lang/               # C/C++, Java, LaTeX, Lua
+├── ftplugin/
+│   └── java.lua                # Java-specific settings
+├── .asm-lsp.toml               # Assembly LSP configuration
+├── install.sh                  # Linux/macOS installer
+├── install.ps1                 # Windows installer
+├── verify_setup.sh             # Linux/macOS verification
+└── verify_setup.ps1            # Windows verification
 ```
 
-## ⌨️ Key Mappings
+### Plugin Organization
 
-### General
-| Key | Mode | Action |
-|-----|------|--------|
-| `<Space>` | Normal | Leader key |
-| `<Esc>` | Normal | Clear search highlighting |
-| `<C-h/j/k/l>` | Normal | Navigate windows |
+Plugins are organized into modular categories under `lua/plugins/`:
 
-### LSP (replaces CoC functionality)
-| Key | Mode | Action |
-|-----|------|--------|
-| `gd` | Normal | Go to definition |
-| `gy` | Normal | Go to type definition |
-| `gi` | Normal | Go to implementation |
-| `gr` | Normal | Go to references |
-| `K` | Normal | Show hover documentation (no duplicates) |
-| `<leader>rn` | Normal | Rename symbol |
-| `<leader>ca` | Normal | Code actions |
-| `<leader>f` | Normal | Format code |
-| `[d` | Normal | Previous diagnostic |
-| `]d` | Normal | Next diagnostic |
-
-### 🔬 C/C++ Development
-| Key | Mode | Action |
-|-----|------|--------|
-| `<leader>cg` | Normal | CMake Generate |
-| `<leader>cb` | Normal | CMake Build |
-| `<leader>cr` | Normal | CMake Run |
-| `<leader>cd` | Normal | CMake Debug |
-| `<leader>cc` | Normal | CMake Clean |
-| `<leader>ch` | Normal | Switch Header/Source |
-| `<leader>cl` | Normal | Lint C/C++ file |
-| `<leader>db` | Normal | Toggle Breakpoint |
-| `<leader>dc` | Normal | Debug Continue |
-| `<leader>di` | Normal | Debug Step Into |
-| `<leader>do` | Normal | Debug Step Over |
-| `<leader>dO` | Normal | Debug Step Out |
-| `<leader>du` | Normal | Toggle Debug UI |
-
-### ⚙️ Assembly Language Development
-| Key | Mode | Action |
-|-----|------|--------|
-| `<leader>ac` | Normal | Comment assembly line |
-| `<leader>au` | Normal | Uncomment assembly line |
-| `K` | Normal | Hover documentation (assembly) |
-| `gd` | Normal | Go to definition (labels/macros) |
-| `gr` | Normal | Find references (assembly) |
-
-### Telescope
-| Key | Mode | Action |
-|-----|------|--------|
-| `<leader>ff` | Normal | Find files |
-| `<leader>fg` | Normal | Live grep |
-| `<leader>fb` | Normal | Find buffers |
-| `<leader>fh` | Normal | Help tags |
-
-### Trouble (Diagnostics)
-| Key | Mode | Action |
-|-----|------|--------|
-| `<leader>xx` | Normal | Toggle Trouble |
-| `<leader>xw` | Normal | Workspace diagnostics |
-| `<leader>xd` | Normal | Document diagnostics |
-
-### Mini Plugins (Quality of Life)
-| Key | Mode | Action |
-|-----|------|--------|
-| `sa` | Normal/Visual | Add surrounding |
-| `sd` | Normal | Delete surrounding |
-| `sr` | Normal | Replace surrounding |
-| `sf` | Normal | Find surrounding (right) |
-| `sF` | Normal | Find surrounding (left) |
-| `sh` | Normal | Highlight surrounding |
-| `<M-h/j/k/l>` | Normal/Visual | Move lines/selection |
-| `<leader>e` | Normal | Open file explorer |
-| `<leader>bd` | Normal | Delete buffer (keep layout) |
-| `<leader>bD` | Normal | Force delete buffer |
-| `gS` | Normal | Toggle split/join function arguments |
-| `g=` | Normal | Evaluate text and replace with result |
-| `gx` | Normal | Exchange text regions |
-| `gm` | Normal | Multiply (duplicate) text |
-| `gr` | Normal | Replace text with register |
-| `gs` | Normal | Sort text |
-| `<leader>tw` | Normal | Trim trailing whitespace |
-| `<leader>tl` | Normal | Trim trailing empty lines |
-| `<leader>vv` | Normal | Add visit label |
-| `<leader>vV` | Normal | Remove visit label |
-| `<leader>vl` | Normal | List visits |
-| `<leader>ss` | Normal | Select session |
-| `<leader>sw` | Normal | Write session |
-| `<leader>sd` | Normal | Delete session |
-| `ga` | Normal/Visual | Start text alignment |
-| `gA` | Normal/Visual | Start alignment with preview |
-| `gh` | Normal | Apply diff hunk |
-| `gH` | Normal | Reset diff hunk |
-| `[h` / `]h` | Normal | Previous/Next diff hunk |
-| `[H` / `]H` | Normal | First/Last diff hunk |
-| `<leader>gc` | Normal | Git: Show at cursor |
-| `<leader>gd` | Normal | Git: Show diff source |
-| `]c` / `[c` | Normal | Next/Previous git hunk |
-| `<leader>hs` | Normal/Visual | Stage hunk |
-| `<leader>hr` | Normal/Visual | Reset hunk |
-| `<leader>hS` | Normal | Stage buffer |
-| `<leader>hR` | Normal | Reset buffer |
-| `<leader>hp` | Normal | Preview hunk |
-| `<leader>hb` | Normal | Blame line |
-| `<leader>tb` | Normal | Toggle blame |
-| `<leader>hd` | Normal | Diff this |
-| `<CR>` | Normal | Start 2D jumping |
-| `<leader>mm` | Normal | Toggle minimap |
-| `<leader>mr` | Normal | Refresh minimap |
-| `<leader>mf` | Normal | Focus minimap |
-| `<leader>mz` | Normal | Zoom current window (mini.misc) |
-| `<leader>z` | Normal | Zen Mode (snacks) |
-| `<leader>Z` | Normal | Zen Zoom (snacks) |
-| `<leader>pf` | Normal | Pick files |
-| `<leader>pg` | Normal | Pick grep live |
-| `<leader>pb` | Normal | Pick buffers |
-| `<leader>ph` | Normal | Pick help |
-
-## 📚 Comprehensive Plugin Guide
-
-For detailed instructions on using all plugins, customizing features, and troubleshooting, see the **[Complete Plugin Usage Guide](PLUGIN_GUIDE.md)**.
-
-**Quick links to common tasks:**
-- [🍿 snacks.nvim Complete Guide](SNACKS_GUIDE.md) - All 21 features explained with keybindings and improvement tips
-- [🔧 Enable/Disable Features](PLUGIN_GUIDE.md#-enablingdisabling-features)
-- [🎯 Git & SSH Setup](PLUGIN_GUIDE.md#-git-integration)
-- [🎨 Theme Customization](PLUGIN_GUIDE.md#-theme-management)
-- [🚨 Troubleshooting](PLUGIN_GUIDE.md#-troubleshooting)
-- [⚡ Performance Optimization](PLUGIN_GUIDE.md#-advanced-configuration)
+| Directory | Contents |
+|---|---|
+| `ui/` | `themes.lua`, `snacks.lua`, `utilities.lua` (which-key, telescope, dressing) |
+| `editor/` | `treesitter.lua`, `mini-text.lua`, `mini-ui.lua`, `mini-navigation.lua`, `extras.lua` |
+| `lsp/` | `lspconfig.lua` (Mason, nvim-lspconfig, nvim-cmp, Trouble) |
+| `git/` | `gitsigns.lua`, `diffview.lua` |
+| `dev/` | `formatting.lua` (conform.nvim), `linting.lua` (nvim-lint), `debugging.lua` (nvim-dap) |
+| `lang/` | `c-cpp.lua`, `java.lua`, `latex.lua`, `lua.lua` |
 
 ## 🔌 Included Plugins
 
-### Core Functionality
-- **[lazy.nvim](https://github.com/folke/lazy.nvim)** - Modern plugin manager
-- **[plenary.nvim](https://github.com/nvim-lua/plenary.nvim)** - Lua utility functions
+### Core & UI
 
-### Quality of Life (Mini.nvim Collection)
-- **[mini.pairs](https://github.com/echasnovski/mini.pairs)** - Enhanced auto-close brackets, quotes, and parentheses with smart pattern detection
-- **[mini.surround](https://github.com/echasnovski/mini.surround)** - Surround text with brackets, quotes, tags, etc.
-- **[mini.indentscope](https://github.com/echasnovski/mini.indentscope)** - Visualize and operate on indent scope
-- **[mini.move](https://github.com/echasnovski/mini.move)** - Move any selection in any direction
-- **[mini.ai](https://github.com/echasnovski/mini.ai)** - Better text objects (around/inside)
-- **[mini.jump](https://github.com/echasnovski/mini.jump)** - Jump to next/previous single character
-- **[mini.files](https://github.com/echasnovski/mini.files)** - Navigate and manipulate file system
-- **[mini.statusline](https://github.com/echasnovski/mini.statusline)** - Minimal and fast statusline
-- **[mini.bufremove](https://github.com/echasnovski/mini.bufremove)** - Better buffer deletion without losing layout
-- **[mini.starter](https://github.com/echasnovski/mini.starter)** - Beautiful start screen with recent files
-- **[mini.animate](https://github.com/echasnovski/mini.animate)** - Smooth animations for cursor, scroll, resize, and windows
-- **[mini.cursorword](https://github.com/echasnovski/mini.cursorword)** - Highlight word under cursor
-- **[mini.hipatterns](https://github.com/echasnovski/mini.hipatterns)** - Highlight patterns like TODO, FIXME, hex colors
-- **[mini.splitjoin](https://github.com/echasnovski/mini.splitjoin)** - Split/join function arguments and arrays
-- **[mini.trailspace](https://github.com/echasnovski/mini.trailspace)** - Show and remove trailing whitespace
-- **[mini.operators](https://github.com/echasnovski/mini.operators)** - Additional operators (evaluate, exchange, multiply, replace, sort)
-- **[mini.visits](https://github.com/echasnovski/mini.visits)** - Track and navigate recently visited files
-- **[mini.sessions](https://github.com/echasnovski/mini.sessions)** - Session management for workspace persistence
-- **[mini.align](https://github.com/echasnovski/mini.align)** - Text alignment with `ga` and `gA`
-- **[mini.bracketed](https://github.com/echasnovski/mini.bracketed)** - Go to next/previous targets (buffers, files, diagnostics, etc.)
-- **[mini.diff](https://github.com/echasnovski/mini.diff)** - Work with diff hungs and git changes
-- **[mini.extra](https://github.com/echasnovski/mini.extra)** - Extra textobjects and pickers
-- **[mini.fuzzy](https://github.com/echasnovski/mini.fuzzy)** - Fuzzy matching algorithms
-- **[mini.icons](https://github.com/echasnovski/mini.icons)** - Icon provider for various contexts
-- **[mini.jump2d](https://github.com/echasnovski/mini.jump2d)** - Jump to any position with Enter
-- **[mini.map](https://github.com/echasnovski/mini.map)** - Window with buffer text overview (minimap)
-- **[mini.misc](https://github.com/echasnovski/mini.misc)** - Miscellaneous functions (zoom, put, setup, etc.)
-- **[mini.pick](https://github.com/echasnovski/mini.pick)** - Pick anything (alternative to telescope)
-- **[mini.tabline](https://github.com/echasnovski/mini.tabline)** - Tabline with customizable appearance
+| Plugin | Description |
+|---|---|
+| [lazy.nvim](https://github.com/folke/lazy.nvim) | Modern plugin manager |
+| [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) | Lua utility functions |
+| [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) | Fuzzy finder |
+| [which-key.nvim](https://github.com/folke/which-key.nvim) | Key binding popup |
+| [dressing.nvim](https://github.com/stevearc/dressing.nvim) | Better UI for vim.ui |
+| [trouble.nvim](https://github.com/folke/trouble.nvim) | Diagnostics panel |
+| [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) | Syntax highlighting |
+| [rainbow-delimiters.nvim](https://github.com/HiPhish/rainbow-delimiters.nvim) | Rainbow brackets |
+| [Comment.nvim](https://github.com/numToStr/Comment.nvim) | Smart commenting |
 
-### Visual Enhancements
-- **[rainbow-delimiters.nvim](https://github.com/HiPhish/rainbow-delimiters.nvim)** - Rainbow colored brackets and parentheses for better code readability
+### Mini.nvim Collection (27 plugins)
+
+**File & Buffer Management:**
+mini.files, mini.bufremove, mini.visits, mini.sessions, mini.pick
+
+**Visual Enhancements:**
+mini.starter, mini.animate, mini.cursorword, mini.hipatterns, mini.indentscope, mini.trailspace, mini.map, mini.icons, mini.statusline, mini.tabline
+
+**Text Manipulation & Navigation:**
+mini.surround, mini.move, mini.splitjoin, mini.align, mini.operators, mini.ai, mini.jump, mini.jump2d, mini.pairs, mini.bracketed
+
+**Development Tools:**
+mini.diff, mini.extra, mini.fuzzy, mini.misc
+
+### snacks.nvim (32 modules)
+
+All 32 modules from folke's modern plugin collection:
+
+- **Core:** Dashboard, Notifications, Smooth Scrolling, Indent Guides, Terminal, Status Column, Word Navigation, Large File Optimization, Quick File Loading, Animations
+- **Git & Dev:** Git Utilities, Git Browse, LazyGit Integration, LSP Rename Preview, Smart Buffer Delete
+- **Productivity:** Toggle Utilities, Zen Mode, Dim Inactive Windows, Scratch Buffers, Window Management, Fuzzy Picker
+- **Advanced:** Enhanced Input UI, Scope Navigation, Performance Profiler, Debug Utilities, UI Styling, Backdrop Dimming, File Explorer
+- **Infrastructure:** Utilities, Configuration, Health Checks, Internal APIs
+
+> For a detailed guide with all keybindings, see **[SNACKS_GUIDE.md](SNACKS_GUIDE.md)**.
 
 ### LSP & Completion
-- **[nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)** - LSP configurations (migrated to vim.lsp.config API for Neovim 0.11+)
-- **[mason.nvim](https://github.com/williamboman/mason.nvim)** - LSP server management
-- **[mason-lspconfig.nvim](https://github.com/williamboman/mason-lspconfig.nvim)** - Mason-LSP integration
-- **[mason-tool-installer.nvim](https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim)** - Automatic tool installation
-- **[mason-nvim-dap.nvim](https://github.com/jay-babu/mason-nvim-dap.nvim)** - Mason-DAP integration for debuggers
-- **[nvim-cmp](https://github.com/hrsh7th/nvim-cmp)** - Completion engine
-- **[LuaSnip](https://github.com/L3MON4D3/LuaSnip)** - Snippet engine
 
-**Note**: This configuration uses the new `vim.lsp.config` API introduced in Neovim 0.11, replacing the deprecated `require('lspconfig')` pattern.
+| Plugin | Description |
+|---|---|
+| [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) | LSP configurations (vim.lsp.config API for Neovim 0.11+) |
+| [mason.nvim](https://github.com/williamboman/mason.nvim) | LSP server management |
+| [mason-lspconfig.nvim](https://github.com/williamboman/mason-lspconfig.nvim) | Mason-LSP integration |
+| [mason-tool-installer.nvim](https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim) | Automatic tool installation |
+| [mason-nvim-dap.nvim](https://github.com/jay-babu/mason-nvim-dap.nvim) | Mason-DAP integration |
+| [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) | Completion engine |
+| [LuaSnip](https://github.com/L3MON4D3/LuaSnip) | Snippet engine |
 
-### 🔬 C/C++ Development Suite
-- **[clangd_extensions.nvim](https://github.com/p00f/clangd_extensions.nvim)** - Enhanced clangd features with inlay hints and AST viewing
-  - **Automatic GCC/Clang header detection** - Clangd is configured to query GCC and Clang compilers for system headers across all platforms (Windows, macOS, Linux)
-- **[cmake-tools.nvim](https://github.com/Civitasv/cmake-tools.nvim)** - Complete CMake integration for project management
-- **[nvim-dap](https://github.com/mfussenegger/nvim-dap)** - Debug Adapter Protocol with codelldb and gdb support
-- **[nvim-dap-ui](https://github.com/rcarriga/nvim-dap-ui)** - Beautiful debugging interface
-- **[nvim-lint](https://github.com/mfussenegger/nvim-lint)** - Static analysis with cppcheck (if installed via system package manager)
-- **[vim-lsp-cxx-highlight](https://github.com/jackguo380/vim-lsp-cxx-highlight)** - Enhanced C/C++ syntax highlighting
-- **[CurtineIncSw.vim](https://github.com/ericcurtin/CurtineIncSw.vim)** - Header/source file switching
+**Automatically installed via Mason:** `lua_ls`, `pyright`, `ts_ls`, `html`, `cssls`, `jsonls`, `clangd`, `jdtls`, `cmake`, `bashls`, `marksman`, `asm_lsp` — plus formatters (`stylua`, `black`, `prettier`, `clang-format`, `shfmt`), linters (`pylint`, `eslint_d`, `markdownlint`, `shellcheck`), and debuggers (`codelldb`, `debugpy`, `js-debug-adapter`).
 
-### ⚙️ Assembly Language Development
-- **[asm-lsp](https://github.com/bergercookie/asm-lsp)** - Assembly Language Server Protocol support
-- **Enhanced NASM support** - Optimized for Intel x86 (IA32) instruction set
-- **Automatic filetype detection** - `.asm`, `.s`, `.S`, `.nasm`, `.inc` files
-- **Assembly-specific settings** - Proper indentation and commenting for assembly
-- **Syntax highlighting** - Treesitter-based highlighting for assembly code
-- **LSP features** - IntelliSense, hover documentation, and error diagnostics
-- **Project integration** - Works with Makefiles and build systems
-- **Configuration file** - Includes `.asm-lsp.toml` for NASM and IA32 settings
+### Git Integration
 
-**Assembly-specific features:**
-- NASM assembler configuration (`assembler = "nasm"`)
-- x86/IA32 instruction set support (`instruction_set = "x86"`)
-- Case-insensitive instructions, registers, and directives
-- Automatic tab-based indentation (assembly convention)
-- Assembly comment style (`;` comments)
-- Quick comment/uncomment keymaps (`<leader>ac`, `<leader>au`)
-- Filetype-specific configuration for `.nasm` and `.asm` files
+| Plugin | Description |
+|---|---|
+| [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) | Git decorations, hunks, and blame |
+| [vim-fugitive](https://github.com/tpope/vim-fugitive) | Comprehensive Git wrapper |
+| [mini.diff](https://github.com/echasnovski/mini.diff) | Diff hunks and git changes |
 
-**Configuration file (`.asm-lsp.toml`):**
-The configuration automatically uses `~/.asm-lsp.toml` from your home directory. Copy the included `.asm-lsp.toml` to `~/.asm-lsp.toml` to customize asm-lsp behavior. The default configuration is optimized for NASM with Intel x86 (IA32) architecture.
+### Development Tools
 
-**Setup:**
-```bash
-# Copy the config file to your home directory
-cp .asm-lsp.toml ~/.asm-lsp.toml
-```
+| Plugin | Description |
+|---|---|
+| [conform.nvim](https://github.com/stevearc/conform.nvim) | Code formatting (manual — auto-format disabled) |
+| [nvim-lint](https://github.com/mfussenegger/nvim-lint) | Code linting |
+| [nvim-dap](https://github.com/mfussenegger/nvim-dap) | Debug Adapter Protocol |
+| [nvim-dap-ui](https://github.com/rcarriga/nvim-dap-ui) | Debugging interface |
 
-The LSP is configured to always use this file, so you don't need to place it in each project directory.
+### Language Support
 
-### UI & Navigation
-- **[telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)** - Fuzzy finder
-- **[trouble.nvim](https://github.com/folke/trouble.nvim)** - Diagnostics panel
-- **[nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)** - Syntax highlighting
+| Plugin | Description |
+|---|---|
+| [clangd_extensions.nvim](https://github.com/p00f/clangd_extensions.nvim) | Enhanced clangd with inlay hints and AST viewing |
+| [cmake-tools.nvim](https://github.com/Civitasv/cmake-tools.nvim) | CMake project integration |
+| [nvim-jdtls](https://github.com/mfussenegger/nvim-jdtls) | Java LSP |
+| [vimtex](https://github.com/lervag/vimtex) | LaTeX support |
+| [CurtineIncSw.vim](https://github.com/ericcurtin/CurtineIncSw.vim) | Header/source switching |
+| [asm-lsp](https://github.com/bergercookie/asm-lsp) | Assembly language server (NASM/x86) |
 
-### Git Integration & Version Control
-- **[gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)** - Git decorations, hunks, and blame
-- **[vim-fugitive](https://github.com/tpope/vim-fugitive)** - Comprehensive Git wrapper (replaced mini.git)
-- **[mini.diff](https://github.com/echasnovski/mini.diff)** - Work with diff hunks and git changes
+### Themes (15 colorschemes)
 
-### Editing & Productivity
-- **[Comment.nvim](https://github.com/numToStr/Comment.nvim)** - Smart commenting
-- **[conform.nvim](https://github.com/stevearc/conform.nvim)** - Code formatting
-- **[vimtex](https://github.com/lervag/vimtex)** - LaTeX support
+onedarkpro (default), tokyonight, gruvbox, dracula, nord, catppuccin, nightfox, rose-pine, kanagawa, sonokai, edge, everforest, gruvbox-material, material, vscode
 
-### Colorschemes & Themes (45+ Premium Themes)
-- **[onedarkpro.nvim](https://github.com/olimorris/onedarkpro.nvim)** - One Dark theme (default)
-- **[tokyonight.nvim](https://github.com/folke/tokyonight.nvim)** - Tokyo Night theme collection
-- **[gruvbox.nvim](https://github.com/ellisonleao/gruvbox.nvim)** - Gruvbox theme
-- **[dracula.nvim](https://github.com/Mofiqul/dracula.nvim)** - Dracula theme
-- **[nord.nvim](https://github.com/shaunsingh/nord.nvim)** - Nord theme
-- **[catppuccin](https://github.com/catppuccin/nvim)** - Catppuccin theme collection
-- **[nightfox.nvim](https://github.com/EdenEast/nightfox.nvim)** - Nightfox theme collection
-- **[rose-pine](https://github.com/rose-pine/neovim)** - Rose Pine theme collection
-- **[kanagawa.nvim](https://github.com/rebelot/kanagawa.nvim)** - Kanagawa theme collection
-- **[sonokai](https://github.com/sainnhe/sonokai)** - High contrast theme
-- **[edge](https://github.com/sainnhe/edge)** - Clean and elegant theme
-- **[everforest](https://github.com/sainnhe/everforest)** - Green forest theme
-- **[gruvbox-material](https://github.com/sainnhe/gruvbox-material)** - Material Gruvbox
-- **[material.nvim](https://github.com/marko-cerovac/material.nvim)** - Material Design theme
-- **[vscode.nvim](https://github.com/Mofiqul/vscode.nvim)** - VS Code theme
-- **[github-nvim-theme](https://github.com/projekt0n/github-nvim-theme)** - Enhanced GitHub themes collection (11 variants with accessibility support)
-- **[onedark.nvim](https://github.com/navarasu/onedark.nvim)** - Alternative One Dark
-- **[darkplus.nvim](https://github.com/lunarvim/darkplus.nvim)** - Dark+ theme
-- **[aurora](https://github.com/ray-x/aurora)** - Aurora theme
-- **[material.nvim](https://github.com/marko-cerovac/material.nvim)** - Material theme
-- **[monokai.nvim](https://github.com/tanvirtin/monokai.nvim)** - Monokai theme
-- **[onedark.nvim](https://github.com/navarasu/onedark.nvim)** - OneDark theme
-- **[github-nvim-theme](https://github.com/projekt0n/github-nvim-theme)** - Enhanced GitHub themes collection (11 variants)
-- **[sonokai](https://github.com/sainnhe/sonokai)** - Sonokai theme
-- **[edge](https://github.com/sainnhe/edge)** - Edge theme
+Use `<leader>th` for the live-preview theme selector or `<leader>ts` for quick switching.
 
-## 🎨 Additional Plugin Recommendations
+## ⌨️ Key Bindings
 
-### 🔬 C/C++ Development Enhancements
+> **Tip:** Press `<Space>` (leader) and wait to see all available keybinds via which-key!
 
-#### Essential for Large C Projects
-- **[nvim-treesitter-context](https://github.com/nvim-treesitter/nvim-treesitter-context)** - Show current function context at top
-- **[vim-swap](https://github.com/machakann/vim-swap)** - Swap function arguments and more
-- **[nvim-bqf](https://github.com/kevinhwang91/nvim-bqf)** - Better quickfix window for build errors
-- **[compiler.nvim](https://github.com/Zeioth/compiler.nvim)** - Compiler integration with async builds
-- **[overseer.nvim](https://github.com/stevearc/overseer.nvim)** - Task runner for builds and tests
+### General
 
-#### Code Quality & Analysis
-- **[nvim-coverage](https://github.com/andythigpen/nvim-coverage)** - Code coverage visualization
-- **[ccc.nvim](https://github.com/uga-rosa/ccc.nvim)** - Color picker and highlighter
-- **[clang-format.nvim](https://github.com/rhysd/vim-clang-format)** - Clang-format integration
-- **[doxygen-toolkit.vim](https://github.com/vim-scripts/DoxygenToolkit.vim)** - Doxygen documentation generator
+| Key | Mode | Action |
+|---|---|---|
+| `<Space>` | Normal | Leader key |
+| `<Esc>` | Normal | Clear search highlighting |
+| `<C-h/j/k/l>` | Normal | Navigate windows |
+| `<C-Arrow>` | Normal | Resize windows |
+| `<leader>w` | Normal | Save file |
+| `<leader>q` | Normal | Quit |
 
-#### Advanced Debugging & Profiling
-- **[nvim-gdb](https://github.com/sakhnik/nvim-gdb)** - Enhanced GDB integration
-- **[one-small-step-for-vimkind](https://github.com/jbyuki/one-small-step-for-vimkind)** - Lua debugger for config debugging
-- **[nvim-rip-substitute](https://github.com/chrisgrieser/nvim-rip-substitute)** - Better search and replace for refactoring
+### Finding & Navigation (Telescope)
 
-#### Project Management
-- **[project.nvim](https://github.com/ahmedkhalf/project.nvim)** - Automatic project detection
-- **[workspaces.nvim](https://github.com/natecraddock/workspaces.nvim)** - Workspace management
-- **[neovim-session-manager](https://github.com/Shatur/neovim-session-manager)** - Session persistence
-- **[persistence.nvim](https://github.com/folke/persistence.nvim)** - Session management
+| Key | Action |
+|---|---|
+| `<leader>ff` | Find files |
+| `<leader>fg` | Live grep |
+| `<leader>fb` | Find buffers |
+| `<leader>fh` | Help tags |
+| `<leader>fc` | Commands |
+| `<leader>fk` | Keymaps |
+| `<leader>fr` | Recent files |
+| `<leader>fs` | Grep string under cursor |
+| `<leader>fd` | Diagnostics |
 
-#### Performance for Large Codebases
-- **[nvim-navic](https://github.com/SmiteshP/nvim-navic)** - LSP breadcrumbs in statusline
-- **[aerial.nvim](https://github.com/stevearc/aerial.nvim)** - Symbol outline window
-- **[symbols-outline.nvim](https://github.com/simrat39/symbols-outline.nvim)** - Tree-like symbol explorer
-- **[nvim-lsp-file-operations](https://github.com/antosha417/nvim-lsp-file-operations)** - File operations via LSP
+### LSP & Code
 
-### 🚀 Recommended C Development Workflow Improvements
+| Key | Action |
+|---|---|
+| `gd` | Go to definition |
+| `gi` | Go to implementation |
+| `gr` | Go to references |
+| `gy` | Go to type definition |
+| `K` | Hover documentation |
+| `<leader>rn` | Rename symbol |
+| `<leader>ca` | Code actions |
+| `<leader>fm` | Format buffer |
+| `[d` / `]d` | Previous/next diagnostic |
 
-#### 1. Enhanced Build Integration
+### File & Buffer Management
+
+| Key | Action |
+|---|---|
+| `<leader>e` | File explorer (mini.files) |
+| `<leader>bd` | Delete buffer (keep layout) |
+| `<leader>bD` | Force delete buffer |
+
+### Git
+
+| Key | Action |
+|---|---|
+| `<leader>hs` | Stage hunk |
+| `<leader>hr` | Reset hunk |
+| `<leader>hS` | Stage buffer |
+| `<leader>hp` | Preview hunk |
+| `<leader>hb` | Blame line |
+| `<leader>hd` | Diff this |
+| `<leader>tb` | Toggle blame |
+
+### C/C++ Development
+
+| Key | Action |
+|---|---|
+| `<leader>cg` | CMake Generate |
+| `<leader>cb` | CMake Build |
+| `<leader>cr` | CMake Run |
+| `<leader>cd` | CMake Debug |
+| `<leader>ch` | Switch Header/Source |
+| `<leader>db` | Toggle breakpoint |
+| `<leader>dc` | Debug continue |
+| `<leader>di` | Debug step into |
+| `<leader>do` | Debug step over |
+| `<leader>du` | Toggle debug UI |
+
+### Text Objects & Operators (Mini)
+
+| Key | Action |
+|---|---|
+| `sa` / `sd` / `sr` | Add/delete/replace surrounding |
+| `<M-h/j/k/l>` | Move lines/selections |
+| `ga` | Align text |
+| `gS` | Split/join arguments |
+| `gs` | Sort |
+| `gm` | Multiply (duplicate) |
+| `gx` | Exchange text |
+| `g=` | Evaluate and replace |
+
+### Minimap & Navigation
+
+| Key | Action |
+|---|---|
+| `<leader>mm` | Toggle minimap |
+| `<leader>mz` | Zoom window |
+| `<CR>` | Start 2D jumping |
+| `<leader>vv` | Add visit label |
+| `<leader>vl` | List visits |
+| `<leader>ss` | Select session |
+| `<leader>sw` | Write session |
+
+### Theme & Toggles
+
+| Key | Action |
+|---|---|
+| `<leader>th` | Theme switcher (live preview) |
+| `<leader>ts` | Quick theme selector |
+| `<leader>t;` | Toggle terminal |
+| `<leader>tw` | Trim trailing whitespace |
+| `<leader>tn` | Toggle line numbers |
+
+### Trouble (Diagnostics)
+
+| Key | Action |
+|---|---|
+| `<leader>xx` | Toggle diagnostics |
+| `<leader>xw` | Buffer diagnostics |
+| `<leader>xl` | Location list |
+| `<leader>xq` | Quickfix list |
+| `<leader>xs` | LSP symbols |
+| `<leader>xr` | LSP references |
+
+## 🛠️ Customization
+
+### Adding Plugins
+
+Add plugins to the appropriate file under `lua/plugins/`:
+
 ```lua
--- Add to your configuration for better build integration
-{
-  "Zeioth/compiler.nvim",
-  cmd = {"CompilerOpen", "CompilerToggleResults", "CompilerRedo"},
-  dependencies = { "stevearc/overseer.nvim" },
-  opts = {},
-}
-
-{
-  "stevearc/overseer.nvim",
-  commit = "400e762648b70397d0d315e5acaf0ff3597f2d8b",
-  cmd = { "CompilerOpen", "CompilerToggleResults", "CompilerRedo" },
-  opts = {
-    task_list = {
-      direction = "bottom",
-      min_height = 25,
-      max_height = 25,
-      default_detail = 1
-    },
+-- Example: lua/plugins/ui/themes.lua
+return {
+  -- ... existing plugins ...
+  {
+    "author/plugin-name",
+    lazy = true,
+    config = function()
+      require("plugin-name").setup({})
+    end,
   },
 }
 ```
 
-#### 2. Better Error Navigation
-```lua
-{
-  "kevinhwang91/nvim-bqf",
-  ft = "qf",
-  config = function()
-    require("bqf").setup({
-      auto_enable = true,
-      auto_resize_height = true,
-      preview = {
-        win_height = 12,
-        win_vheight = 12,
-        delay_syntax = 80,
-        border_chars = {"┃", "━", "┏", "┓", "┗", "┛", "┣", "┫", "┳", "┻"}
-      },
-    })
-  end
-}
-```
-
-#### 3. Code Coverage Visualization
-```lua
-{
-  "andythigpen/nvim-coverage",
-  dependencies = "nvim-lua/plenary.nvim",
-  cmd = { "Coverage", "CoverageLoad", "CoverageShow", "CoverageHide", "CoverageToggle" },
-  config = function()
-    require("coverage").setup({
-      commands = true,
-      highlights = {
-        covered = { fg = "#C3E88D" },
-        uncovered = { fg = "#F07178" },
-      },
-    })
-  end,
-}
-```
-
-### Navigation & File Management
-- **[nvim-tree.lua](https://github.com/nvim-tree/nvim-tree.lua)** - File explorer with git integration
-- **[oil.nvim](https://github.com/stevearc/oil.nvim)** - File manager as a buffer
-- **[neo-tree.nvim](https://github.com/nvim-neo-tree/neo-tree.nvim)** - Modern file explorer
-- **[flash.nvim](https://github.com/folke/flash.nvim)** - Navigate code with search labels
-- **[leap.nvim](https://github.com/ggandor/leap.nvim)** - Lightning-fast movement
-- **[harpoon](https://github.com/ThePrimeagen/harpoon)** - Quick file navigation
-- **[telescope-fzf-native.nvim](https://github.com/nvim-telescope/telescope-fzf-native.nvim)** - Native FZF sorter for Telescope
-- **[telescope-file-browser.nvim](https://github.com/nvim-telescope/telescope-file-browser.nvim)** - File browser for Telescope
-
-### Additional Git Integration
-- **[lazygit.nvim](https://github.com/kdheepak/lazygit.nvim)** - LazyGit integration
-- **[diffview.nvim](https://github.com/sindrets/diffview.nvim)** - Git diff and merge tool
-- **[neogit](https://github.com/NeogitOrg/neogit)** - Magit clone for Neovim
-- **[octo.nvim](https://github.com/pwntester/octo.nvim)** - GitHub integration
-- **[git-blame.nvim](https://github.com/f-person/git-blame.nvim)** - Git blame annotations
-- **[gitlinker.nvim](https://github.com/ruifm/gitlinker.nvim)** - Generate git permalinks
-- **[git-conflict.nvim](https://github.com/akinsho/git-conflict.nvim)** - Git conflict resolution
-- **[fugitive.vim](https://github.com/tpope/vim-fugitive)** - Comprehensive Git wrapper
-
-### UI & Interface Enhancements
-- **[lualine.nvim](https://github.com/nvim-lualine/lualine.nvim)** - Blazing fast statusline
-- **[bufferline.nvim](https://github.com/akinsho/bufferline.nvim)** - Snazzy buffer tabs
-- **[indent-blankline.nvim](https://github.com/lukas-reineke/indent-blankline.nvim)** - Indent guides
-- **[nvim-notify](https://github.com/rcarriga/nvim-notify)** - Fancy notification manager
-- **[noice.nvim](https://github.com/folke/noice.nvim)** - UI replacement for messages, cmdline, and popupmenu
-- **[dressing.nvim](https://github.com/stevearc/dressing.nvim)** - Better UI for vim.ui interfaces
-- **[which-key.nvim](https://github.com/folke/which-key.nvim)** - Key binding popup
-- **[alpha-nvim](https://github.com/goolord/alpha-nvim)** - Dashboard/start screen
-- **[nvim-colorizer.lua](https://github.com/norcalli/nvim-colorizer.lua)** - Color highlighting
-- **[todo-comments.nvim](https://github.com/folke/todo-comments.nvim)** - Highlight TODO comments
-
-### Development & Editing Tools
-- **[nvim-surround](https://github.com/kylechui/nvim-surround)** - Modern surround plugin
-- **[nvim-autopairs](https://github.com/windwp/nvim-autopairs)** - Auto close brackets/quotes
-- **[nvim-spectre](https://github.com/nvim-pack/nvim-spectre)** - Search and replace panel
-- **[dial.nvim](https://github.com/monaqa/dial.nvim)** - Extended increment/decrement
-- **[toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim)** - Terminal management
-- **[nvim-dap](https://github.com/mfussenegger/nvim-dap)** - Debug adapter protocol
-- **[nvim-dap-ui](https://github.com/rcarriga/nvim-dap-ui)** - UI for nvim-dap
-- **[undotree](https://github.com/mbbill/undotree)** - Undo history visualizer
-- **[neotest](https://github.com/nvim-neotest/neotest)** - Testing framework
-- **[refactoring.nvim](https://github.com/ThePrimeagen/refactoring.nvim)** - Refactoring toolkit
-
-### Session & Project Management
-- **[persistence.nvim](https://github.com/folke/persistence.nvim)** - Session management
-- **[possession.nvim](https://github.com/jedrzejboczar/possession.nvim)** - Session management
-- **[project.nvim](https://github.com/ahmedkhalf/project.nvim)** - Project management
-- **[workspaces.nvim](https://github.com/natecraddock/workspaces.nvim)** - Workspace management
-- **[neovim-session-manager](https://github.com/Shatur/neovim-session-manager)** - Session manager
-
-
-
-### Language-Specific Enhancements
-- **[rust-tools.nvim](https://github.com/simrat39/rust-tools.nvim)** - Enhanced Rust support
-- **[go.nvim](https://github.com/ray-x/go.nvim)** - Go development tools
-- **[typescript.nvim](https://github.com/jose-elias-alvarez/typescript.nvim)** - TypeScript utilities
-- **[nvim-jdtls](https://github.com/mfussenegger/nvim-jdtls)** - Java LSP enhancements
-- **[emmet-vim](https://github.com/mattn/emmet-vim)** - Web development Emmet expansion
-
-### Writing & Documentation
-- **[markdown-preview.nvim](https://github.com/iamcco/markdown-preview.nvim)** - Markdown preview
-- **[obsidian.nvim](https://github.com/epwalsh/obsidian.nvim)** - Obsidian integration
-- **[vim-table-mode](https://github.com/dhruvasagar/vim-table-mode)** - Table creation and editing
-
-### Utilities & Extensions
-- **[nvim-lastplace](https://github.com/ethanholz/nvim-lastplace)** - Remember cursor position
-- **[vim-sleuth](https://github.com/tpope/vim-sleuth)** - Auto-detect indentation
-- **[startuptime.vim](https://github.com/dstein64/vim-startuptime)** - Startup time profiler
-- **[vim-dadbod](https://github.com/tpope/vim-dadbod)** - Database interface
-- **[toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim)** - Terminal management
-
-## 🔧 Enhanced Mason LSP Configuration
-
-This configuration includes a comprehensive Mason setup that automatically installs and manages:
-
-### 📦 Automatically Installed Tools
-
-**LSP Servers:**
-- `lua_ls` - Lua language server
-- `pyright` - Python language server  
-- `ts_ls` - TypeScript/JavaScript server
-- `html`, `cssls`, `jsonls` - Web development servers
-- `clangd` - C/C++ language server
-- `jdtls` - Java language server
-- `cmake` - CMake language server
-- `bashls` - Bash/shell script server
-- `marksman` - Markdown language server
-- `asm_lsp` - Assembly language server (NASM/GAS/MASM/TASM)
-
-**Formatters:**
-- `stylua` - Lua code formatter
-- `black`, `isort` - Python formatting and import sorting
-- `prettier` - Universal web formatter (JS/TS/HTML/CSS/JSON/YAML)
-- `clang-format` - C/C++ code formatter
-- `shfmt` - Shell script formatter
-- `asmfmt` - Assembly code formatter (if available)
-
-**Linters:**
-- `pylint` - Python code analysis
-- `eslint_d` - Fast JavaScript/TypeScript linting
-- `markdownlint` - Markdown linting
-- `shellcheck` - Shell script analysis
-
-**Debuggers:**
-- `codelldb` - C/C++/Rust debugger
-- `debugpy` - Python debugger
-- `js-debug-adapter` - JavaScript/TypeScript debugger
-
-### ⚡ Enhanced Features
-
-- **Smart Tool Detection**: Automatically detects tools in both system PATH and Mason installation directory
-- **Manual Formatting**: On-demand formatting with comprehensive formatter support (auto-formatting disabled)
-- **Enhanced Linting**: Multi-language linting with Mason integration
-- **DAP Integration**: Automatic debugger setup through mason-nvim-dap
-- **Tool Information**: View available formatters and linters (`<leader>fi`, `<leader>li`)
-
-### 🎯 Key Mappings for Mason Tools
-
-| Key | Action | Description |
-|-----|--------|-------------|
-| `<leader>fm` | Format Buffer | Manual formatting |
-| `<leader>tf` | Auto-format Status | Show auto-formatting status (permanently disabled) |
-| `<leader>fi` | Formatter Info | Show available formatters |
-| `<leader>ll` | Lint File | Manual linting |
-| `<leader>li` | Linter Info | Show available linters |
-
-Access Mason manager with `:Mason` to install/update tools manually.
-
-## 🛠️ Customization
-
-### Adding New Plugins
-
-Edit `lua/plugins/init.lua` and add your plugin specification:
-
-```lua
-{
-  "author/plugin-name",
-  config = function()
-    require("plugin-name").setup({
-      -- your configuration
-    })
-  end,
-}
-```
+To create a new category, add a directory under `lua/plugins/` and import it in `lua/plugins/init.lua`.
 
 ### Changing Theme
 
-**Enhanced Theme Switcher** (Completely Redesigned!)
-
-Use the enhanced Telescope-based theme switcher:
-- Press `<leader>th` to open the **live preview** theme selector
-- **🔭 Telescope Integration**: No more infinite indenting issues!
-- **📱 Live Preview**: See themes instantly as you browse
-- Choose from **45+ premium themes** including material, sonokai, edge, everforest, enhanced GitHub collection, and more
-- **⚡ Fuzzy Search**: Quickly find themes by typing part of their name
-- Themes are applied instantly with smooth transitions
-
-**Manual Theme Change**
-
-Alternatively, modify the colorscheme in `init.lua`:
-
-```lua
-vim.cmd("colorscheme your_preferred_theme")
-```
-
-Available themes include:
-- `dracula` - Dark vampire theme
-- `gruvbox` - Retro groove theme  
-- `tokyonight`, `tokyonight-night`, `tokyonight-storm`, `tokyonight-day`
-- `catppuccin`, `catppuccin-mocha`, `catppuccin-latte`, `catppuccin-frappe`, `catppuccin-macchiato`
-- `nord` - Arctic blue theme
-- `rose-pine`, `rose-pine-moon`, `rose-pine-dawn`, `rose-pine-main`
-- `kanagawa`, `kanagawa-wave`, `kanagawa-dragon`, `kanagawa-lotus`
-- `sonokai` - High contrast elegant theme
-- `edge` - Clean and sophisticated theme
-- `everforest` - Comfortable green theme
-- `gruvbox-material` - Material Design Gruvbox
-- `material` - Material Design theme variants
-- `vscode` - VS Code theme
-- **Enhanced GitHub Themes Collection**:
-  - `github_dark` - GitHub's dark theme
-  - `github_light` - GitHub's light theme  
-  - `github_dark_dimmed` - Dimmed dark variant
-  - `github_dark_high_contrast` - High contrast dark
-  - `github_light_high_contrast` - High contrast light
-  - `github_dark_colorblind` - Colorblind-friendly dark
-  - `github_light_colorblind` - Colorblind-friendly light
-  - `github_dark_tritanopia` - Tritanopia-optimized dark
-  - `github_light_tritanopia` - Tritanopia-optimized light
-  - `github_dark_default` - GitHub default dark
-  - `github_light_default` - GitHub default light
-- `onedark` - Alternative One Dark theme
-- And many more premium themes!
-
-**New Quick Theme Selector**: Use `<leader>ts` for instant theme switching!
-
-**GitHub Theme Cycler**: Use `<leader>tg` to cycle through all 11 GitHub theme variants!
-
-For detailed information about all GitHub theme variants, see **[GitHub Themes Guide](GITHUB_THEMES.md)**.
+- **Live preview:** `<leader>th` opens the Telescope-based theme selector
+- **Manual:** Edit `init.lua` and set `vim.cmd("colorscheme your_theme")`
 
 ### Custom Key Mappings
 
-Add your keymaps to `lua/config/keymaps.lua`:
+Add keymaps to `lua/config/keymaps.lua`:
 
 ```lua
 keymap.set("n", "<leader>custom", "<cmd>YourCommand<cr>", { desc = "Custom action" })
 ```
 
-## ✨ New Features & Quality of Life Improvements
-
-### 🔧 Manual Formatting Control
-Auto-formatting on save has been **permanently disabled** to prevent automatic file changes:
-- **Manual formatting only**: Use `<leader>fm` to format the current buffer when needed
-- **Show recommendations**: Formatters can show recommended changes but won't automatically apply them
-- **No automatic changes**: Files will never be modified automatically on save
-
-### 🎨 Enhanced Theme Switcher
-- **Telescope Integration**: `<leader>th` opens **live preview** theme selector
-- **38+ premium themes**: Including material, sonokai, edge, everforest, gruvbox-material, and more
-- **Fixed UI Issues**: No more infinite indenting! Smooth navigation with fuzzy search
-- **Live Preview**: See themes instantly as you browse with real-time preview
-
-### 🔍 Which-Key Integration
-- **Key binding hints**: Press any leader key and wait to see available commands
-- **Organized groups**: Commands are grouped by function (find, trouble, theme, etc.)
-- **Visual clarity**: Clean popup interface showing all available shortcuts
-
-## ⌨️ Key Bindings Reference
-
-### 🔍 Finding & Navigation (Telescope)
-| Key | Action | Description |
-|-----|--------|-------------|
-| `<leader>ff` | Find Files | Find files in current project |
-| `<leader>fg` | Live Grep | Search text across all files |
-| `<leader>fb` | Find Buffers | Switch between open buffers |
-| `<leader>fh` | Help Tags | Search through help documentation |
-| `<leader>fc` | Commands | Search and execute commands |
-| `<leader>fk` | Keymaps | Search through all keymaps |
-| `<leader>fr` | Recent Files | Open recently used files |
-| `<leader>fs` | Grep String | Search for string under cursor |
-| `<leader>fm` | Marks | Navigate to bookmarks |
-| `<leader>fj` | Jumplist | Navigate jump history |
-| `<leader>fd` | Diagnostics | Find LSP diagnostics |
-| `<leader>fq` | Quickfix | Open quickfix list |
-
-### 📁 File & Buffer Management
-| Key | Action | Description |
-|-----|--------|-------------|
-| `<leader>e` | File Explorer | Open mini.files explorer |
-| `<leader>bd` | Delete Buffer | Close buffer safely |
-| `<leader>bD` | Force Delete | Force close buffer |
-| `<leader>bn` | Next Buffer | Switch to next buffer |
-| `<leader>bp` | Previous Buffer | Switch to previous buffer |
-| `<leader>bl` | Last Buffer | Switch to last buffer |
-| `<leader>bf` | First Buffer | Switch to first buffer |
-
-### 🪟 Window Management
-| Key | Action | Description |
-|-----|--------|-------------|
-| `<C-h/j/k/l>` | Navigate Windows | Move between windows |
-| `<C-Arrow>` | Resize Windows | Resize current window |
-| `<leader>wv` | Vertical Split | Create vertical split |
-| `<leader>wh` | Horizontal Split | Create horizontal split |
-| `<leader>wc` | Close Window | Close current window |
-| `<leader>wo` | Close Others | Close all other windows |
-
-### 🔧 LSP & Code Actions
-| Key | Action | Description |
-|-----|--------|-------------|
-| `gd` | Go to Definition | Jump to symbol definition |
-| `gi` | Go to Implementation | Jump to implementation |
-| `gr` | Go to References | Show all references |
-| `gy` | Go to Type Definition | Jump to type definition |
-| `K` | Hover Documentation | Show hover information |
-| `<leader>rn` | Rename Symbol | Rename symbol under cursor |
-| `<leader>ca` | Code Action | Show available code actions |
-| `<leader>lf` | Format Buffer | Format current buffer |
-| `<leader>ld` | Show Diagnostic | Show diagnostic for current line |
-| `<leader>lr` | Restart LSP | Restart LSP server |
-| `<leader>li` | LSP Info | Show LSP information |
-| `[d` / `]d` | Navigate Diagnostics | Jump to prev/next diagnostic |
-
-### 📦 Git Integration
-| Key | Action | Description |
-|-----|--------|-------------|
-| `<leader>hs` | Stage Hunk | Stage current hunk |
-| `<leader>hr` | Reset Hunk | Reset current hunk |
-| `<leader>hS` | Stage Buffer | Stage entire buffer |
-| `<leader>hu` | Undo Stage | Undo last stage |
-| `<leader>hR` | Reset Buffer | Reset entire buffer |
-| `<leader>hp` | Preview Hunk | Preview hunk changes |
-| `<leader>hb` | Blame Line | Show git blame |
-| `<leader>hd` | Diff This | Show diff for current file |
-| `<leader>tb` | Toggle Blame | Toggle git blame display |
-| `<leader>td` | Toggle Deleted | Toggle deleted line display |
-
-### 🎨 Theme & Toggles
-| Key | Action | Description |
-|-----|--------|-------------|
-| `<leader>th` | Theme Switcher | Open theme selector |
-| `<leader>t;` | Toggle Terminal | Toggle terminal window |
-| `<leader>tp` | Toggle Wrap | Toggle line wrapping |
-| `<leader>tw` | Trim Whitespace | Remove trailing whitespace |
-| `<leader>tl` | Trim Lines | Remove empty lines at EOF |
-| `<leader>tn` | Toggle Line Numbers | Toggle line numbers |
-| `<leader>tr` | Toggle Relative Numbers | Toggle relative line numbers |
-
-### 💾 Session Management
-| Key | Action | Description |
-|-----|--------|-------------|
-| `<leader>ss` | Select Session | Load existing session |
-| `<leader>sw` | Write Session | Save current session |
-| `<leader>sD` | Delete Session | Delete saved session |
-
-### 🗺️ Minimap & Navigation
-| Key | Action | Description |
-|-----|--------|-------------|
-| `<leader>mm` | Toggle Minimap | Show/hide code minimap |
-| `<leader>mr` | Refresh Minimap | Refresh minimap display |
-| `<leader>mf` | Focus Minimap | Focus on minimap window |
-| `<leader>mz` | Zoom Window | Zoom current window (mini.misc) |
-
-### 🔔 Notifications
-| Key | Action | Description |
-|-----|--------|-------------|
-| `<leader>nd` | Dismiss Notifications | Clear all notifications |
-| `<leader>nh` | Notification History | Show notification history |
-| `<leader>nc` | Clear Notifications | Clear notification display |
-
-### 🎯 Text Objects & Operators
-| Key | Action | Description |
-|-----|--------|-------------|
-| `sa` | Add Surrounding | Add surrounding characters |
-| `sd` | Delete Surrounding | Remove surrounding characters |
-| `sr` | Replace Surrounding | Replace surrounding characters |
-| `ga` | Align Text | Align text selections |
-| `gS` | Split/Join | Toggle function arguments split |
-| `gs` | Sort | Sort text selections |
-| `gr` | Replace | Replace with register content |
-| `gm` | Multiply | Duplicate text |
-| `gx` | Exchange | Exchange text regions |
-| `g=` | Evaluate | Evaluate and replace expression |
-| `<M-h/j/k/l>` | Move Lines | Move lines/selections |
-
-### 📍 Mini Visits & Picks
-| Key | Action | Description |
-|-----|--------|-------------|
-| `<leader>vv` | Add Visit | Mark current location |
-| `<leader>vr` | Remove Visit | Remove visit mark |
-| `<leader>vl` | List Visits | Show all visit marks |
-| `<leader>pf` | Pick Files | Alternative file picker |
-| `<leader>pg` | Pick Grep | Alternative grep picker |
-| `<leader>pb` | Pick Buffers | Alternative buffer picker |
-
-### 💾 Basic File Operations
-| Key | Action | Description |
-|-----|--------|-------------|
-| `<leader>w` | Save File | Write current file |
-| `<leader>q` | Quit | Quit current window |
-| `<leader>wq` | Save & Quit | Write and quit |
-| `<leader>qa` | Quit All | Quit all windows |
-| `<Esc>` | Clear Search | Clear search highlighting |
-
-### 🔧 Configuration & Utilities
-| Key | Action | Description |
-|-----|--------|-------------|
-| `<leader>cc` | Edit Config | Open init.lua |
-| `<leader>cp` | Edit Plugins | Open plugins config |
-| `<leader>ck` | Edit Keymaps | Open keymaps config |
-| `<leader>so` | Source Config | Reload configuration |
-| `<leader><leader>` | Source File | Source current file |
-| `<leader>sr` | Search Replace | Search and replace text |
-| `<leader>cd` | Change Directory | Change to file directory |
-| `<leader>pwd` | Print Directory | Show current directory |
-
-### 📋 Clipboard & Terminal
-| Key | Action | Description |
-|-----|--------|-------------|
-| `<leader>y` | Copy to Clipboard | Copy to system clipboard |
-| `<leader>p` | Paste from Clipboard | Paste from system clipboard |
-| `<leader>t;` | Open Terminal | Open terminal window |
-| `<Esc>` (in terminal) | Exit Terminal | Return to normal mode |
-
-> **Tip**: Press `<leader>` (space) and wait to see all available keybinds in a popup menu!
-
-### 📢 Better Notifications
-- **nvim-notify**: Enhanced notification system with animations
-- **Visual feedback**: Theme changes, errors, and info messages display beautifully
-- **Non-intrusive**: Notifications fade out automatically
-
-### 🎯 Improved Trouble.nvim
-- **Updated keybinds**: Fixed deprecated commands that were causing errors
-- **New shortcuts**: 
-  - `<leader>xx` - Toggle diagnostics
-  - `<leader>xw` - Buffer diagnostics  
-  - `<leader>xl` - Location list
-  - `<leader>xq` - Quickfix list
-  - `<leader>xs` - LSP symbols
-  - `<leader>xr` - LSP references
-
-### 🎨 Enhanced UI
-- **dressing.nvim**: Better UI for vim.ui select and input
-- **Improved statusline**: More consistent colors and better configuration
-- **Better borders**: Rounded borders throughout the UI
-
-### 🚀 Complete Mini.nvim Suite (28 plugins)
-A comprehensive collection of all the best mini plugins for maximum productivity:
-
-#### 📁 File & Buffer Management
-- **mini.bufremove**: Delete buffers without losing window layout (`<leader>bd`, `<leader>bD`)
-- **mini.files**: Fast file explorer with preview (`<leader>e`)
-- **mini.visits**: Track and navigate recently visited files (`<leader>vv`, `<leader>vl`)
-- **mini.sessions**: Session management for workspace persistence (`<leader>ss`, `<leader>sw`, `<leader>sd`)
-- **mini.pick**: Alternative picker to telescope (`<leader>pf`, `<leader>pg`, `<leader>pb`, `<leader>ph`)
-
-#### ✨ Visual Enhancements
-- **mini.starter**: Beautiful start screen with recent files and quick actions
-- **mini.animate**: Smooth animations for cursor movement, scrolling, and window operations
-- **mini.cursorword**: Automatically highlights the word under cursor
-- **mini.hipatterns**: Highlights TODO, FIXME, HACK, NOTE comments and hex colors
-- **mini.indentscope**: Visual indent guides with scope indicators
-- **mini.trailspace**: Shows trailing whitespace and provides cleanup commands (`<leader>tw`, `<leader>tl`)
-- **mini.map**: Window with buffer text overview (minimap) (`<leader>mm`, `<leader>mr`, `<leader>mf`)
-- **mini.icons**: Icon provider for various contexts throughout Neovim
-- **mini.statusline**: Minimal and fast statusline
-- **mini.tabline**: Tabline with customizable appearance
-
-#### 🛠️ Text Manipulation & Navigation
-- **mini.surround**: Add, delete, replace surroundings like brackets, quotes (`sa`, `sd`, `sr`)
-- **mini.move**: Move lines and selections with Alt+hjkl (`<M-h/j/k/l>`)
-- **mini.splitjoin**: Toggle between split/joined function arguments with `gS`
-- **mini.align**: Text alignment with `ga` and `gA`
-- **mini.operators**: Additional text operators:
-  - `g=`: Evaluate and replace text
-  - `gx`: Exchange text regions
-  - `gm`: Multiply (duplicate) text
-  - `gr`: Replace text with register content
-  - `gs`: Sort text selections
-- **mini.ai**: Enhanced text objects for better around/inside operations
-- **mini.jump**: Quick jump to any single character
-- **mini.jump2d**: Jump to any position with Enter
-- **mini.pairs**: Auto-close brackets, quotes, and parentheses
-- **mini.bracketed**: Go to next/previous targets (buffers, files, diagnostics, etc.)
-
-#### 🔧 Development Tools
-- **mini.diff**: Work with diff hunks and git changes (`gh`, `gH`, `[h`, `]h`)
-- **fugitive.vim**: Git integration and commands (`<leader>gs`, `<leader>gc`, `<leader>gd`)
-- **mini.extra**: Extra textobjects and pickers for enhanced functionality
-- **mini.fuzzy**: Fuzzy matching algorithms for better search
-- **mini.misc**: Miscellaneous functions including zoom (`<leader>z`)
-
 ## 🔧 Troubleshooting
 
-### Common Issues
+| Issue | Solution |
+|---|---|
+| LSP servers not working | Run `:Mason` and ensure servers are installed |
+| Plugins not loading | Run `:Lazy sync` to update plugins |
+| Telescope not finding files | Ensure `ripgrep` is installed |
+| Formatting not working | Install formatters via Mason or system package manager |
 
-1. **LSP servers not working**: Run `:Mason` and ensure servers are installed
-2. **Plugins not loading**: Run `:Lazy sync` to update plugins
-3. **Telescope not finding files**: Ensure `ripgrep` is installed
-4. **Formatting not working**: Install formatters via Mason or your system package manager
+**Health check:** Run `:checkhealth` in Neovim to diagnose issues.
 
-### Health Check
-
-Run `:checkhealth` in Neovim to diagnose configuration issues.
-
-### Reset Configuration
-
-To start fresh:
+**Reset configuration:**
 ```bash
-rm -rf ~/.local/share/nvim
-rm -rf ~/.local/state/nvim
-rm -rf ~/.cache/nvim
+rm -rf ~/.local/share/nvim ~/.local/state/nvim ~/.cache/nvim
 ```
+
+> **Windows users:** See **[WINDOWS_TROUBLESHOOTING.md](WINDOWS_TROUBLESHOOTING.md)** for platform-specific issues.
+
+## 💡 Possible Improvements
+
+Here are some ideas for future enhancements to this setup:
+
+### Performance
+- **Lazy-load more plugins** — Some plugins could be loaded on specific events or filetypes rather than at startup to reduce launch time
+- **Profile startup time** — Use the snacks.nvim profiler or `vim-startuptime` to identify and optimize slow-loading plugins
+- **Reduce theme count** — Fewer themes means less disk space and faster initial install
+
+### Features
+- **Add [nvim-treesitter-context](https://github.com/nvim-treesitter/nvim-treesitter-context)** — Show the current function/class context at the top of the screen
+- **Add [flash.nvim](https://github.com/folke/flash.nvim) or [leap.nvim](https://github.com/ggandor/leap.nvim)** — Faster navigation with search labels
+- **Add [harpoon](https://github.com/ThePrimeagen/harpoon)** — Quick file navigation for frequently used files
+- **Add [nvim-bqf](https://github.com/kevinhwang91/nvim-bqf)** — Better quickfix window for build errors and search results
+- **Add [neotest](https://github.com/nvim-neotest/neotest)** — Integrated test runner framework
+- **Add [refactoring.nvim](https://github.com/ThePrimeagen/refactoring.nvim)** — Code refactoring toolkit
+- **Add [markdown-preview.nvim](https://github.com/iamcco/markdown-preview.nvim)** — Live markdown preview in browser
+
+### Code Quality
+- **Enable auto-formatting** — Currently disabled; could be opt-in per filetype
+- **Add EditorConfig support** — Ensure consistent formatting across different editors in shared projects
+- **Add [nvim-coverage](https://github.com/andythigpen/nvim-coverage)** — Code coverage visualization for test-driven development
+
+### Language Support
+- **Rust** — Add [rust-tools.nvim](https://github.com/simrat39/rust-tools.nvim) or [rustaceanvim](https://github.com/mrcjkb/rustaceanvim) for Rust development
+- **Go** — Add [go.nvim](https://github.com/ray-x/go.nvim) for Go development
+- **TypeScript** — Add enhanced TypeScript support with dedicated tools
+- **Python** — Add [nvim-dap-python](https://github.com/mfussenegger/nvim-dap-python) for better Python debugging
+
+### Project Management
+- **Add [project.nvim](https://github.com/ahmedkhalf/project.nvim)** — Automatic project root detection
+- **Add [persistence.nvim](https://github.com/folke/persistence.nvim)** — Automated session management (complement to mini.sessions)
+- **Add [todo-comments.nvim](https://github.com/folke/todo-comments.nvim)** — Highlight and search TODO/FIXME/HACK comments across the project
+
+### User Experience
+- **Create a `:Setup` command** — Interactive wizard for first-time configuration
+- **Add per-project configuration** — Support `.nvim.lua` or `.exrc` files for project-specific settings
+- **Add [noice.nvim](https://github.com/folke/noice.nvim)** — Replace the command line and message UI with a modern interface
+- **Improve the dashboard** — Add project-specific shortcuts and recent project tracking
+
+## 📚 Additional Documentation
+
+| Document | Description |
+|---|---|
+| [QUICKSTART.md](QUICKSTART.md) | 5-minute getting started guide |
+| [INSTALL.md](INSTALL.md) | Detailed installation instructions and prerequisites |
+| [PLATFORM_SUPPORT.md](PLATFORM_SUPPORT.md) | Platform-specific guides (Arch, Ubuntu, macOS, Windows, Fedora) |
+| [PLUGIN_GUIDE.md](PLUGIN_GUIDE.md) | Comprehensive plugin usage guide |
+| [SNACKS_GUIDE.md](SNACKS_GUIDE.md) | Complete snacks.nvim documentation for all 32 modules |
+| [WINDOWS_TROUBLESHOOTING.md](WINDOWS_TROUBLESHOOTING.md) | Windows-specific troubleshooting |
 
 ## 📚 Resources
 
