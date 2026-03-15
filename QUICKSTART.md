@@ -99,7 +99,6 @@ Press `<Space>` (space bar) and wait 1 second to see all available commands!
 ### Learn More
 - **Full docs:** [README.md](README.md) - Complete guide
 - **Installation details:** [INSTALL.md](INSTALL.md) - Advanced installation
-- **Feature comparison:** [SETUP_COMPARISON.md](SETUP_COMPARISON.md) - Full vs Minimal
 - **Plugin guide:** [PLUGIN_GUIDE.md](PLUGIN_GUIDE.md) - How to use all features
 
 ### Switch Between Setups
@@ -289,5 +288,4 @@ You're now part of a powerful, extensible editor community. Take your time learn
 **Want to learn more?** Check out:
 - [README.md](README.md) - Main documentation
 - [INSTALL.md](INSTALL.md) - Installation guide
-- [SETUP_COMPARISON.md](SETUP_COMPARISON.md) - Full vs Minimal comparison
 - [PLUGIN_GUIDE.md](PLUGIN_GUIDE.md) - Plugin usage guide
