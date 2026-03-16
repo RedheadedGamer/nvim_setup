@@ -19,97 +19,181 @@ return {
       { "<leader>tF", desc = "Toggle auto-format (global)" },
     },
     config = function()
+      -- vim.uv is the preferred name since Neovim 0.10; fall back to vim.loop.
+      local uv = vim.uv or vim.loop
+
+      -- ── Config-file detection ────────────────────────────────────────────────
+      -- Walk up from `dir` (the buffer's directory) and return true when any of
+      -- the given file names is found.  The search stops at HOME so it never
+      -- escapes the user's project tree.
+      local function has_config(names, ctx)
+        local dir = (ctx and ctx.dirname) or vim.fn.getcwd()
+        local found = vim.fs.find(names, {
+          upward = true,
+          path   = dir,
+          stop   = uv.os_homedir(),
+          type   = "file",
+          limit  = 1,
+        })
+        return #found > 0
+      end
+
+      -- Config files recognised by each formatter.
+      local CONFIG_FILES = {
+        ["clang-format"] = { ".clang-format", "_clang-format" },
+        prettier = {
+          ".prettierrc", ".prettierrc.json", ".prettierrc.js", ".prettierrc.cjs",
+          ".prettierrc.mjs", ".prettierrc.yaml", ".prettierrc.yml", ".prettierrc.toml",
+          "prettier.config.js", "prettier.config.cjs", "prettier.config.mjs",
+          "prettier.config.ts",
+        },
+        stylua   = { "stylua.toml", ".stylua.toml" },
+        shfmt    = { ".editorconfig", ".shfmt" },
+        black    = { "pyproject.toml", ".black", "setup.cfg" },
+        ruff     = { "ruff.toml", ".ruff.toml", "pyproject.toml" },
+      }
+
+      -- ── Formatter availability ───────────────────────────────────────────────
       -- Cache formatter availability checks
       local formatter_cache = {}
       local function is_formatter_available(formatter)
         if formatter_cache[formatter] ~= nil then
           return formatter_cache[formatter]
         end
-        
+
         if vim.fn.executable(formatter) == 1 then
           formatter_cache[formatter] = true
           return true
         end
-        
+
         local mason_path = vim.fn.stdpath("data") .. "/mason/bin/" .. formatter
         if vim.fn.executable(mason_path) == 1 then
           formatter_cache[formatter] = true
           return true
         end
-        
+
         formatter_cache[formatter] = false
         return false
       end
 
-      -- Build formatters table
+      -- ── formatters_by_ft ─────────────────────────────────────────────────────
       local formatters_by_ft = {}
-      
+
       if is_formatter_available("stylua") then
         formatters_by_ft.lua = { "stylua" }
       end
-      
-      if is_formatter_available("black") then
+
+      if is_formatter_available("ruff") then
+        -- ruff is faster than black for formatting; it can also sort imports.
+        formatters_by_ft.python = { "ruff_organize_imports", "ruff_format" }
+      elseif is_formatter_available("black") then
         formatters_by_ft.python = { "black" }
         if is_formatter_available("isort") then
           formatters_by_ft.python = { "isort", "black" }
         end
       end
-      
+
       if is_formatter_available("prettier") then
-        formatters_by_ft.javascript = { "prettier" }
-        formatters_by_ft.javascriptreact = { "prettier" }
-        formatters_by_ft.typescript = { "prettier" }
-        formatters_by_ft.typescriptreact = { "prettier" }
-        formatters_by_ft.html = { "prettier" }
-        formatters_by_ft.css = { "prettier" }
-        formatters_by_ft.scss = { "prettier" }
-        formatters_by_ft.json = { "prettier" }
-        formatters_by_ft.jsonc = { "prettier" }
-        formatters_by_ft.yaml = { "prettier" }
-        formatters_by_ft.yml = { "prettier" }
-        formatters_by_ft.markdown = { "prettier" }
-        formatters_by_ft.graphql = { "prettier" }
-        formatters_by_ft.vue = { "prettier" }
-        formatters_by_ft.svelte = { "prettier" }
+        for _, ft in ipairs({
+          "javascript", "javascriptreact", "typescript", "typescriptreact",
+          "html", "css", "scss", "less",
+          "json", "jsonc", "yaml", "yml", "markdown", "graphql",
+          "vue", "svelte",
+        }) do
+          formatters_by_ft[ft] = { "prettier" }
+        end
       end
-      
+
       if is_formatter_available("clang-format") then
-        formatters_by_ft.c = { "clang-format" }
-        formatters_by_ft.cpp = { "clang-format" }
-        formatters_by_ft.objc = { "clang-format" }
-        formatters_by_ft.objcpp = { "clang-format" }
+        for _, ft in ipairs({ "c", "cpp", "objc", "objcpp", "cuda", "proto" }) do
+          formatters_by_ft[ft] = { "clang-format" }
+        end
       end
-      
+
       if is_formatter_available("google-java-format") then
         formatters_by_ft.java = { "google-java-format" }
       end
-      
+
       if is_formatter_available("shfmt") then
-        formatters_by_ft.sh = { "shfmt" }
+        formatters_by_ft.sh   = { "shfmt" }
         formatters_by_ft.bash = { "shfmt" }
+        formatters_by_ft.zsh  = { "shfmt" }
       end
-      
+
       if is_formatter_available("gofmt") then
         formatters_by_ft.go = { "gofmt" }
       end
-      
+
       if is_formatter_available("asmfmt") then
-        formatters_by_ft.asm = { "asmfmt" }
+        formatters_by_ft.asm  = { "asmfmt" }
         formatters_by_ft.nasm = { "asmfmt" }
-        formatters_by_ft.s = { "asmfmt" }
+        formatters_by_ft.s    = { "asmfmt" }
       end
 
+      -- ── Per-formatter settings ───────────────────────────────────────────────
+      -- Each formatter's prepend_args is a *function* so it can inspect the
+      -- buffer context at format-time.  When a project config file is present
+      -- the formatter is invoked without extra flags (the config file wins).
+      -- When no config file exists we fall back to tabs of width 4.
       require("conform").setup({
         formatters_by_ft = formatters_by_ft,
+        notify_on_error  = false,
         formatters = {
           stylua = {
-            prepend_args = { "--indent-type", "Spaces", "--indent-width", "2" },
+            prepend_args = function(_, ctx)
+              if has_config(CONFIG_FILES.stylua, ctx) then
+                return {}
+              end
+              -- Default: tabs, width 4
+              return { "--indent-type", "Tabs", "--indent-width", "4" }
+            end,
           },
-          black = {
-            prepend_args = { "--fast" },
+
+          ["clang-format"] = {
+            prepend_args = function(_, ctx)
+              if has_config(CONFIG_FILES["clang-format"], ctx) then
+                return {}
+              end
+              -- Default: LLVM base style overridden to use tabs of width 4
+              return {
+                "--style={BasedOnStyle: LLVM, IndentWidth: 4, TabWidth: 4, "
+                  .. "UseTab: ForIndentation, ColumnLimit: 0}",
+              }
+            end,
           },
+
           prettier = {
-            prepend_args = { "--tab-width", "2" },
+            prepend_args = function(_, ctx)
+              if has_config(CONFIG_FILES.prettier, ctx) then
+                return {}
+              end
+              -- Default: tabs, width 4
+              return { "--use-tabs", "--tab-width", "4" }
+            end,
+          },
+
+          black = {
+            prepend_args = function(_, ctx)
+              if has_config(CONFIG_FILES.black, ctx) then
+                return {}
+              end
+              -- black enforces PEP 8 (4 spaces); tabs are not supported.
+              return { "--fast" }
+            end,
+          },
+
+          shfmt = {
+            prepend_args = function(_, ctx)
+              if has_config(CONFIG_FILES.shfmt, ctx) then
+                return {}
+              end
+              -- Default: tabs (-i 0 means tabs in shfmt)
+              return { "-i", "0" }
+            end,
+          },
+
+          gofmt = {
+            -- gofmt always uses tabs — nothing to override.
           },
         },
         -- Auto-format on save is driven by the autocmd below rather than
@@ -140,10 +224,10 @@ return {
 
       -- ── Keymaps ───────────────────────────────────────────────────────────────
 
-      -- Manual format
+      -- Manual format (higher timeout than auto-save to handle large/complex files)
       vim.keymap.set("n", "<leader>fm", function()
         local ok, err = pcall(function()
-          require("conform").format({ lsp_fallback = true })
+          require("conform").format({ lsp_fallback = true, timeout_ms = 3000 })
         end)
         if ok then
           vim.notify("Buffer formatted successfully", vim.log.levels.INFO)
