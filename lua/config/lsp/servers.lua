@@ -33,6 +33,7 @@ M.servers = {
     filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
     init_options = {
       clangdFileStatus = true,
+      fallbackFlags = { "-fopenmp" },
     },
   },
   lua_ls = {
