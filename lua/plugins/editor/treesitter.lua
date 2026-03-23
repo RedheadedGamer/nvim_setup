@@ -9,33 +9,71 @@ return {
   },
 
   -- Treesitter (syntax highlighting)
-  {
+ {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter-textobjects",
+    },
     config = function()
-      -- ERROR HANDLING: Protect treesitter loading
-      local ok, treesitter = pcall(require, "nvim-treesitter.configs")
-      if not ok then
-        vim.notify("Failed to load treesitter: " .. tostring(treesitter), vim.log.levels.ERROR)
-        return
-      end
-      treesitter.setup({
+      -- In newer versions, we can often just use the main module
+      local configs = require("nvim-treesitter.configs")
+
+      configs.setup({
         ensure_installed = {
-          "lua", "python", "javascript", "typescript", "html", "css", 
+          "lua", "python", "javascript", "typescript", "html", "css",
           "json", "yaml", "markdown", "bash", "vim", "vimdoc", "c", "java", "asm"
         },
         sync_install = false,
         auto_install = true,
-        highlight = {
-          enable = true,
-          additional_vim_regex_highlighting = false,
-        },
-        indent = {
-          enable = true,
+        highlight = { enable = true, additional_vim_regex_highlighting = false },
+        indent = { enable = true },
+        
+        -- PRO TIP: Move textobjects configuration INSIDE the main setup
+        textobjects = {
+          select = {
+            enable = true,
+            lookahead = true,
+            keymaps = {
+              ["af"] = "@function.outer",
+              ["if"] = "@function.inner",
+              ["ac"] = "@class.outer",
+              ["ic"] = "@class.inner",
+              ["aa"] = "@parameter.outer",
+              ["ia"] = "@parameter.inner",
+            },
+          },
+          move = {
+            enable = true,
+            set_jumps = true,
+            goto_next_start = { ["]f"] = "@function.outer", ["]c"] = "@class.outer" },
+            goto_next_end = { ["]F"] = "@function.outer", ["]C"] = "@class.outer" },
+            goto_previous_start = { ["[f"] = "@function.outer", ["[c"] = "@class.outer" },
+            goto_previous_end = { ["[F"] = "@function.outer", ["[C"] = "@class.outer" },
+          },
+          swap = {
+            enable = true,
+            swap_next = { ["<leader>sp"] = "@parameter.inner" },
+            swap_previous = { ["<leader>sP"] = "@parameter.inner" },
+          },
         },
       })
     end,
   },
+
+  -- Keep context separate as it uses its own require logic
+  {
+    "nvim-treesitter/nvim-treesitter-context",
+    event = "VeryLazy",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    config = function()
+      require("treesitter-context").setup({
+        max_lines = 3,
+        line_numbers = true,
+        mode = "cursor",
+      })
+    end,
+  }, 
 
   -- Comment functionality
   {
@@ -114,63 +152,5 @@ return {
         require("treesitter-context").go_to_context(vim.v.count1)
       end, { desc = "Jump to treesitter context" })
     end,
-  },
-
-  -- Treesitter textobjects: select/move/swap functions, classes, parameters etc.
-  {
-    "nvim-treesitter/nvim-treesitter-textobjects",
-    event = "VeryLazy",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    config = function()
-      require("nvim-treesitter.configs").setup({
-        textobjects = {
-          select = {
-            enable = true,
-            lookahead = true,
-            keymaps = {
-              ["af"] = { query = "@function.outer", desc = "Select outer function" },
-              ["if"] = { query = "@function.inner", desc = "Select inner function" },
-              ["ac"] = { query = "@class.outer",    desc = "Select outer class" },
-              ["ic"] = { query = "@class.inner",    desc = "Select inner class" },
-              ["aa"] = { query = "@parameter.outer", desc = "Select outer parameter" },
-              ["ia"] = { query = "@parameter.inner", desc = "Select inner parameter" },
-              ["ai"] = { query = "@conditional.outer", desc = "Select outer conditional" },
-              ["ii"] = { query = "@conditional.inner", desc = "Select inner conditional" },
-              ["al"] = { query = "@loop.outer", desc = "Select outer loop" },
-              ["il"] = { query = "@loop.inner", desc = "Select inner loop" },
-            },
-          },
-          move = {
-            enable = true,
-            set_jumps = true,
-            goto_next_start = {
-              ["]f"] = { query = "@function.outer", desc = "Next function start" },
-              ["]c"] = { query = "@class.outer",    desc = "Next class start" },
-            },
-            goto_next_end = {
-              ["]F"] = { query = "@function.outer", desc = "Next function end" },
-              ["]C"] = { query = "@class.outer",    desc = "Next class end" },
-            },
-            goto_previous_start = {
-              ["[f"] = { query = "@function.outer", desc = "Previous function start" },
-              ["[c"] = { query = "@class.outer",    desc = "Previous class start" },
-            },
-            goto_previous_end = {
-              ["[F"] = { query = "@function.outer", desc = "Previous function end" },
-              ["[C"] = { query = "@class.outer",    desc = "Previous class end" },
-            },
-          },
-          swap = {
-            enable = true,
-            swap_next = {
-              ["<leader>sp"] = { query = "@parameter.inner", desc = "Swap with next parameter" },
-            },
-            swap_previous = {
-              ["<leader>sP"] = { query = "@parameter.inner", desc = "Swap with previous parameter" },
-            },
-          },
-        },
-      })
-    end,
-  },
+  }, 
 }

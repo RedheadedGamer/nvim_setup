@@ -30,6 +30,10 @@ return {
       local lsp_servers = require("config.lsp.servers")
       local lsp_keymaps = require("config.lsp.keymaps")
       local lsp_diagnostics = require("config.lsp.diagnostics")
+	  local lspconfig = require("lspconfig")
+
+	  local ok_cmp_lsp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+      local capabilities = ok_cmp_lsp and cmp_nvim_lsp.default_capabilities() or vim.lsp.protocol.make_client_capabilities()
 
       -- ── fidget.nvim: LSP progress spinner ───────────────────────────────────
       local ok_fidget, fidget = pcall(require, "fidget")
@@ -93,16 +97,31 @@ return {
 
       -- ── mason-lspconfig ──────────────────────────────────────────────────────
       local ok_mason_lsp, mason_lspconfig = pcall(require, "mason-lspconfig")
-      if ok_mason_lsp then
-        mason_lspconfig.setup({
-          ensure_installed = {
-            "clangd", "lua_ls", "pyright", "ts_ls", "html", "cssls", "jsonls",
-            "jdtls", "cmake", "bashls", "marksman",
-          },
-          automatic_installation = true,
-        })
-      end
+	  local ok_mason_lsp, mason_lspconfig = pcall(require, "mason-lspconfig")
+	  if ok_mason_lsp then
+		mason_lspconfig.setup({
+		  ensure_installed = {
+			"clangd", "lua_ls", "pyright", "ts_ls", "html", "cssls", "jsonls",
+			"jdtls", "cmake", "bashls", "marksman",
+		  },
+		  automatic_installation = true,
 
+		  handlers = {
+			function(server_name)
+			-- ❗ SKIP clangd (handled by clangd_extensions)
+			  if server_name == "clangd" then
+				return
+			  end
+
+			  local opts = lsp_servers.servers[server_name] or {}
+			  opts.capabilities = capabilities
+			  opts.on_attach = lsp_keymaps.on_attach
+
+			  lspconfig[server_name].setup(opts)
+		    end,
+		  },
+	    })
+	  end 
       -- ── mason-nvim-dap ───────────────────────────────────────────────────────
       local ok_dap, dap_mason = pcall(require, "mason-nvim-dap")
       if ok_dap then
@@ -137,36 +156,6 @@ return {
       if not ok_cmp_lsp then
         vim.notify("Failed to load cmp_nvim_lsp: " .. tostring(cmp_nvim_lsp), vim.log.levels.ERROR)
         return
-      end
-
-      local capabilities = cmp_nvim_lsp.default_capabilities()
-
-      -- ── Configure LSP servers ────────────────────────────────────────────────
-      -- Servers managed by dedicated language plugins (to avoid duplicate instances)
-      local externally_managed = {
-        clangd = true,  -- managed by clangd_extensions.nvim in plugins/lang/c-cpp.lua
-      }
-
-      local lspconfig = require("lspconfig")
-      for server, config in pairs(lsp_servers.servers) do
-        if externally_managed[server] then
-          goto continue
-        end
-
-        local server_cmd = config.cmd and config.cmd[1] or server
-        if vim.fn.executable(server_cmd) == 0 then
-          vim.notify(
-            string.format("LSP server '%s' not found. Install via :Mason", server),
-            vim.log.levels.WARN
-          )
-          goto continue
-        end
-
-        config.capabilities = capabilities
-        config.on_attach = lsp_keymaps.on_attach
-        lspconfig[server].setup(config)
-
-        ::continue::
       end
 
       -- ── Diagnostics ──────────────────────────────────────────────────────────

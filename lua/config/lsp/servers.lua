@@ -14,6 +14,7 @@ M.servers = {
       "--completion-style=detailed",
       "--function-arg-placeholders",
       "--fallback-style=llvm",
+	  "--extra-arg=-fopenmp",
       "--query-driver=" .. table.concat({
         "/usr/bin/gcc",
         "/usr/bin/g++",
@@ -33,7 +34,6 @@ M.servers = {
     filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
     init_options = {
       clangdFileStatus = true,
-      fallbackFlags = { "-fopenmp" },
     },
   },
   lua_ls = {
