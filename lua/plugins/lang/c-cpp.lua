@@ -43,7 +43,7 @@ return {
 	-- clangd is set up HERE (not in the generic lspconfig loop) to avoid
 	-- duplicate LSP instances which cause double completions/warnings/hover.
 	{
-		"p00f/clangd_extensions.nvim",
+		"dchinmay2/clangd_extensions.nvim",
 		dependencies = { "neovim/nvim-lspconfig" },
 		config = function()
 			local lsp_servers = require("config.lsp.servers")

@@ -53,7 +53,6 @@ M.servers = {
   html = {},
   cssls = {},
   jsonls = {},
-  cmake = {},
   bashls = {
     filetypes = { "sh", "bash" },
   },

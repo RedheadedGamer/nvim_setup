@@ -96,13 +96,12 @@ return {
       end
 
       -- ── mason-lspconfig ──────────────────────────────────────────────────────
-      local ok_mason_lsp, mason_lspconfig = pcall(require, "mason-lspconfig")
 	  local ok_mason_lsp, mason_lspconfig = pcall(require, "mason-lspconfig")
 	  if ok_mason_lsp then
 		mason_lspconfig.setup({
 		  ensure_installed = {
 			"clangd", "lua_ls", "pyright", "ts_ls", "html", "cssls", "jsonls",
-			"jdtls", "cmake", "bashls", "marksman",
+			"jdtls", "bashls", "marksman",
 		  },
 		  automatic_installation = true,
 
@@ -152,7 +151,6 @@ return {
       end
 
       -- ── LSP capabilities (cmp integration) ──────────────────────────────────
-      local ok_cmp_lsp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
       if not ok_cmp_lsp then
         vim.notify("Failed to load cmp_nvim_lsp: " .. tostring(cmp_nvim_lsp), vim.log.levels.ERROR)
         return
