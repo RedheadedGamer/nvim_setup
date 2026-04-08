@@ -6,6 +6,7 @@ local M = {}
 -- Server configurations
 M.servers = {
   clangd = {
+    -- Always pass baseline clangd flags from config (shown in :LspInfo after restart).
     cmd = {
       "clangd",
       "--background-index",
