@@ -1,5 +1,5 @@
 -- plugins/lsp/lspconfig.lua
--- LSP configuration with Mason, nvim-lspconfig, nvim-cmp, fidget, and lspkind
+-- LSP configuration with Mason, nvim-lspconfig, blink.cmp, fidget, and lspkind
 
 return {
   {
@@ -12,7 +12,7 @@ return {
       -- LSP UI improvements
       "onsails/lspkind.nvim",         -- completion item kind icons
       "j-hui/fidget.nvim",            -- LSP progress notifications (bottom-right spinner)
-      -- Neovim Lua support (enables lazydev completions in cmp)
+      -- Neovim Lua support (enables lazydev completions in blink.cmp)
       "folke/lazydev.nvim",
     },
     config = function()

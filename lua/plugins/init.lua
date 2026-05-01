@@ -4,7 +4,7 @@
 -- Plugin Structure:
 -- - ui/         : UI enhancements (themes, snacks, telescope, which-key, dressing)
 -- - editor/     : Editor plugins (treesitter, mini.nvim ecosystem)
--- - lsp/        : LSP configuration (mason, lspconfig, nvim-cmp)
+-- - lsp/        : LSP configuration (mason, lspconfig, blink.cmp)
 -- - git/        : Git integration (gitsigns, mini.diff)
 -- - dev/        : Development tools (formatting, linting, debugging)
 -- - lang/       : Language-specific plugins (C/C++, Java, LaTeX)
