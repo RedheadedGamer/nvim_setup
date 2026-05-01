@@ -19,10 +19,6 @@ _G.is_windows = is_windows
 _G.is_mac = is_mac
 _G.is_linux = is_linux
 
--- Ensure proper runtime path for configuration modules
-local config_path = vim.fn.stdpath("config")
-vim.opt.rtp:prepend(config_path)
-
 -- Load configuration modules
 require("config.options")
 require("config.keymaps")

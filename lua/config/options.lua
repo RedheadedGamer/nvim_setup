@@ -68,12 +68,6 @@ opt.shortmess:append("c")         -- avoid showing completion messages
 
 -- Undo settings
 opt.undofile = true               -- enable persistent undo
-local undo_dir = vim.fn.expand("~/.cache/nvim/undo")
-opt.undodir = undo_dir           -- undo directory
--- Create undo directory if it doesn't exist
-if vim.fn.isdirectory(undo_dir) == 0 then
-  vim.fn.mkdir(undo_dir, "p")
-end
 
 -- Search improvements
 opt.smartcase = true              -- smart case sensitivity (override ignorecase when uppercase present)
@@ -122,4 +116,4 @@ vim.g.editorconfig = true
 -- When Neovim opens a directory it will source a local .nvim.lua or .exrc
 -- file if one is found, enabling project-specific settings.
 opt.exrc = true     -- source .exrc / .nvim.lua in the working directory
-opt.secure = true   -- disallow dangerous commands in local config files
+opt.secure = true   -- disallow dangerous commands in local config files- source .exrc / .nvim.lua in the working directory
