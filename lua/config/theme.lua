@@ -53,6 +53,13 @@ end
 
 -- Apply theme with error handling and fallback
 function M.apply_theme(theme_name)
+  -- Handle Sonokai style variants
+  if theme_name:match("^sonokai%-") then
+    local style = theme_name:match("^sonokai%-(.+)$")
+    vim.g.sonokai_style = style
+    theme_name = "sonokai"
+  end
+
   local ok, _ = pcall(vim.cmd, "colorscheme " .. theme_name)
   if ok then
     vim.g.current_theme = theme_name
@@ -85,103 +92,20 @@ end
 
 -- Get list of available themes
 function M.get_available_themes()
-  local colorschemes = vim.fn.getcompletion("", "color")
-  
-  -- Add themes that are actually installed (15 theme plugins with ~40 variants)
-  local additional_themes = {
-    -- OneDark variants (onedarkpro.nvim)
-    "onedark_dark", "onedark_vivid", "onedark_cool", "onedark_warm",
-    -- Tokyo Night variants (tokyonight.nvim)
-    "tokyonight", "tokyonight-night", "tokyonight-storm", "tokyonight-day", "tokyonight-moon",
-    -- Gruvbox family (gruvbox.nvim + gruvbox-material)
-    "gruvbox", "gruvbox-material",
-    -- Dracula variants (dracula.nvim)
-    "dracula", "dracula-soft",
-    -- Nord theme (nord.nvim)
-    "nord",
-    -- Catppuccin variants (catppuccin/nvim)
-    "catppuccin", "catppuccin-latte", "catppuccin-frappe", "catppuccin-macchiato", "catppuccin-mocha",
-    -- Fox themes (nightfox.nvim - 7 variants)
-    "nightfox", "dawnfox", "dayfox", "duskfox", "nordfox", "terafox", "carbonfox",
-    -- Rose Pine variants (rose-pine/neovim)
-    "rose-pine", "rose-pine-main", "rose-pine-moon", "rose-pine-dawn",
-    -- Kanagawa variants (kanagawa.nvim)
+  local themes = {
+    -- TokyoNight
+    "tokyonight", "tokyonight-night", "tokyonight-storm", "tokyonight-moon",
+    -- Kanagawa
     "kanagawa", "kanagawa-wave", "kanagawa-dragon", "kanagawa-lotus",
-    -- High-quality themes (sainnhe collection)
-    "sonokai", "edge", "everforest",
-    -- Material theme (material.nvim)
-    "material", "material-darker", "material-lighter", "material-oceanic", "material-palenight", "material-deep-ocean",
-    -- GitHub theme variants (github-nvim-theme - 11 variants)
-    "github_dark", "github_light", "github_dark_dimmed", "github_dark_high_contrast",
-    "github_dark_colorblind", "github_light_high_contrast", "github_light_colorblind",
-    "github_dark_tritanopia", "github_light_tritanopia", "github_dark_default",
-    "github_light_default",
+    -- OneDark
+    "onedark", "onedark_vivid", "onedark_dark",
+    -- Catppuccin
+    "catppuccin", "catppuccin-latte", "catppuccin-frappe", "catppuccin-macchiato", "catppuccin-mocha",
+    -- Sonokai (Styles/Categories)
+    "sonokai-default", "sonokai-atlantis", "sonokai-andromeda", "sonokai-shusia", "sonokai-maia", "sonokai-espresso",
   }
-  
-  -- Combine and deduplicate
-  local all_themes = {}
-  local seen = {}
-  
-  for _, theme in ipairs(colorschemes) do
-    if not seen[theme] then
-      table.insert(all_themes, theme)
-      seen[theme] = true
-    end
-  end
-  
-  for _, theme in ipairs(additional_themes) do
-    if not seen[theme] then
-      table.insert(all_themes, theme)
-      seen[theme] = true
-    end
-  end
-  
-  table.sort(all_themes)
-  return all_themes
-end
-
--- Get list of GitHub themes specifically
-function M.get_github_themes()
-  return {
-    "github_dark",
-    "github_light", 
-    "github_dark_dimmed",
-    "github_dark_high_contrast",
-    "github_light_high_contrast",
-    "github_dark_colorblind",
-    "github_light_colorblind",
-    "github_dark_tritanopia",
-    "github_light_tritanopia",
-    "github_dark_default",
-    "github_light_default"
-  }
-end
-
--- Quick function to cycle through GitHub themes
-function M.cycle_github_themes()
-  local github_themes = M.get_github_themes()
-  local current = _G.nvim_current_theme or vim.g.current_theme or vim.g.colors_name or ""
-  
-  -- Find current theme index
-  local current_index = 1
-  for i, theme in ipairs(github_themes) do
-    if theme == current then
-      current_index = i
-      break
-    end
-  end
-  
-  -- Get next theme (cycle back to first if at end)
-  local next_index = current_index < #github_themes and current_index + 1 or 1
-  local next_theme = github_themes[next_index]
-  
-  if M.apply_theme(next_theme) then
-    M.save_theme(next_theme)
-    vim.notify("🎨 GitHub Theme: " .. next_theme, vim.log.levels.INFO)
-    return next_theme
-  end
-  
-  return current
+  table.sort(themes)
+  return themes
 end
 
 -- Initialize theme system
