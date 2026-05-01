@@ -3,6 +3,9 @@
 
 local M = {}
 
+-- State to track if we are currently picking a theme (to avoid auto-saving previews)
+local picking_theme = false
+
 -- Path to store theme configuration
 local config_dir = vim.fn.stdpath("config")
 local theme_file = config_dir .. "/theme_config.lua"
@@ -57,11 +60,13 @@ end
 
 -- Apply theme with error handling and fallback
 function M.apply_theme(theme_name, opts)
+  if not theme_name or theme_name == "" then return false end
+  
   opts = opts or {}
   local silent = opts.silent
 
   -- Handle Sonokai style variants
-  if theme_name:match("^sonokai%-") then
+  if type(theme_name) == "string" and theme_name:match("^sonokai%-") then
     local style = theme_name:match("^sonokai%-(.+)$")
     vim.g.sonokai_style = style
     theme_name = "sonokai"
@@ -141,10 +146,11 @@ function M.init()
   vim.api.nvim_create_autocmd("ColorScheme", {
     group = vim.api.nvim_create_augroup("ThemePersistence", { clear = true }),
     callback = function(args)
-      if args.match and args.match ~= "" then
+      -- PERSISTENCE: Save theme changes automatically
+      -- GUARD: Don't save while we are just "previewing" in the picker
+      if not picking_theme and args.match and args.match ~= "" then
         vim.g.current_theme = args.match
         _G.nvim_current_theme = args.match
-        -- PERSISTENCE: Save theme changes automatically (but silently)
         M.save_theme(args.match, true)
       end
     end,
@@ -155,12 +161,11 @@ end
 function M.theme_picker()
   local ok, snacks = pcall(require, "snacks")
   if not ok then
-    vim.notify("Snacks picker not available", vim.log.levels.WARN)
-    -- Fallback to built-in colorscheme command
     vim.cmd("Telescope colorscheme")
     return
   end
 
+  local original_theme = _G.nvim_current_theme or vim.g.current_theme or vim.g.colors_name or "default"
   local themes = M.get_available_themes()
   local items = {}
   for _, theme in ipairs(themes) do
@@ -170,24 +175,38 @@ function M.theme_picker()
     })
   end
 
+  picking_theme = true
+
   -- Use Snacks picker for a professional, persistent, and filtered experience
-  -- We use the native colorschemes source but provide our filtered items
-  snacks.picker.colorschemes({
+  snacks.picker.pick({
+    source = "colorschemes",
     items = items,
     layout = "vertical",
-    confirm = function(picker, item)
-      picker:close()
-      if item then
-        -- Final apply (with notifications)
-        M.apply_theme(item.value)
-        vim.notify("🎨 Theme applied: " .. item.value, vim.log.levels.INFO)
-      end
-    end,
-    -- Ensure it uses our apply_theme logic for Sonokai variants during preview
+    format = "text",
     on_change = function(_, item)
-      if item then
+      if item and item.value then
         -- Live preview using our robust apply function (silently)
         M.apply_theme(item.value, { silent = true })
+      end
+    end,
+    confirm = function(picker, item)
+      picker:close()
+      picking_theme = false
+      if item and item.value then
+        -- Final apply (with notifications)
+        M.apply_theme(item.value)
+        M.save_theme(item.value)
+        vim.notify("🎨 Theme applied: " .. item.value, vim.log.levels.INFO)
+      else
+        -- Restore original
+        M.apply_theme(original_theme)
+      end
+    end,
+    on_close = function()
+      if picking_theme then
+        picking_theme = false
+        -- Restore original theme if we closed without selecting
+        M.apply_theme(original_theme, { silent = true })
       end
     end,
   })
