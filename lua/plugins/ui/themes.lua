@@ -186,7 +186,6 @@ return {
         },
         plugins = {
           "telescope",
-          "nvim-cmp",
           "nvim-web-devicons",
           "mini",
         },
