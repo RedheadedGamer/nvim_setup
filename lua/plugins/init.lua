@@ -14,7 +14,6 @@ return {
   { import = "plugins.ui.themes" },
   { import = "plugins.ui.snacks" },
   { import = "plugins.ui.noice" },
-  { import = "plugins.ui.todo-comments" },
   { import = "plugins.ui.utilities" },
 
   -- Editor plugins

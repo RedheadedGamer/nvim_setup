@@ -133,8 +133,10 @@ return {
       },
     },
     keys = {
-      { "<leader>ft", "<cmd>TodoTelescope<cr>",
-        desc = "Find TODOs (Telescope)" },
+      { "<leader>ft", function() Snacks.picker.todo_comments() end,
+        desc = "Find TODOs (Snacks)" },
+      { "<leader>st", function() Snacks.picker.todo_comments() end,
+        desc = "Search TODOs (Snacks)" },
       { "<leader>xt", "<cmd>Trouble todo toggle<cr>",
         desc = "TODOs (Trouble)" },
       { "]T", function() require("todo-comments").jump_next() end,
