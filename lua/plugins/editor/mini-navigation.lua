@@ -66,22 +66,7 @@ return {
         },
       })
       
-      -- Pick keymaps as alternatives to telescope
-      vim.keymap.set("n", "<leader>pf", function()
-        require("mini.pick").builtin.files()
-      end, { desc = "Pick files" })
-      
-      vim.keymap.set("n", "<leader>pg", function()
-        require("mini.pick").builtin.grep_live()
-      end, { desc = "Pick grep live" })
-      
-      vim.keymap.set("n", "<leader>pb", function()
-        require("mini.pick").builtin.buffers()
-      end, { desc = "Pick buffers" })
-      
-      vim.keymap.set("n", "<leader>ph", function()
-        require("mini.pick").builtin.help()
-      end, { desc = "Pick help" })
+      -- Pick keymaps migrated to snacks.picker in config/keymaps.lua
     end,
   },
 

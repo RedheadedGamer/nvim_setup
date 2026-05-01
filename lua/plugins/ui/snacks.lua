@@ -38,10 +38,10 @@ return {
         enabled = true,
         preset = {
           keys = {
-            { icon = " ", key = "f", desc = "Find File", action = ":Telescope find_files" },
+            { icon = " ", key = "f", desc = "Find File", action = function() Snacks.picker.files() end },
             { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
-            { icon = " ", key = "r", desc = "Recent Files", action = ":Telescope oldfiles" },
-            { icon = " ", key = "g", desc = "Find Text", action = ":Telescope live_grep" },
+            { icon = " ", key = "r", desc = "Recent Files", action = function() Snacks.picker.recent() end },
+            { icon = " ", key = "g", desc = "Find Text", action = function() Snacks.picker.grep() end },
             { icon = " ", key = "c", desc = "Config", action = function() 
               -- SECURITY FIX: Use safe API instead of concatenating into vim.cmd
               vim.api.nvim_cmd({ cmd = 'edit', args = { vim.fn.stdpath("config") .. "/init.lua" } }, {})
@@ -277,6 +277,11 @@ return {
       explorer = {
         enabled = true,
         -- File explorer with tree view
+      },
+      
+      -- Picker - Fast and modern fuzzy finder
+      picker = {
+        enabled = true,
       },
     },
     

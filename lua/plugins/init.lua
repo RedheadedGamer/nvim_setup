@@ -13,6 +13,7 @@ return {
   -- UI plugins
   { import = "plugins.ui.themes" },
   { import = "plugins.ui.snacks" },
+  { import = "plugins.ui.noice" },
   { import = "plugins.ui.utilities" },
 
   -- Editor plugins

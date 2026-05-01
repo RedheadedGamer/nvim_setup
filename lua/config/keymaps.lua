@@ -44,16 +44,80 @@ keymap.set("n", "<leader>tr", function()
   vim.opt.relativenumber = not vim.opt.relativenumber:get()
 end, { desc = "Toggle relative numbers" })
 
--- Quick theme access (additional shortcut - use <leader>th for full theme switcher)
-keymap.set("n", "<leader>tC", "<cmd>Telescope colorscheme<cr>", { desc = "Colorscheme picker (Telescope)" })
+-- Navigation (Snacks Picker with Telescope fallback)
+local function picker(name)
+  return function()
+    local ok_snacks, snacks = pcall(require, "snacks")
+    if (_G.Snacks and _G.Snacks.picker) or (ok_snacks and snacks.picker) then
+      local p = (_G.Snacks and _G.Snacks.picker) or snacks.picker
+      p[name]()
+    else
+      -- Fallback to Telescope if available
+      local ok, builtin = pcall(require, "telescope.builtin")
+      if ok then
+        local telescope_map = {
+          files = "find_files",
+          grep = "live_grep",
+          recent = "oldfiles",
+          buffers = "buffers",
+          help = "help_tags",
+          diagnostics = "diagnostics",
+          lsp_symbols = "lsp_document_symbols",
+          lsp_workspace_symbols = "lsp_workspace_symbols",
+          grep_word = "grep_string",
+          qflist = "quickfix",
+          colorschemes = "colorscheme",
+        }
+        local builtin_name = telescope_map[name]
+        if builtin_name and builtin[builtin_name] then
+          builtin[builtin_name]()
+        else
+          vim.notify("Telescope mapping not found for: " .. name, vim.log.levels.WARN)
+        end
+      else
+        -- Fallback to mini.pick if available
+        local ok_pick, pick = pcall(require, "mini.pick")
+        if ok_pick then
+          local pick_map = {
+            files = "files",
+            grep = "grep_live",
+            buffers = "buffers",
+            help = "help",
+          }
+          local pick_name = pick_map[name]
+          if pick_name and pick.builtin[pick_name] then
+            pick.builtin[pick_name]()
+          else
+            vim.notify("Mini.pick mapping not found for: " .. name, vim.log.levels.WARN)
+          end
+        else
+          vim.notify("No picker (Snacks, Telescope, or Mini.pick) available", vim.log.levels.WARN)
+        end
+      end
+    end
+  end
+end
 
--- Additional Telescope shortcuts not covered in utilities.lua
-keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>",                 { desc = "Recent Files" })
-keymap.set("n", "<leader>fd", "<cmd>Telescope diagnostics<cr>",               { desc = "Find Diagnostics" })
-keymap.set("n", "<leader>fs", "<cmd>Telescope lsp_document_symbols<cr>",      { desc = "Document Symbols" })
-keymap.set("n", "<leader>fS", "<cmd>Telescope lsp_workspace_symbols<cr>",     { desc = "Workspace Symbols" })
-keymap.set("n", "<leader>fw", "<cmd>Telescope grep_string<cr>",               { desc = "Find Word Under Cursor" })
-keymap.set("n", "<leader>fq", "<cmd>Telescope quickfix<cr>",                  { desc = "Find in Quickfix" })
+-- Primary Navigation
+keymap.set("n", "<leader>ff", picker("files"), { desc = "Find Files" })
+keymap.set("n", "<leader>fg", picker("grep"), { desc = "Grep" })
+keymap.set("n", "<leader>fr", picker("recent"), { desc = "Recent Files" })
+keymap.set("n", "<leader>fb", picker("buffers"), { desc = "Buffers" })
+keymap.set("n", "<leader>fh", picker("help"), { desc = "Help" })
+keymap.set("n", "<leader>fd", picker("diagnostics"), { desc = "Diagnostics" })
+keymap.set("n", "<leader>fs", picker("lsp_symbols"), { desc = "Document Symbols" })
+keymap.set("n", "<leader>fS", picker("lsp_workspace_symbols"), { desc = "Workspace Symbols" })
+keymap.set("n", "<leader>fw", picker("grep_word"), { desc = "Grep Word" })
+keymap.set("n", "<leader>fq", picker("qflist"), { desc = "Quickfix" })
+
+-- Mini.pick alternatives (Consolidated to use Snacks Picker if available)
+keymap.set("n", "<leader>pf", picker("files"), { desc = "Pick files" })
+keymap.set("n", "<leader>pg", picker("grep"), { desc = "Pick grep live" })
+keymap.set("n", "<leader>pb", picker("buffers"), { desc = "Pick buffers" })
+keymap.set("n", "<leader>ph", picker("help"), { desc = "Pick help" })
+
+-- Theme/Colorscheme picker
+keymap.set("n", "<leader>tC", picker("colorschemes"), { desc = "Colorschemes" })
 
 -- Buffer navigation improvements
 keymap.set("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Previous buffer" })

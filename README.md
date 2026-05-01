@@ -108,7 +108,7 @@ nvim
 | Category | Plugins |
 |----------|---------|
 | **LSP & Mason** | `nvim-lspconfig`, `mason.nvim`, `mason-lspconfig`, `mason-tool-installer` |
-| **Completion** | `nvim-cmp`, `LuaSnip`, `cmp-nvim-lsp`, `cmp-buffer`, `cmp-path` |
+| **Completion** | `blink.cmp` |
 | **UI Framework** | `snacks.nvim` (32 modules), `mini.nvim` (27 plugins), `which-key.nvim` |
 | **Navigation** | `telescope.nvim`, `mini.pick`, `harpoon`, `flash.nvim` |
 | **Syntax** | `nvim-treesitter`, `rainbow-delimiters`, `Comment.nvim` |

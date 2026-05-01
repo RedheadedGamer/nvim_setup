@@ -177,7 +177,7 @@ function Select-InstallType {
         Write-Host "1) Full Setup - Complete IDE experience"
         Write-ColorMessage $Yellow "   • LSP support (Language Server Protocol)"
         Write-ColorMessage $Yellow "   • Mason for LSP server management"
-        Write-ColorMessage $Yellow "   • Auto-completion with nvim-cmp"
+        Write-ColorMessage $Yellow "   • Auto-completion with blink.cmp"
         Write-ColorMessage $Yellow "   • Linters and formatters"
         Write-ColorMessage $Yellow "   • C/C++ development tools (clangd, cmake, debugging)"
         Write-ColorMessage $Yellow "   • 50+ themes"

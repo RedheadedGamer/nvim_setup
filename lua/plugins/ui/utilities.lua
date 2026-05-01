@@ -21,7 +21,7 @@ return {
       end,
       spec = {
         -- Leader key groups
-        { "<leader>f", group = "find/telescope", icon = "🔍" },
+        { "<leader>f", group = "find/picker", icon = "🔍" },
         { "<leader>p", group = "pick/mini.pick", icon = "📋" },
         { "<leader>x", group = "trouble/diagnostics", icon = "🔧" },
         { "<leader>t", group = "theme/toggle/terminal", icon = "🎨" },
@@ -250,45 +250,7 @@ return {
         },
       })
       
-      -- Telescope keymaps
-      local keymap = vim.keymap
-      keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "Find Files" })
-      keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { desc = "Live Grep" })
-      keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Find Buffers" })
-      keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", { desc = "Help Tags" })
-      keymap.set("n", "<leader>fc", "<cmd>Telescope commands<cr>", { desc = "Commands" })
-      keymap.set("n", "<leader>fk", "<cmd>Telescope keymaps<cr>", { desc = "Keymaps" })
-      
-      -- Enhanced keymap discovery
-      keymap.set("n", "<leader>fK", function()
-        require("telescope.builtin").keymaps({
-          prompt_title = "🗝️  All Keymaps Browser",
-          show_plug = true,
-          only_buf = false,
-          modes = {"n", "i", "v", "x", "c", "t", "o"},
-        })
-      end, { desc = "All keymaps browser" })
-      
-      keymap.set("n", "<leader>fkn", function()
-        require("telescope.builtin").keymaps({
-          prompt_title = "📝 Normal Mode Keymaps",
-          modes = {"n"},
-        })
-      end, { desc = "Normal mode keymaps" })
-      
-      keymap.set("n", "<leader>fkv", function()
-        require("telescope.builtin").keymaps({
-          prompt_title = "👁️  Visual Mode Keymaps",
-          modes = {"v", "x"},
-        })
-      end, { desc = "Visual mode keymaps" })
-      
-      keymap.set("n", "<leader>fki", function()
-        require("telescope.builtin").keymaps({
-          prompt_title = "✏️  Insert Mode Keymaps",
-          modes = {"i"},
-        })
-      end, { desc = "Insert mode keymaps" })
+      -- Telescope keymaps migrated to snacks.picker in config/keymaps.lua
       
       -- Theme switcher
       -- Depends on config.theme module for theme management
@@ -365,7 +327,7 @@ return {
         }):find()
       end
       
-      keymap.set("n", "<leader>th", theme_switcher, { desc = "Theme switcher" })
+      vim.keymap.set("n", "<leader>th", theme_switcher, { desc = "Theme switcher" })
     end,
   },
 }

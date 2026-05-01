@@ -403,18 +403,10 @@ return {
         },
       })
       
-      -- Telescope keymaps
-      local keymap = vim.keymap
-      keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "Find Files" })
-      keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { desc = "Live Grep" })
-      keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Find Buffers" })
-      keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", { desc = "Help Tags" })
-      keymap.set("n", "<leader>fc", "<cmd>Telescope commands<cr>", { desc = "Commands" })
-      keymap.set("n", "<leader>fk", "<cmd>Telescope keymaps<cr>", { desc = "Keymaps" })
-      keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", { desc = "Recent Files" })
+      -- Telescope keymaps migrated to snacks.picker in config/keymaps.lua
       
       -- Theme switcher for minimal setup
-      keymap.set("n", "<leader>th", function()
+      vim.keymap.set("n", "<leader>th", function()
         local builtin = require("telescope.builtin")
         local themes = {
           "onedark",
@@ -437,7 +429,7 @@ return {
         })
       end, { desc = "Theme Switcher" })
       
-      keymap.set("n", "<leader>tt", function()
+      vim.keymap.set("n", "<leader>tt", function()
         local builtin = require("telescope.builtin")
         builtin.colorscheme({
           prompt_title = "Theme Switcher (Minimal)",

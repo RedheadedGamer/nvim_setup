@@ -89,7 +89,7 @@ select_install_type() {
         echo "1) Full Setup - Complete IDE experience"
         print_msg "$YELLOW" "   • LSP support (Language Server Protocol)"
         print_msg "$YELLOW" "   • Mason for LSP server management"
-        print_msg "$YELLOW" "   • Auto-completion with nvim-cmp"
+        print_msg "$YELLOW" "   • Auto-completion with blink.cmp"
         print_msg "$YELLOW" "   • Linters and formatters"
         print_msg "$YELLOW" "   • C/C++ development tools (clangd, cmake, debugging)"
         print_msg "$YELLOW" "   • 50+ themes"
