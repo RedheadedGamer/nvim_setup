@@ -28,6 +28,7 @@ return {
   { import = "plugins.git.diffview" },
 
   -- LSP plugins
+  { import = "plugins.lsp.blink" },
   { import = "plugins.lsp.lspconfig" },
 
   -- Development tools

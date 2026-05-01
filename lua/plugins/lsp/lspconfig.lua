@@ -9,16 +9,6 @@ return {
       "williamboman/mason-lspconfig.nvim",
       "WhoIsSethDaniel/mason-tool-installer.nvim",
       "jay-babu/mason-nvim-dap.nvim",
-      -- Completion engine and sources
-      "hrsh7th/nvim-cmp",
-      "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/cmp-nvim-lsp-signature-help", -- signature help inside the completion menu
-      "hrsh7th/cmp-buffer",
-      "hrsh7th/cmp-path",
-      "hrsh7th/cmp-cmdline",
-      "L3MON4D3/LuaSnip",
-      "saadparwaiz1/cmp_luasnip",
-      "rafamadriz/friendly-snippets",
       -- LSP UI improvements
       "onsails/lspkind.nvim",         -- completion item kind icons
       "j-hui/fidget.nvim",            -- LSP progress notifications (bottom-right spinner)
@@ -32,8 +22,7 @@ return {
       local lsp_diagnostics = require("config.lsp.diagnostics")
 	  local lspconfig = require("lspconfig")
 
-	  local ok_cmp_lsp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-      local capabilities = ok_cmp_lsp and cmp_nvim_lsp.default_capabilities() or vim.lsp.protocol.make_client_capabilities()
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
 
       -- ── fidget.nvim: LSP progress spinner ───────────────────────────────────
       local ok_fidget, fidget = pcall(require, "fidget")
@@ -150,94 +139,8 @@ return {
         })
       end
 
-      -- ── LSP capabilities (cmp integration) ──────────────────────────────────
-      if not ok_cmp_lsp then
-        vim.notify("Failed to load cmp_nvim_lsp: " .. tostring(cmp_nvim_lsp), vim.log.levels.ERROR)
-        return
-      end
-
       -- ── Diagnostics ──────────────────────────────────────────────────────────
       lsp_diagnostics.setup()
-
-      -- ── nvim-cmp completion ──────────────────────────────────────────────────
-      local cmp = require("cmp")
-      local luasnip = require("luasnip")
-      local lspkind = require("lspkind")
-
-      require("luasnip.loaders.from_vscode").lazy_load()
-
-      cmp.setup({
-        snippet = {
-          expand = function(args)
-            luasnip.lsp_expand(args.body)
-          end,
-        },
-        mapping = cmp.mapping.preset.insert({
-          ["<C-k>"]     = cmp.mapping.select_prev_item(),
-          ["<C-j>"]     = cmp.mapping.select_next_item(),
-          ["<C-b>"]     = cmp.mapping(cmp.mapping.scroll_docs(-1), { "i", "c" }),
-          ["<C-f>"]     = cmp.mapping(cmp.mapping.scroll_docs(1),  { "i", "c" }),
-          ["<C-Space>"] = cmp.mapping(cmp.mapping.complete(),       { "i", "c" }),
-          ["<C-e>"]     = cmp.mapping({ i = cmp.mapping.abort(), c = cmp.mapping.close() }),
-          ["<CR>"]      = cmp.mapping.confirm({ select = false }),
-          ["<Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item()
-            elseif luasnip.expand_or_jumpable() then
-              luasnip.expand_or_jump()
-            else
-              fallback()
-            end
-          end, { "i", "s" }),
-          ["<S-Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item()
-            elseif luasnip.jumpable(-1) then
-              luasnip.jump(-1)
-            else
-              fallback()
-            end
-          end, { "i", "s" }),
-        }),
-        sources = cmp.config.sources({
-          { name = "lazydev",                  group_index = 0 }, -- give lazydev highest priority
-          { name = "nvim_lsp" },
-          { name = "nvim_lsp_signature_help" }, -- function signature help in completion menu
-          { name = "luasnip" },
-        }, {
-          { name = "buffer",  keyword_length = 3 },
-          { name = "path" },
-        }),
-        -- De-duplicate completion entries from multiple sources
-        sorting = {
-          comparators = {
-            cmp.config.compare.offset,
-            cmp.config.compare.exact,
-            cmp.config.compare.score,
-            cmp.config.compare.recently_used,
-            cmp.config.compare.locality,
-            cmp.config.compare.kind,
-            cmp.config.compare.length,
-            cmp.config.compare.order,
-          },
-        },
-        formatting = {
-          -- lspkind adds VS Code-style kind icons to completion items
-          format = lspkind.cmp_format({
-            mode = "symbol_text",   -- show icon + text label
-            maxwidth = 50,
-            ellipsis_char = "…",
-            menu = {
-              lazydev                  = "[Nvim]",
-              nvim_lsp                 = "[LSP]",
-              nvim_lsp_signature_help  = "[Sig]",
-              luasnip                  = "[Snip]",
-              buffer                   = "[Buf]",
-              path                     = "[Path]",
-            },
-          }),
-        },
-      })
     end,
   },
 
