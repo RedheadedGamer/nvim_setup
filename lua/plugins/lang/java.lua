@@ -8,7 +8,6 @@ return {
     dependencies = {
       "neovim/nvim-lspconfig",
       "williamboman/mason.nvim",
-      "hrsh7th/nvim-cmp",
     },
     config = function()
       -- nvim-jdtls is configured via ftplugin/java.lua
