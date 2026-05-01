@@ -54,8 +54,8 @@ return {
 
 			opts.on_attach = lsp_keymaps.on_attach
 
-			local ok_cmp_lsp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-			opts.capabilities = ok_cmp_lsp and cmp_nvim_lsp.default_capabilities()
+			local ok_blink, blink = pcall(require, "blink.cmp")
+			opts.capabilities = ok_blink and blink.get_lsp_capabilities()
 				or vim.lsp.protocol.make_client_capabilities()
 
 			opts.capabilities.offsetEncoding = { "utf-16" }
