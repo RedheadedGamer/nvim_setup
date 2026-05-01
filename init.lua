@@ -20,6 +20,7 @@ _G.is_mac = is_mac
 _G.is_linux = is_linux
 
 -- Load configuration modules
+local config_path = vim.fn.stdpath("config")
 require("config.options")
 require("config.keymaps")
 require("config.autocmds")
