@@ -14,10 +14,13 @@ return {
   { import = "plugins.ui.themes" },
   { import = "plugins.ui.snacks" },
   { import = "plugins.ui.noice" },
+  { import = "plugins.ui.todo-comments" },
   { import = "plugins.ui.utilities" },
 
   -- Editor plugins
   { import = "plugins.editor.treesitter" },
+  { import = "plugins.editor.oil" },
+  { import = "plugins.editor.persistence" },
   { import = "plugins.editor.mini-text" },
   { import = "plugins.editor.mini-ui" },
   { import = "plugins.editor.mini-navigation" },

@@ -43,4 +43,10 @@ return {
       { "<leader>mc", "<cmd>MarkdownPreviewStop<cr>",   ft = "markdown", desc = "Markdown Preview close" },
     },
   },
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+    ft = { "markdown" },
+    opts = {},
+  },
 }
