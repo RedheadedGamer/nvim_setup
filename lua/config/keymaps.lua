@@ -116,8 +116,9 @@ keymap.set("n", "<leader>pg", picker("grep"), { desc = "Pick grep live" })
 keymap.set("n", "<leader>pb", picker("buffers"), { desc = "Pick buffers" })
 keymap.set("n", "<leader>ph", picker("help"), { desc = "Pick help" })
 
--- Theme/Colorscheme picker
-keymap.set("n", "<leader>tC", picker("colorschemes"), { desc = "Colorschemes" })
+-- Theme/Colorscheme picker (Filtered and Persistent)
+keymap.set("n", "<leader>tC", function() require("config.theme").theme_picker() end, { desc = "Colorschemes" })
+keymap.set("n", "<leader>th", function() require("config.theme").theme_picker() end, { desc = "Theme Switcher" })
 
 -- Buffer navigation improvements
 keymap.set("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Previous buffer" })

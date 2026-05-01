@@ -126,15 +126,56 @@ function M.init()
     end
   end
   
-  -- Set up autocommand to detect manual theme changes
+  -- Set up autocommand to detect manual theme changes and persist them
   vim.api.nvim_create_autocmd("ColorScheme", {
     group = vim.api.nvim_create_augroup("ThemePersistence", { clear = true }),
     callback = function(args)
       if args.match and args.match ~= "" then
         vim.g.current_theme = args.match
         _G.nvim_current_theme = args.match
-        -- Optional: Auto-save theme changes (uncomment if desired)
-        -- M.save_theme(args.match)
+        -- PERSISTENCE: Save theme changes automatically
+        M.save_theme(args.match)
+      end
+    end,
+  })
+end
+
+-- Enhanced theme picker using Snacks.picker
+function M.theme_picker()
+  local ok, snacks = pcall(require, "snacks")
+  if not ok then
+    vim.notify("Snacks picker not available", vim.log.levels.WARN)
+    -- Fallback to built-in colorscheme command
+    vim.cmd("Telescope colorscheme")
+    return
+  end
+
+  local themes = M.get_available_themes()
+  local items = {}
+  for _, theme in ipairs(themes) do
+    table.insert(items, {
+      text = theme,
+      value = theme,
+    })
+  end
+
+  -- Use Snacks picker for a professional, persistent, and filtered experience
+  snacks.picker.pick({
+    source = "colorschemes",
+    items = items,
+    layout = "vertical",
+    format = "text",
+    confirm = function(picker, item)
+      picker:close()
+      if item then
+        M.apply_theme(item.value)
+        -- save_theme is handled by the ColorScheme autocmd
+      end
+    end,
+    on_change = function(picker, item)
+      if item then
+        -- Live preview
+        pcall(vim.cmd, "colorscheme " .. item.value)
       end
     end,
   })
