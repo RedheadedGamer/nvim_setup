@@ -22,7 +22,7 @@ return {
       local lsp_diagnostics = require("config.lsp.diagnostics")
 	  local lspconfig = require("lspconfig")
 
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      local capabilities = require("blink.cmp").get_lsp_capabilities()
 
       -- ── fidget.nvim: LSP progress spinner ───────────────────────────────────
       local ok_fidget, fidget = pcall(require, "fidget")
