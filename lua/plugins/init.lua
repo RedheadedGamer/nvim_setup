@@ -20,9 +20,7 @@ return {
   { import = "plugins.editor.treesitter" },
   { import = "plugins.editor.oil" },
   { import = "plugins.editor.persistence" },
-  { import = "plugins.editor.mini-text" },
-  { import = "plugins.editor.mini-ui" },
-  { import = "plugins.editor.mini-navigation" },
+  { import = "plugins.editor.mini" },
   { import = "plugins.editor.navigation" },
   { import = "plugins.editor.extras" },
 

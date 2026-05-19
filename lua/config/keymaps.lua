@@ -3,17 +3,11 @@
 
 local keymap = vim.keymap
 
--- Set leader key (if not already set)
+-- Set leader key
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- Note: LSP-specific keymaps will be configured in plugins/lsp.lua
--- This file contains general editor keymaps
-
--- Example keymaps (add more as needed)
--- keymap.set("n", "<leader>w", "<cmd>w<cr>", { desc = "Save file" })
--- keymap.set("n", "<leader>q", "<cmd>q<cr>", { desc = "Quit" })
-
+-- ── 1. General Mappings ──────────────────────────────────────────────────────
 -- Clear search highlighting
 keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlighting" })
 
@@ -29,7 +23,7 @@ keymap.set("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease window heig
 keymap.set("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
 keymap.set("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
 
--- Additional useful keybinds
+-- Standard File commands
 keymap.set("n", "<leader>w", "<cmd>w<cr>", { desc = "Save file" })
 keymap.set("n", "<leader>q", "<cmd>q<cr>", { desc = "Quit" })
 keymap.set("n", "<leader>wq", "<cmd>wq<cr>", { desc = "Save and quit" })
@@ -44,17 +38,17 @@ keymap.set("n", "<leader>tr", function()
   vim.opt.relativenumber = not vim.opt.relativenumber:get()
 end, { desc = "Toggle relative numbers" })
 
--- Navigation (Snacks Picker with Telescope fallback)
+-- ── 2. Fuzzy Picker (Snacks Picker with clean Telescope fallback) ───────────
 local function picker(name)
   return function()
-    local ok_snacks, snacks = pcall(require, "snacks")
-    if (_G.Snacks and _G.Snacks.picker) or (ok_snacks and snacks.picker) then
+    local ok, snacks = pcall(require, "snacks")
+    if (_G.Snacks and _G.Snacks.picker) or (ok and snacks.picker) then
       local p = (_G.Snacks and _G.Snacks.picker) or snacks.picker
       p[name]()
     else
-      -- Fallback to Telescope if available
-      local ok, builtin = pcall(require, "telescope.builtin")
-      if ok then
+      -- Clean fallback to Telescope
+      local ok_telescope, builtin = pcall(require, "telescope.builtin")
+      if ok_telescope then
         local telescope_map = {
           files = "find_files",
           grep = "live_grep",
@@ -66,7 +60,6 @@ local function picker(name)
           lsp_workspace_symbols = "lsp_workspace_symbols",
           grep_word = "grep_string",
           qflist = "quickfix",
-          colorschemes = "colorscheme",
         }
         local builtin_name = telescope_map[name]
         if builtin_name and builtin[builtin_name] then
@@ -75,30 +68,13 @@ local function picker(name)
           vim.notify("Telescope mapping not found for: " .. name, vim.log.levels.WARN)
         end
       else
-        -- Fallback to mini.pick if available
-        local ok_pick, pick = pcall(require, "mini.pick")
-        if ok_pick then
-          local pick_map = {
-            files = "files",
-            grep = "grep_live",
-            buffers = "buffers",
-            help = "help",
-          }
-          local pick_name = pick_map[name]
-          if pick_name and pick.builtin[pick_name] then
-            pick.builtin[pick_name]()
-          else
-            vim.notify("Mini.pick mapping not found for: " .. name, vim.log.levels.WARN)
-          end
-        else
-          vim.notify("No picker (Snacks, Telescope, or Mini.pick) available", vim.log.levels.WARN)
-        end
+        vim.notify("No fuzzy picker (Snacks or Telescope) available", vim.log.levels.WARN)
       end
     end
   end
 end
 
--- Primary Navigation
+-- Primary Picker Mappings
 keymap.set("n", "<leader>ff", picker("files"), { desc = "Find Files" })
 keymap.set("n", "<leader>fg", picker("grep"), { desc = "Grep" })
 keymap.set("n", "<leader>fr", picker("recent"), { desc = "Recent Files" })
@@ -110,23 +86,17 @@ keymap.set("n", "<leader>fS", picker("lsp_workspace_symbols"), { desc = "Workspa
 keymap.set("n", "<leader>fw", picker("grep_word"), { desc = "Grep Word" })
 keymap.set("n", "<leader>fq", picker("qflist"), { desc = "Quickfix" })
 
--- Mini.pick alternatives (Consolidated to use Snacks Picker if available)
-keymap.set("n", "<leader>pf", picker("files"), { desc = "Pick files" })
-keymap.set("n", "<leader>pg", picker("grep"), { desc = "Pick grep live" })
-keymap.set("n", "<leader>pb", picker("buffers"), { desc = "Pick buffers" })
-keymap.set("n", "<leader>ph", picker("help"), { desc = "Pick help" })
-
--- Theme/Colorscheme picker (Filtered and Persistent)
+-- Theme/Colorscheme picker
 keymap.set("n", "<leader>tC", function() require("config.theme").theme_picker() end, { desc = "Colorschemes" })
 keymap.set("n", "<leader>th", function() require("config.theme").theme_picker() end, { desc = "Theme Switcher" })
 
--- Buffer navigation improvements
+-- ── 3. Buffer Mappings ───────────────────────────────────────────────────────
 keymap.set("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
 keymap.set("n", "<S-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })
 keymap.set("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Delete buffer" })
 keymap.set("n", "<leader>bD", "<cmd>%bdelete|edit#|bdelete#<cr>", { desc = "Delete all buffers except current" })
 
--- Quick save/quit shortcuts
+-- Quick save shortcuts
 keymap.set("n", "<C-s>", "<cmd>w<cr>", { desc = "Quick save" })
 keymap.set("i", "<C-s>", "<Esc><cmd>w<cr>", { desc = "Quick save from insert mode" })
 
@@ -194,7 +164,7 @@ keymap.set("v", "<leader>y", '"+y', { desc = "Copy to system clipboard" })
 keymap.set("n", "<leader>p", '"+p', { desc = "Paste from system clipboard" })
 keymap.set("v", "<leader>p", '"+p', { desc = "Paste from system clipboard" })
 
--- Move text up and down
+-- Move text up and down in visual mode
 keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move text down" })
 keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move text up" })
 
@@ -209,37 +179,17 @@ keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Scroll up and center" })
 -- Better paste behavior
 keymap.set("v", "p", '"_dP', { desc = "Paste without overwriting register" })
 
--- Enhanced bracket matching test
-keymap.set("n", "<leader>tb", function()
+-- ── 4. LSP Specific Keymaps ──────────────────────────────────────────────────
+-- Toggles the auto-hover diagnostic display via the modular LSP module
+keymap.set("n", "<leader>lh", function()
+  require("config.lsp.diagnostics").toggle_auto_hover()
+end, { desc = "Toggle auto-hover diagnostics" })
+
+-- Bracket matching test and debug helpers
+keymap.set("n", "<leader>tB", function()
   vim.cmd("NoMatchParen")
   vim.defer_fn(function()
     vim.cmd("DoMatchParen")
-    vim.notify("Bracket matching reloaded with enhanced highlighting", vim.log.levels.INFO)
+    vim.notify("Bracket matching reloaded", vim.log.levels.INFO)
   end, 100)
 end, { desc = "Reload bracket matching" })
-
--- Create a test buffer with brackets to demonstrate matching
-keymap.set("n", "<leader>tB", function()
-  -- Create a new buffer with bracket examples
-  vim.cmd("enew")
-  local examples = {
-    "-- Bracket matching examples:",
-    "if condition then",
-    "  local table = {",
-    "    key = 'value',",
-    "    nested = {",
-    "      array = [1, 2, 3],",
-    "      func = function(a, b)",
-    "        return (a + b) * 2",
-    "      end",
-    "    }",
-    "  }",
-    "end",
-    "",
-    "-- Move cursor to any bracket to see matching pairs highlighted",
-    "-- Rainbow delimiters show nested levels in different colors",
-  }
-  vim.api.nvim_buf_set_lines(0, 0, -1, false, examples)
-  vim.opt_local.filetype = "lua"
-  vim.notify("Bracket test buffer created! Move cursor to brackets to see highlighting", vim.log.levels.INFO)
-end, { desc = "Create bracket matching test buffer" })

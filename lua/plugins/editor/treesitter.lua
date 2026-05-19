@@ -9,14 +9,14 @@ return {
   },
 
   -- Treesitter (syntax highlighting)
- {
+  {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     dependencies = {
       "nvim-treesitter/nvim-treesitter-textobjects",
     },
     config = function()
-	  require("nvim-treesitter").setup({
+      require("nvim-treesitter.configs").setup({
 		ensure_installed = {
 		  "lua", "python", "javascript", "typescript", "html", "css",
 		  "json", "yaml", "markdown", "bash", "vim", "vimdoc", "c", "java", "asm"
@@ -56,13 +56,6 @@ return {
 	end,
   },
 
-  -- Comment functionality
-  {
-    "numToStr/Comment.nvim",
-    config = function()
-      require("Comment").setup()
-    end,
-  },
 
   -- Rainbow brackets for better bracket visibility
   {

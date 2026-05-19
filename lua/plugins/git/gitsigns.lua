@@ -71,32 +71,8 @@ return {
           map('n', '<leader>hD', function() gitsigns.diffthis('~') end, { desc = "Diff this ~" })
           map('n', '<leader>td', gitsigns.toggle_deleted, { desc = "Toggle deleted" })
 
-          -- Text object
           map({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>', { desc = "Select hunk" })
         end
-      })
-    end,
-  },
-
-  -- Mini.diff for diff visualization
-  {
-    "echasnovski/mini.diff",
-    version = "*",
-    config = function()
-      require("mini.diff").setup({
-        view = {
-          style = "sign",
-          signs = { add = "+", change = "~", delete = "-" },
-        },
-        mappings = {
-          apply = "gh",
-          reset = "gH",
-          textobject = "gh",
-          goto_first = "[H",
-          goto_prev = "[h",
-          goto_next = "]h",
-          goto_last = "]H",
-        },
       })
     end,
   },
