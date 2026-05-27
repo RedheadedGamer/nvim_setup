@@ -1,5 +1,5 @@
 -- plugins/lang/markdown.lua
--- Markdown support: live browser preview via markdown-preview.nvim
+-- Markdown and math support: browser preview, inline render-markdown, and nabla Unicode renderers
 
 return {
   {
@@ -47,6 +47,49 @@ return {
     "MeanderingProgrammer/render-markdown.nvim",
     dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
     ft = { "markdown" },
-    opts = {},
+    opts = {
+      latex = {
+        enabled = true,
+        top_pad = 0,
+        bottom_pad = 0,
+      },
+    },
+  },
+  {
+    "jbyuki/nabla.nvim",
+    keys = {
+      {
+        "<leader>np",
+        function()
+          local ok, nabla = pcall(require, "nabla")
+          if ok then
+            local success, err = pcall(nabla.popup)
+            if not success then
+              vim.notify("Nabla popup: equation contains unsupported expressions", vim.log.levels.WARN, { title = "Nabla" })
+            end
+          else
+            vim.notify("Nabla not loaded yet", vim.log.levels.ERROR, { title = "Nabla" })
+          end
+        end,
+        ft = "markdown",
+        desc = "Nabla LaTeX Math Popup",
+      },
+      {
+        "<leader>nv",
+        function()
+          local ok, nabla = pcall(require, "nabla")
+          if ok then
+            local success, err = pcall(nabla.enable_virt)
+            if not success then
+              vim.notify("Nabla virtual text: equation contains unsupported expressions", vim.log.levels.WARN, { title = "Nabla" })
+            end
+          else
+            vim.notify("Nabla not loaded yet", vim.log.levels.ERROR, { title = "Nabla" })
+          end
+        end,
+        ft = "markdown",
+        desc = "Nabla LaTeX Virtual Text",
+      },
+    },
   },
 }

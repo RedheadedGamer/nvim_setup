@@ -1,5 +1,5 @@
 -- plugins/editor/treesitter.lua
--- Treesitter configuration for syntax highlighting
+-- Treesitter configuration for syntax highlighting (modernized for Neovim 0.12+)
 
 return {
   -- Essential dependencies
@@ -11,51 +11,68 @@ return {
   -- Treesitter (syntax highlighting)
   {
     "nvim-treesitter/nvim-treesitter",
+    branch = "main",
     build = ":TSUpdate",
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter-textobjects",
-    },
     config = function()
-      require("nvim-treesitter.configs").setup({
-		ensure_installed = {
-		  "lua", "python", "javascript", "typescript", "html", "css",
-		  "json", "yaml", "markdown", "bash", "vim", "vimdoc", "c", "java", "asm"
-		},
-		sync_install = false,
-		auto_install = true,
-		highlight = { enable = true, additional_vim_regex_highlighting = false },
-		indent = { enable = true },
-		textobjects = {
-		  select = {
-			enable = true,
-			lookahead = true,
-			keymaps = {
-			  ["af"] = "@function.outer",
-			  ["if"] = "@function.inner",
-			  ["ac"] = "@class.outer",
-			  ["ic"] = "@class.inner",
-			  ["aa"] = "@parameter.outer",
-			  ["ia"] = "@parameter.inner",
-			},
-		  },
-		  move = {
-			enable = true,
-			set_jumps = true,
-			goto_next_start     = { ["]f"] = "@function.outer", ["]c"] = "@class.outer" },
-			goto_next_end       = { ["]F"] = "@function.outer", ["]C"] = "@class.outer" },
-			goto_previous_start = { ["[f"] = "@function.outer", ["[c"] = "@class.outer" },
-			goto_previous_end   = { ["[F"] = "@function.outer", ["[C"] = "@class.outer" },
-		  },
-		  swap = {
-			enable = true,
-			swap_next     = { ["<leader>sp"] = "@parameter.inner" },
-			swap_previous = { ["<leader>sP"] = "@parameter.inner" },
-		  },
-		},
-	  })
-	end,
+      local ts = require("nvim-treesitter")
+      ts.setup()
+
+      -- Install the required language parsers
+      local parsers = {
+        "lua", "python", "javascript", "typescript", "html", "css",
+        "json", "yaml", "markdown", "bash", "vim", "vimdoc", "c", "java", "asm", "query"
+      }
+      ts.install(parsers)
+
+      -- Enable native Treesitter folding
+      vim.wo.foldmethod = "expr"
+      vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+
+      -- Enable built-in highlighting for standard files
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = parsers,
+        callback = function()
+          vim.treesitter.start()
+        end,
+      })
+    end,
   },
 
+  -- Treesitter Textobjects
+  {
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    branch = "main",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    config = function()
+      require("nvim-treesitter-textobjects").setup({
+        select = {
+          enable = true,
+          lookahead = true,
+          keymaps = {
+            ["af"] = "@function.outer",
+            ["if"] = "@function.inner",
+            ["ac"] = "@class.outer",
+            ["ic"] = "@class.inner",
+            ["aa"] = "@parameter.outer",
+            ["ia"] = "@parameter.inner",
+          },
+        },
+        move = {
+          enable = true,
+          set_jumps = true,
+          goto_next_start     = { ["]f"] = "@function.outer", ["]c"] = "@class.outer" },
+          goto_next_end       = { ["]F"] = "@function.outer", ["]C"] = "@class.outer" },
+          goto_previous_start = { ["[f"] = "@function.outer", ["[c"] = "@class.outer" },
+          goto_previous_end   = { ["[F"] = "@function.outer", ["[C"] = "@class.outer" },
+        },
+        swap = {
+          enable = true,
+          swap_next     = { ["<leader>sp"] = "@parameter.inner" },
+          swap_previous = { ["<leader>sP"] = "@parameter.inner" },
+        },
+      })
+    end,
+  },
 
   -- Rainbow brackets for better bracket visibility
   {
@@ -126,5 +143,5 @@ return {
         require("treesitter-context").go_to_context(vim.v.count1)
       end, { desc = "Jump to treesitter context" })
     end,
-  }, 
+  },
 }
